@@ -65,7 +65,7 @@ const LoginScreen = () => {
     }
 
     try {
-      const response = await fetch('http://192.168.1.181:3001/api/login', {
+      const response = await fetch('http://192.168.1.30:3001/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,10 +77,15 @@ const LoginScreen = () => {
       alert(data.message);
       setIsLoading(false);
       if (data.status === 200) {
-        navigation.navigate('Home');
-        const data = await response.json();
-        const authToken = data.token;
+        const authToken = data.data.token;
+        const userID = data.data.id;
+
+        console.log(userID);
+
         await AsyncStorage.setItem('authToken', authToken);
+        await AsyncStorage.setItem('@userId', userID.toString());
+        navigation.navigate('Home');
+
         return { success: true };
       } else {
         const errorData = await response.json();
@@ -97,6 +102,11 @@ const LoginScreen = () => {
   const handleRegisterPress = () => {
     navigation.navigate('Register');
     console.log('Create new account!!!');
+  };
+
+  const handleForgotPasswordPress = () => {
+    navigation.navigate('ForgotPassword');
+    console.log('Reset Password!!!');
   };
 
   return (
@@ -132,7 +142,7 @@ const LoginScreen = () => {
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={handlePasswordChange}>
+      <TouchableOpacity onPress={handleForgotPasswordPress}>
         <Text style={styles.higlightText}>Forgot Password?</Text>
       </TouchableOpacity>
 
