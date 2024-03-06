@@ -1,25 +1,80 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ProfileScreen = () => {
+const AccountScreen = () => {
+  const [userId, setUserId] = useState(null);
+  const [userInfo, setUserInfo] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const storedUserId = await AsyncStorage.getItem('@userId');
+        setUserId(storedUserId ? Number(storedUserId) : null);
+      } catch (error) {
+        console.error('Error fetching user ID from storage:', error);
+      } finally {
+        setIsLoading(false);
+
+        console.log(userId);
+      }
+    };
+
+    fetchUserId();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (userId) {
+        setIsLoading(true);
+        try {
+          const response = await fetch(`http://192.168.1.30:3001/api/getInfoUser/${userId}`); // Replace with your API endpoint
+          if (response.ok) {
+            const data = await response.json();
+            alert(data.message);
+            setUserInfo(data);
+          } else {
+            console.error('Error fetching user info:', response.status);
+          }
+        } catch (error) {
+          console.error('Error fetching user info:-', error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchUserInfo();
+  }, [userId]);
+
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      );
+    // } else if (userInfo === null) {
+    //   <View>
+    //     <Text style={styles.title}>Account Details</Text>
+
+    //   </View>
+    } else { 
+      return (
+        <View>
+          <Text style={styles.title}>Account Details</Text>
+          <Text>Name: {userInfo.name}</Text>
+          <Text>Email: {userInfo.email}</Text>
+          {/* Add other user info fields as needed */}
+        </View>
+      );
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>User Profile</Text>
-      <View style={styles.avatar}>
-        <Image
-          source={{uri:"https://www.w3schools.com/howto/img_nature_wide.jpg"}}
-          style={styles.avatarImage}
-        />
-      </View>
-      <View style={styles.profileInfo}>
-        <Text style={styles.label}>Username:</Text>
-        <Text style={styles.info}>JohnDoe</Text>
-      </View>
-      <View style={styles.profileInfo}>
-        <Text style={styles.label}>Email:</Text>
-        <Text style={styles.info}>johndoe@example.com</Text>
-      </View>
-      
+      {renderContent()}
     </View>
   );
 };
@@ -27,41 +82,19 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f4f4f4',
     padding: 20,
   },
-  heading: {
+  title: {
     fontSize: 24,
-    fontWeight: 'bold',
     marginBottom: 20,
   },
-  avatar: {
-    marginBottom: 20,
-  },
-  avatarImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    borderWidth: 5,
-    borderColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 3.84,
-  },
-  profileInfo: {
-    marginBottom: 10,
-  },
-  label: {
-    fontWeight: 'bold',
-  },
-  info: {
-    marginTop: 5,
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
-export default ProfileScreen;
+export default AccountScreen;

@@ -103,7 +103,7 @@ const RegisterScreen = () => {
     }
 
     try {
-      const response = await fetch('http://192.168.1.181:3001/api/register', {
+      const response = await fetch('http://192.168.1.30:3001/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
