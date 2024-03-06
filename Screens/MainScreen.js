@@ -4,9 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for icons
 import { View, Text, StyleSheet } from 'react-native';
 import ProductScreen from './Product/ProductScreen';
-import { StatusBar } from 'expo-status-bar';
-import ProductDetailScreen from './Product/ProductDetailScreen';
-import ProfileScreen from './Account/AccountScreen';
+import AccountScreen from './Account/AccountScreen';
 
 
 function CartScreen() {
@@ -66,8 +64,7 @@ export default function App() {
       >
         <Tab.Screen name="Home" component={ProductScreen} options={{ headerShown: false }}/>
         <Tab.Screen name="Cart" component={CartScreen} options={{ headerShown: false }}/>
-        {/* <Tab.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false }}/> */}
-        <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }}/>
+        <Tab.Screen name="Profile" component={AccountScreen} options={{ headerShown: false }}/>
       </Tab.Navigator>
     
     </NavigationContainer>

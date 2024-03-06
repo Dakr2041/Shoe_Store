@@ -6,6 +6,7 @@ import LoginScreen from './Screens/LoginScreen.js';
 import RegisterScreen from './Screens/RegisterScreen.js';
 import MainScreen from './Screens/MainScreen.js';
 import ProductDetailScreen from './Screens/Product/ProductDetailScreen.js';
+import ForgotPasswordScreen from './Screens/ForgotPasswordScreen.js';
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -14,6 +15,7 @@ export default function App() {
       <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="Home" component={MainScreen} />
 
       </Stack.Navigator>
