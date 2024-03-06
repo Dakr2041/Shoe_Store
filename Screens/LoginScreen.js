@@ -1,7 +1,13 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from 'expo-linear-gradient';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import IconPassWord from 'react-native-vector-icons/FontAwesome5';
+import { ScrollView } from 'react-native-gesture-handler';
+import InteractiveTextInput from "react-native-text-input-interactive";
+
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -14,9 +20,9 @@ const LoginScreen = () => {
 
   const EyeIcon = ({ visible }) => {
     return visible ? (
-      <Image source={require('../assets/show-icon.png')} style={styles.eyeIcon} />
+      <IconPassWord name='eye' color={'black'} size={15}></IconPassWord>
     ) : (
-      <Image source={require('../assets/hide-icon.png')} style={styles.eyeIcon} />
+      <IconPassWord name='eye-slash' color={'black'} size={15}></IconPassWord>
     );
   };
 
@@ -65,7 +71,7 @@ const LoginScreen = () => {
     }
 
     try {
-      const response = await fetch('http://192.168.1.30:3001/api/login', {
+      const response = await fetch('http://192.168.0.104:3001/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,10 +116,14 @@ const LoginScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login to Your Account</Text>
-      <TextInput
-        style={styles.input}
+    <View style={styles.container} >
+      
+      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' , padding : 20 }}>
+      <Text style={styles.title}  >Login</Text>
+
+      <Text style={styles.messenger}>Please sign to continue</Text>
+
+      <InteractiveTextInput
         placeholder="Email"
         onChangeText={handleEmailChange}
         value={email}
@@ -123,8 +133,7 @@ const LoginScreen = () => {
       />
 
       <View style={styles.passwordInputContainer}>
-        <TextInput
-          style={styles.passwordInput}
+        <InteractiveTextInput
           placeholder="Password"
           onChangeText={handlePasswordChange}
           value={password}
@@ -132,28 +141,40 @@ const LoginScreen = () => {
           ref={passwordInputRef} // Assign ref for styling and validation
           // Add padding-right to accommodate the icon
           paddingRight={30}
+          style={{marginTop :9}}
         />
         <TouchableOpacity style={styles.showPasswordButton} onPress={togglePasswordVisibility}>
           <EyeIcon visible={isPasswordVisible} />
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-
       <TouchableOpacity onPress={handleForgotPasswordPress}>
         <Text style={styles.higlightText}>Forgot Password?</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={handleRegisterPress}>
-        <Text style={styles.higlightText}>Don't have an account?</Text>
+      
+      <TouchableOpacity  onPress={handleLogin} style={styles.buttonGR}>
+          <LinearGradient colors={['#f7c458', '#fea239']} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.button}>
+            <Text style={styles.buttonText}>Login</Text>
+            <Icon name="angle-right" size={20} color={'white'}></Icon>
+          </LinearGradient>  
       </TouchableOpacity>
+
+
+
+
+      <TouchableOpacity onPress={handleRegisterPress} style={{ flexDirection: 'row',alignSelf :'center' , marginTop : 100}}>
+        <Text >Don't have an account? </Text>
+        <Text style={{fontWeight :'bold', color :'#fea239'}}>Sign up</Text>
+      </TouchableOpacity>
+
       {isLoading && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       )}
+      </ScrollView>
+      
     </View>
   );
 };
@@ -161,60 +182,55 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#fff'
   },
   title: {
-    fontSize: 24,
-    marginBottom: 20,
+    fontSize: 30,
+    fontWeight : "bold",
+    marginBottom: 10
   },
-  input: {
-    width: '100%',
-    padding: 15,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
+  messenger: {
+    fontSize: 15,
+    marginBottom: 20,
+    color : "#4f4f4d"
   },
   button: {
-    width: '100%',
-    backgroundColor: '#007bff',
     padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
+    borderRadius: 22,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
+  buttonGR: {
+    shadowColor: 'rgba(0,0,0, .4)', // IOS
+    shadowOffset: { height: 1, width: 1 }, // IOS
+    shadowOpacity: 1, // IOS
+    shadowRadius: 1, //IOS
+    elevation: 2, // Android
+    height: 50,
+    width: '40%',
+    shadowColor :'red',
+    alignSelf: 'flex-end',
+    marginEnd : 2
+},
   buttonText: {
     color: '#fff',
     fontSize: 18,
+    fontWeight : "bold"
   },
   higlightText: {
     color: '#007bff',
     fontSize: 12,
-    margin: 10,
+     marginTop : 9
   },
   passwordInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
   },
-  passwordInput: {
-    flex: 1,
-    padding: 15,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-  },
   showPasswordButton: {
     position: 'absolute', // Make it absolute within the input
     right: 15, // Adjust right padding and position as needed
-    top: 18, // Adjust top position as needed
-  },
-  eyeIcon: {
-    width: 25,
-    height: 25,
+    top: 25, // Adjust top position as needed
   },
   loadingContainer: {
     position: 'absolute', // Ensure animation sits on top of other elements

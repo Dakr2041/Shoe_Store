@@ -29,7 +29,7 @@ const AccountScreen = () => {
       if (userId) {
         setIsLoading(true);
         try {
-          const response = await fetch(`http://192.168.1.30:3001/api/getInfoUser/${userId}`); // Replace with your API endpoint
+          const response = await fetch(`http://192.168.0.104:3001/api/getInfoUser/${userId}`); // Replace with your API endpoint
           if (response.ok) {
             const data = await response.json();
             alert(data.message);
