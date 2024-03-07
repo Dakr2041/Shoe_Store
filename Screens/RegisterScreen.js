@@ -251,7 +251,6 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 22,
     alignItems :'center'
-
   },
   buttonGR: {
     shadowColor: 'rgba(0,0,0, .4)', // IOS

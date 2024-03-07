@@ -22,8 +22,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#ddd',
-    marginVertical: 5,
-    alignItems: 'center',
+    margin : 4.5,
     overflow: 'hidden', // Ensure image does not overflow container
   },
   image: {
@@ -32,7 +31,6 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     padding: 10,
-    alignItems: 'center',
   },
   productName: {
     fontSize: 16,

@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, StyleSheet, Image, ActivityIndicator ,Tex
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import IconPassWord from 'react-native-vector-icons/FontAwesome5';
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -38,6 +37,7 @@ const LoginScreen = () => {
   };
 
   const handleLogin = async () => {
+    navigation.navigate('Home');
     setIsLoading(true);
     // Basic validation using regular expressions (can be customized)
     const emailRegex = /^\w+@[a-zA-Z_\.]+\.[a-zA-Z]{2,}$/; // Email format
