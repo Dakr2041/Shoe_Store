@@ -1,6 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useRef, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import InteractiveTextInput from "react-native-text-input-interactive";
+import { LinearGradient } from 'expo-linear-gradient';
+
 
 const ForgotPasswordScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -26,7 +30,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
         }
 
         try {
-            const response = await fetch('http://192.168.1.30:3001/api/forgotPassword', {
+            const response = await fetch('http://192.168.0.104:3001/api/forgotPassword', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -50,9 +54,11 @@ const ForgotPasswordScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' , padding : 20 }}>
+
             <Text style={styles.title}>Forgot Password</Text>
-            <Text style={styles.instruction}>Enter your registered email address:</Text>
-            <TextInput
+            <Text style={styles.messenger}>Enter your registered email address:</Text>
+            <InteractiveTextInput
                 style={styles.input}
                 placeholder="Email"
                 onChangeText={setEmail}
@@ -61,12 +67,20 @@ const ForgotPasswordScreen = ({ navigation }) => {
                 autoCapitalize="none"
                 ref={emailInputRef}
             />
-            <TouchableOpacity style={styles.button} onPress={handleSendEmail}>
-                <Text style={styles.buttonText}>Send Email</Text>
+
+            <TouchableOpacity  onPress={handleSendEmail} style={styles.buttonGR}>
+            <LinearGradient colors={['#f7c458', '#fea239']} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.button}>
+            <Text style={styles.buttonText}>Send Email</Text>
+            </LinearGradient>  
             </TouchableOpacity>
+
+
             <TouchableOpacity onPress={handleLoginPress}>
                 <Text style={styles.higlightText}>Go back to Login</Text>
             </TouchableOpacity>
+
+             </ScrollView>
+
         </View>
     );
 };
@@ -74,32 +88,35 @@ const ForgotPasswordScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: 20,
+        backgroundColor: '#fff'
     },
     title: {
-        fontSize: 24,
+        fontSize: 30,
+        fontWeight : "bold",
+        marginBottom: 10
+      },
+      messenger: {
+        fontSize: 15,
         marginBottom: 20,
-    },
-    instruction: {
-        marginBottom: 10,
-    },
-    input: {
-        width: '100%',
+        color : "#4f4f4d"
+      },
+      button: {
         padding: 15,
-        marginBottom: 10,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-    },
-    button: {
-        width: '100%',
-        backgroundColor: '#007bff',
-        padding: 15,
-        borderRadius: 5,
-        alignItems: 'center',
-        marginTop: 10,
+        borderRadius: 22,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      },
+      buttonGR: {
+        shadowColor: 'rgba(0,0,0, .4)', // IOS
+        shadowOffset: { height: 1, width: 1 }, // IOS
+        shadowOpacity: 1, // IOS
+        shadowRadius: 1, //IOS
+        elevation: 2, // Android
+        height: 50,
+        width: '40%',
+        shadowColor :'red',
+        alignSelf: 'flex-end',
+        marginTop : 9
     },
     buttonText: {
         color: '#fff',
@@ -108,7 +125,9 @@ const styles = StyleSheet.create({
     higlightText: {
         color: '#007bff',
         fontSize: 12,
-        margin: 10,
+        margin: 9,
+        textAlign : 'center',
+        marginTop :100
       },
 });
 

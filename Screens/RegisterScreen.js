@@ -1,6 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useRef, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, ToastAndroid, Image, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ToastAndroid, Image, ActivityIndicator } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import InteractiveTextInput from "react-native-text-input-interactive";
+import { LinearGradient } from 'expo-linear-gradient';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import IconPassWord from 'react-native-vector-icons/FontAwesome5';
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState('');
@@ -32,9 +37,9 @@ const RegisterScreen = () => {
 
   const EyeIcon = ({ visible }) => {
     return visible ? (
-      <Image source={require('../assets/show-icon.png')} style={styles.eyeIcon} />
+      <IconPassWord name='eye' color={'black'} size={15}></IconPassWord>
     ) : (
-      <Image source={require('../assets/hide-icon.png')} style={styles.eyeIcon} />
+      <IconPassWord name='eye-slash' color={'black'} size={15}></IconPassWord>
     );
   };
 
@@ -147,8 +152,13 @@ const RegisterScreen = () => {
 
   return (
     <View style={styles.container}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' , padding : 20 }}>
+
       <Text style={styles.title}>Register</Text>
-      <TextInput
+
+      <Text style={styles.messenger}>Please enter complete information</Text>
+
+      <InteractiveTextInput
         style={styles.input}
         placeholder="Email"
         value={email}
@@ -157,7 +167,7 @@ const RegisterScreen = () => {
         autoCapitalize="none"
         ref={emailInputRef}
       />
-      <TextInput
+      <InteractiveTextInput
         style={styles.input}
         placeholder="Name"
         value={name}
@@ -167,8 +177,7 @@ const RegisterScreen = () => {
       />
 
       <View style={styles.passwordInputContainer}>
-        <TextInput
-          style={styles.passwordInput}
+        <InteractiveTextInput
           placeholder="Password"
           onChangeText={handlePasswordChange}
           value={password}
@@ -180,9 +189,8 @@ const RegisterScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.passwordInputContainer}>
-        <TextInput
-          style={styles.passwordInput}
+      <View style={{marginBottom : 9}}>
+        <InteractiveTextInput
           placeholder="Confirm Password"
           onChangeText={handleConfirmPasswordChange}
           value={confirmPassword}
@@ -194,9 +202,15 @@ const RegisterScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Register</Text>
+      <TouchableOpacity  onPress={handleRegister} style={styles.buttonGR}>
+          <LinearGradient colors={['#f7c458', '#fea239']} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.button}>
+            <Text style={styles.buttonText}>Register</Text>
+            <Icon name="angle-right" size={20} color={'white'}></Icon>
+          </LinearGradient>  
       </TouchableOpacity>
+
+
+
       <TouchableOpacity onPress={handleLoginPress}>
         <Text style={styles.higlightText}>Already have an account</Text>
       </TouchableOpacity>
@@ -205,6 +219,8 @@ const RegisterScreen = () => {
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       )}
+      </ScrollView>
+
     </View>
   );
 };
@@ -212,34 +228,45 @@ const RegisterScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
+    backgroundColor: '#fff'
   },
   title: {
-    fontSize: 24,
+    fontSize: 30,
+    fontWeight : "bold",
+    marginBottom: 10
+  },
+  messenger: {
+    fontSize: 15,
     marginBottom: 20,
+    color : "#4f4f4d"
   },
   input: {
-    width: '100%',
-    padding: 15,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
+    marginTop : 9
   },
   higlightText: {
     color: '#007bff',
-    fontSize: 12,
-    margin: 10,
+    margin: 9,
+    textAlign : 'center',
+    marginTop : 100
   },
   button: {
-    width: '100%',
-    backgroundColor: '#007bff',
     padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
+    borderRadius: 22,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
+  buttonGR: {
+    shadowColor: 'rgba(0,0,0, .4)', // IOS
+    shadowOffset: { height: 1, width: 1 }, // IOS
+    shadowOpacity: 1, // IOS
+    shadowRadius: 1, //IOS
+    elevation: 2, // Android
+    height: 50,
+    width: '40%',
+    shadowColor :'red',
+    alignSelf: 'flex-end',
+    marginEnd : 2
+},
   buttonText: {
     color: '#fff',
     fontSize: 18,
@@ -249,13 +276,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     marginBottom: 10,
-  },
-  passwordInput: {
-    flex: 1,
-    padding: 15,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
+    marginTop :9
   },
   showPasswordButton: {
     position: 'absolute', // Make it absolute within the input
