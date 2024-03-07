@@ -28,8 +28,6 @@ const Tab = createBottomTabNavigator();
 export default function App() {
   return (
     <NavigationContainer independent={true} >
-
-      <Text style={styles.tittle}>Shoe Store</Text>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color, size }) => {
@@ -80,12 +78,5 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     fontWeight: 'bold',
-  },
-  tittle: {
-    fontSize: 35,
-    fontWeight: 'bold',
-    textAlign: 'start',
-    marginTop: 30,
-    padding: 20
-  },
+  }
 });
