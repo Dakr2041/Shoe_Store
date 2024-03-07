@@ -1,18 +1,17 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ActivityIndicator ,TextInput} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconPassWord from 'react-native-vector-icons/FontAwesome5';
 import { ScrollView } from 'react-native-gesture-handler';
-import InteractiveTextInput from "react-native-text-input-interactive";
 
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const logo = require('../assets/logo.png');
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -115,15 +114,20 @@ const LoginScreen = () => {
     console.log('Reset Password!!!');
   };
 
+
   return (
     <View style={styles.container} >
       
       <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' , padding : 20 }}>
-      <Text style={styles.title}  >Login</Text>
+
+      <Image source={logo} style={{width:200,height:200,alignSelf :'center'}}></Image>
+
+      <Text style={styles.title}>Login</Text>
 
       <Text style={styles.messenger}>Please sign to continue</Text>
 
-      <InteractiveTextInput
+      <TextInput
+        style={styles.textInput}
         placeholder="Email"
         onChangeText={handleEmailChange}
         value={email}
@@ -133,15 +137,14 @@ const LoginScreen = () => {
       />
 
       <View style={styles.passwordInputContainer}>
-        <InteractiveTextInput
+        <TextInput
+          style={styles.textInput}
           placeholder="Password"
           onChangeText={handlePasswordChange}
           value={password}
           secureTextEntry={!isPasswordVisible}
           ref={passwordInputRef} // Assign ref for styling and validation
           // Add padding-right to accommodate the icon
-          paddingRight={30}
-          style={{marginTop :9}}
         />
         <TouchableOpacity style={styles.showPasswordButton} onPress={togglePasswordVisibility}>
           <EyeIcon visible={isPasswordVisible} />
@@ -156,11 +159,8 @@ const LoginScreen = () => {
       <TouchableOpacity  onPress={handleLogin} style={styles.buttonGR}>
           <LinearGradient colors={['#f7c458', '#fea239']} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.button}>
             <Text style={styles.buttonText}>Login</Text>
-            <Icon name="angle-right" size={20} color={'white'}></Icon>
           </LinearGradient>  
       </TouchableOpacity>
-
-
 
 
       <TouchableOpacity onPress={handleRegisterPress} style={{ flexDirection: 'row',alignSelf :'center' , marginTop : 100}}>
@@ -196,9 +196,7 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 15,
-    borderRadius: 22,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    borderRadius: 22
   },
   buttonGR: {
     shadowColor: 'rgba(0,0,0, .4)', // IOS
@@ -207,15 +205,16 @@ const styles = StyleSheet.create({
     shadowRadius: 1, //IOS
     elevation: 2, // Android
     height: 50,
-    width: '40%',
+    width: '100%',
     shadowColor :'red',
-    alignSelf: 'flex-end',
-    marginEnd : 2
+    marginTop : 20,
+    textAlign :'center'
 },
   buttonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight : "bold"
+    fontWeight : "bold",
+    alignSelf :'center'
   },
   higlightText: {
     color: '#007bff',
@@ -229,8 +228,8 @@ const styles = StyleSheet.create({
   },
   showPasswordButton: {
     position: 'absolute', // Make it absolute within the input
-    right: 15, // Adjust right padding and position as needed
-    top: 25, // Adjust top position as needed
+    right: 15, // Adjust right padding and position as needed,
+    top : 30
   },
   loadingContainer: {
     position: 'absolute', // Ensure animation sits on top of other elements
@@ -242,6 +241,14 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.2)', // Semi-transparent background
   },
+  textInput: {
+    width : "100%",
+    height : 60,
+    borderRadius : 9,
+    padding : 9,
+    marginTop : 9,
+    backgroundColor : '#ebecf0'
+  }
 });
 
 export default LoginScreen;
