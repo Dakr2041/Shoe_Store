@@ -1,15 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useRef, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet,Image ,TextInput} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import InteractiveTextInput from "react-native-text-input-interactive";
 import { LinearGradient } from 'expo-linear-gradient';
 
 
 const ForgotPasswordScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const emailInputRef = useRef(null);
-
+    const logo = require('../assets/logo.png');
     const handleLoginPress = () => {
         navigation.navigate('Login');
         console.log('Already have an account!!!');
@@ -54,12 +53,12 @@ const ForgotPasswordScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' , padding : 20 }}>
-
+            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' , padding : 20 }}>
+            <Image source={logo} style={{width:200,height:200,alignSelf :'center'}}></Image>
             <Text style={styles.title}>Forgot Password</Text>
             <Text style={styles.messenger}>Enter your registered email address:</Text>
-            <InteractiveTextInput
-                style={styles.input}
+            <TextInput
+                style={styles.textInput}
                 placeholder="Email"
                 onChangeText={setEmail}
                 value={email}
@@ -113,10 +112,10 @@ const styles = StyleSheet.create({
         shadowRadius: 1, //IOS
         elevation: 2, // Android
         height: 50,
-        width: '40%',
+        width: '100%',
         shadowColor :'red',
         alignSelf: 'flex-end',
-        marginTop : 9
+        marginTop : 20
     },
     buttonText: {
         color: '#fff',
@@ -129,6 +128,14 @@ const styles = StyleSheet.create({
         textAlign : 'center',
         marginTop :100
       },
+      textInput: {
+        width : "100%",
+        height : 60,
+        borderRadius : 9,
+        padding : 9,
+        marginTop : 9,
+        backgroundColor : '#ebecf0'
+      }
 });
 
 export default ForgotPasswordScreen;

@@ -1,8 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ToastAndroid, Image, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ToastAndroid, Image, ActivityIndicator,TextInput } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import InteractiveTextInput from "react-native-text-input-interactive";
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconPassWord from 'react-native-vector-icons/FontAwesome5';
@@ -42,6 +41,8 @@ const RegisterScreen = () => {
       <IconPassWord name='eye-slash' color={'black'} size={15}></IconPassWord>
     );
   };
+
+  const logo = require('../assets/logo.png');
 
   const handleRegister = async () => {
     setIsLoading(true);
@@ -150,16 +151,15 @@ const RegisterScreen = () => {
     }
   };
 
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' , padding : 20 }}>
-
+      <Image source={logo} style={{width:200,height:200,alignSelf :'center'}}></Image>
       <Text style={styles.title}>Register</Text>
-
       <Text style={styles.messenger}>Please enter complete information</Text>
-
-      <InteractiveTextInput
-        style={styles.input}
+      <TextInput
+        style={styles.textInput}
         placeholder="Email"
         value={email}
         onChangeText={handleEmailChange}
@@ -167,8 +167,8 @@ const RegisterScreen = () => {
         autoCapitalize="none"
         ref={emailInputRef}
       />
-      <InteractiveTextInput
-        style={styles.input}
+      <TextInput
+        style={styles.textInput}
         placeholder="Name"
         value={name}
         onChangeText={handleNameChange}
@@ -177,7 +177,8 @@ const RegisterScreen = () => {
       />
 
       <View style={styles.passwordInputContainer}>
-        <InteractiveTextInput
+        <TextInput
+          style={styles.textInput}
           placeholder="Password"
           onChangeText={handlePasswordChange}
           value={password}
@@ -189,8 +190,9 @@ const RegisterScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={{marginBottom : 9}}>
-        <InteractiveTextInput
+      <View>
+        <TextInput
+          style={styles.textInput}
           placeholder="Confirm Password"
           onChangeText={handleConfirmPasswordChange}
           value={confirmPassword}
@@ -205,7 +207,6 @@ const RegisterScreen = () => {
       <TouchableOpacity  onPress={handleRegister} style={styles.buttonGR}>
           <LinearGradient colors={['#f7c458', '#fea239']} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.button}>
             <Text style={styles.buttonText}>Register</Text>
-            <Icon name="angle-right" size={20} color={'white'}></Icon>
           </LinearGradient>  
       </TouchableOpacity>
 
@@ -240,9 +241,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color : "#4f4f4d"
   },
-  input: {
-    marginTop : 9
-  },
   higlightText: {
     color: '#007bff',
     margin: 9,
@@ -252,8 +250,7 @@ const styles = StyleSheet.create({
   button: {
     padding: 15,
     borderRadius: 22,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems :'center'
   },
   buttonGR: {
     shadowColor: 'rgba(0,0,0, .4)', // IOS
@@ -262,10 +259,9 @@ const styles = StyleSheet.create({
     shadowRadius: 1, //IOS
     elevation: 2, // Android
     height: 50,
-    width: '40%',
+    width: '100%',
     shadowColor :'red',
-    alignSelf: 'flex-end',
-    marginEnd : 2
+    marginTop : 20,
 },
   buttonText: {
     color: '#fff',
@@ -274,14 +270,13 @@ const styles = StyleSheet.create({
   passwordInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '100%',
-    marginBottom: 10,
-    marginTop :9
+    width: '100%'
   },
   showPasswordButton: {
     position: 'absolute', // Make it absolute within the input
     right: 15, // Adjust right padding and position as needed
-    top: 18, // Adjust top position as needed
+    top : 30
+  
   },
   eyeIcon: {
     width: 25,
@@ -297,6 +292,14 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.2)', // Semi-transparent background
   },
+  textInput: {
+    width : "100%",
+    height : 60,
+    borderRadius : 9,
+    padding : 9,
+    marginTop : 9,
+    backgroundColor : '#ebecf0'
+  }
 });
 
 export default RegisterScreen;

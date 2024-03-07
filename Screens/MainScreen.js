@@ -32,7 +32,6 @@ export default function App() {
         <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
       </Stack.Navigator>
 
-
     </NavigationContainer>
   );
 }
@@ -87,12 +86,5 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     fontWeight: 'bold',
-  },
-  tittle: {
-    fontSize: 35,
-    fontWeight: 'bold',
-    textAlign: 'start',
-    marginTop: 30,
-    padding: 20
-  },
+  }
 });
