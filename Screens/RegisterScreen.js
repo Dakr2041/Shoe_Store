@@ -52,64 +52,64 @@ const RegisterScreen = () => {
 
 
     // Clear any previous error messages
-    emailInputRef.current.setNativeProps({ borderColor: '#ccc' });
-    nameInputRef.current.setNativeProps({ borderColor: '#ccc' });
-    passwordInputRef.current.setNativeProps({ borderColor: '#ccc' });
-    confirmPasswordInputRef.current.setNativeProps({ borderColor: '#ccc' });
+    // emailInputRef.current.setNativeProps({ borderColor: '#ccc' });
+    // nameInputRef.current.setNativeProps({ borderColor: '#ccc' });
+    // passwordInputRef.current.setNativeProps({ borderColor: '#ccc' });
+    // confirmPasswordInputRef.current.setNativeProps({ borderColor: '#ccc' });
 
     if (email.length <= 0) {
       setIsLoading(false);
-      emailInputRef.current.setNativeProps({ borderColor: 'red' });
+      // emailInputRef.current.setNativeProps({ borderColor: 'red' });
       return alert('Type in email.');
     }
 
     if (!emailRegex.test(email)) {
       setIsLoading(false);
-      emailInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
+      // emailInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
       alert('Invalid email format.');
       return;
     }
 
     if (name.length <= 0) {
       setIsLoading(false);
-      nameInputRef.current.setNativeProps({ borderColor: 'red' });
+      // nameInputRef.current.setNativeProps({ borderColor: 'red' });
       return alert('Type in name.');
     }
 
     if (password.length <= 0) {
       setIsLoading(false);
-      passwordInputRef.current.setNativeProps({ borderColor: 'red' });
+      // passwordInputRef.current.setNativeProps({ borderColor: 'red' });
       return alert('Type in password.');
     }
     if (!password || !passwordRegex.test(password)) {
       setIsLoading(false);
-      passwordInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
+      // passwordInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
       alert('Password must be at least 6 characters and include a number, lowercase letter, and uppercase letter.');
       return;
     }
 
     if (!passwordRegex.test(password)) {
       setIsLoading(false);
-      passwordInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
+      // passwordInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
       alert('Password must be at least 6 characters and include a number, lowercase letter, and uppercase letter.');
       return;
     }
 
     if (confirmPassword.length <= 0) {
       setIsLoading(false);
-      confirmPasswordInputRef.current.setNativeProps({ borderColor: 'red' });
+      // confirmPasswordInputRef.current.setNativeProps({ borderColor: 'red' });
       return alert('Type in confirm password.');
     }
 
     if (password !== confirmPassword) {
       setIsLoading(false);
-      confirmPasswordInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
+      // confirmPasswordInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
       alert('Passwords do not match.');
       return;
     }
 
     try {
-      const response = await fetch('http://192.168.1.30:3001/api/register', {
+      const response = await fetch('http://192.168.1.77:3001/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

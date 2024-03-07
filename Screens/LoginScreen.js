@@ -44,9 +44,10 @@ const LoginScreen = () => {
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/; // Password complexity
 
     // Clear any previous error messages
-    emailInputRef.current.setNativeProps({ borderColor: '#ccc' });
-    passwordInputRef.current.setNativeProps({ borderColor: '#ccc' });
+    // emailInputRef.current.setNativeProps({ borderColor: '#ccc' });
+    // passwordInputRef.current.setNativeProps({ borderColor: '#ccc' });
 
+    console.log("validating");
     if (email.length <= 0) {
       setIsLoading(false);
       return alert('Type in email.');
@@ -59,18 +60,18 @@ const LoginScreen = () => {
 
     if (!emailRegex.test(email)) {
       setIsLoading(false);
-      emailInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
+      // emailInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
       return alert('Invalid email format.');
     }
 
     if (!passwordRegex.test(password)) {
       setIsLoading(false);
-      passwordInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
+      // passwordInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
       return alert('Password must be at least 6 characters and include a number, lowercase letter, and uppercase letter.');
     }
 
     try {
-      const response = await fetch('http://192.168.0.104:3001/api/login', {
+      const response = await fetch('http://192.168.1.77:3001/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
