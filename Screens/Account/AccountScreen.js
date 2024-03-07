@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 const AccountScreen = () => {
   const [userId, setUserId] = useState(null);
   const [userInfo, setUserInfo] = useState({});
@@ -16,12 +15,11 @@ const AccountScreen = () => {
         console.error('Error fetching user ID from storage:', error);
       } finally {
         setIsLoading(false);
-
-        console.log(userId);
       }
     };
 
     fetchUserId();
+
   }, []);
 
   useEffect(() => {
@@ -29,11 +27,13 @@ const AccountScreen = () => {
       if (userId) {
         setIsLoading(true);
         try {
-          const response = await fetch(`http://192.168.0.104:3001/api/getInfoUser/${userId}`); // Replace with your API endpoint
+          const response = await fetch(`http://192.168.1.77:3001/api/getInfoUser/${userId}`);
           if (response.ok) {
             const data = await response.json();
-            alert(data.message);
-            setUserInfo(data);
+            // alert(data.data.message);
+
+            console.log(data.data);
+            setUserInfo(data.data);
           } else {
             console.error('Error fetching user info:', response.status);
           }
@@ -55,17 +55,26 @@ const AccountScreen = () => {
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       );
-    // } else if (userInfo === null) {
-    //   <View>
-    //     <Text style={styles.title}>Account Details</Text>
+      // } else if (userInfo === null) {
+      //   <View>
+      //     <Text style={styles.title}>Account Details</Text>
 
-    //   </View>
-    } else { 
+      //   </View>
+    } else {
       return (
         <View>
           <Text style={styles.title}>Account Details</Text>
-          <Text>Name: {userInfo.name}</Text>
-          <Text>Email: {userInfo.email}</Text>
+          <View >
+            {userInfo.avatar && <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />}
+            {!userInfo.avatar && <ActivityIndicator size="small" />}
+          </View>
+
+          <View style={styles.userInfo}>
+            <Text>Name: {userInfo.name}</Text>
+            <Text>Phone: {userInfo.phone}</Text>
+            <Text>Address: {userInfo.address}</Text>
+            <Text>City: {userInfo.city}</Text>
+          </View>
           {/* Add other user info fields as needed */}
         </View>
       );
@@ -82,9 +91,9 @@ const AccountScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    padding: 20,
+    padding: 50,
   },
   title: {
     fontSize: 24,
@@ -94,6 +103,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  avatar: {
+    width: '100%',
+    height: 250,
+    borderRadius: 125,
+    marginBottom: 20,
+    overflow: 'hidden',
+
+  },
+  userInfo: {
+    
   },
 });
 

@@ -30,7 +30,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
         }
 
         try {
-            const response = await fetch('http://192.168.0.104:3001/api/forgotPassword', {
+            const response = await fetch('http://192.168.1.77:3001/api/forgotPassword', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
