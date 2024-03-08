@@ -5,6 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconPassWord from 'react-native-vector-icons/FontAwesome5';
+import { API_URL } from './Api';
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState('');
@@ -109,7 +110,7 @@ const RegisterScreen = () => {
     }
 
     try {
-      const response = await fetch('http://192.168.1.77:3001/api/register', {
+      const response = await fetch(`${API_URL}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -258,7 +259,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 1, // IOS
     shadowRadius: 1, //IOS
     elevation: 2, // Android
-    height: 50,
     width: '100%',
     shadowColor :'red',
     marginTop : 20,
