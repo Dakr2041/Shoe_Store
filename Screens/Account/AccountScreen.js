@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/core';
+import { API_URL } from '../Api';
+
+
 const AccountScreen = () => {
   const [userId, setUserId] = useState(null);
   const [userInfo, setUserInfo] = useState({});
@@ -27,7 +32,7 @@ const AccountScreen = () => {
       if (userId) {
         setIsLoading(true);
         try {
-          const response = await fetch(`http://192.168.1.77:3001/api/getInfoUser/${userId}`);
+          const response = await fetch(`${API_URL}/getInfoUser/${userId}`);
           if (response.ok) {
             const data = await response.json();
             // alert(data.data.message);
@@ -48,6 +53,11 @@ const AccountScreen = () => {
     fetchUserInfo();
   }, [userId]);
 
+  const navigation = useNavigation();
+  const handleLogoutPress = () => {
+    navigation.navigate('Login');
+    console.log('Logout!!!');
+  };
   const renderContent = () => {
     if (isLoading) {
       return (
@@ -63,19 +73,33 @@ const AccountScreen = () => {
     } else {
       return (
         <View>
-          <Text style={styles.title}>Account Details</Text>
           <View >
             {userInfo.avatar && <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />}
             {!userInfo.avatar && <ActivityIndicator size="small" />}
           </View>
 
           <View style={styles.userInfo}>
-            <Text>Name: {userInfo.name}</Text>
+            <Text style={{ alignSelf: 'center', fontSize: 30 }}>{userInfo.name}</Text>
             <Text>Phone: {userInfo.phone}</Text>
-            <Text>Address: {userInfo.address}</Text>
-            <Text>City: {userInfo.city}</Text>
+            <Text>Address: {userInfo.address} - {userInfo.city}</Text>
           </View>
-          {/* Add other user info fields as needed */}
+          <TouchableOpacity>
+            <Text style={{ alignSelf: 'center', marginTop: 20 }}>HISTORY</Text>
+            <View style={{ height: 2, backgroundColor: '#ccc', marginTop: 10 }} />
+          </TouchableOpacity>
+
+          <TouchableOpacity>
+            <Text style={{ alignSelf: 'center', marginTop: 20 }}>SETTING</Text>
+            <View style={{ height: 2, backgroundColor: '#ccc', marginTop: 10 }} />
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+          // onPress={handleLogoutPress}
+          >
+            <Text style={{ alignSelf: 'center', marginTop: 20 }}>LOGOUT</Text>
+            <View style={{ height: 2, backgroundColor: '#ccc', marginTop: 10 }} />
+          </TouchableOpacity>
+
         </View>
       );
     }
@@ -94,6 +118,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     padding: 50,
+    marginTop:10
   },
   title: {
     fontSize: 24,
@@ -110,10 +135,11 @@ const styles = StyleSheet.create({
     borderRadius: 125,
     marginBottom: 20,
     overflow: 'hidden',
-
+    aspectRatio: 1, 
+    
   },
   userInfo: {
-    
+
   },
 });
 

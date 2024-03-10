@@ -1,12 +1,32 @@
-import { useNavigation } from '@react-navigation/core';
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
+import { View, StyleSheet, Dimensions, FlatList, ScrollView, TextInput, Image, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
+import ProductItem from './ProductItem';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { SliderBox } from "react-native-image-slider-box";
+const logo = require('../Product/logo.png');
+import { API_URL } from '../Api';
 
-const ProductScreen = ({navigation}) => {
+
+const img = [
+  "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png",
+  "https://contents.mediadecathlon.com/p2606919/k$a531927e5c71c12f4d3edac227199f78/jogflow-5001-men-s-running-shoes-white-blue-red.jpg?format=auto&quality=40&f=452x452",
+  "https://contents.mediadecathlon.com/p2153179/e958b22d2eccd9c7db0fea1da358fd8f/p2153179.jpg?format=auto&quality=70&f=650x0",
+  "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png",
+  "https://kizik.com/cdn/shop/files/kizik-social-image.png?v=1693341281",
+  "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png",
+]
+
+const ProductScreen = ({ navigation }) => {
+  // const handleProductPress = (product) => {
+  //   console.log("Product Press")
+  // };
+
+  const screenWidth = Dimensions.get('window').width;
+  const itemWidth = screenWidth / 2 
+
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const navigateToProductDetail = (product) => {
     navigation.navigate('ProductDetail', { product }); // Specify stack name and pass data
   };
@@ -15,7 +35,7 @@ const ProductScreen = ({navigation}) => {
     const fetchProducts = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch('http://192.168.1.77:3001/api/getProductsUser'); // Replace with your API endpoint
+        const response = await fetch(`${API_URL}/getProductsUser`);
         if (response.ok) {
           const data = await response.json();
           setProducts(data.data);
@@ -37,11 +57,12 @@ const ProductScreen = ({navigation}) => {
   const renderItem = ({ item }) => {
     const formattedPrice = formatVND(item.price);
     return (
-      <TouchableOpacity style={styles.productItem} onPress={() => navigateToProductDetail(item)}>
-        <Image source={{ uri: item.imageProduct }} style={styles.productImage} />
-        <Text style={styles.productName}>{item.name}</Text>
-        <Text style={styles.productPrice}>{formattedPrice}</Text>
-        <Text style={styles.productPrice}>{item.introduce}</Text>
+      <TouchableOpacity style={[styles.itemContainer, { width: itemWidth }]} onPress={() => navigateToProductDetail(item)} >
+        <Image source={{ uri: item.imageProduct }} style={styles.image} />
+        <View style={styles.detailsContainer}>
+          <Text style={styles.productName} numberOfLines={1} ellipsizeMode="tail">{item.name}</Text>
+          <Text style={styles.price} numberOfLines={1} ellipsizeMode="tail">{formattedPrice}</Text>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -66,75 +87,32 @@ const ProductScreen = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
-      {renderContent()}
-    </View>
+    <ScrollView contentContainerStyle={styles.container}>
+
+      <View style={{ marginTop: 20}}>
+        {/* <Text style={{ marginTop: 40, fontSize: 30, fontWeight: 'bold' }}>Hello</Text> */}
+        {/* <Text style={{marginBottom : 20, fontSize: 20}}>lamnhph18826@fpt.edu.vn</Text> */}
+
+        <Image source={logo} style={{width:120,height:120,alignSelf :'center'}}></Image>
+      </View>
+
+      <View style={{ flexDirection: 'row', marginHorizontal: 10 }}>
+        <TextInput placeholder='Search Sneaker' style={styles.searchView}></TextInput>
+        <Icon name='search' size={20} style={{ position: 'absolute', start: 9, top: 20 }}></Icon>
+      </View>
+
+      <Text style={{ marginHorizontal: 9, fontSize: 18, fontWeight: 'bold', marginBottom:10 }}>Some best-selling products</Text>
+
+      <SliderBox dotColor="tomato" autoPlay circleLoop autoplayInterval={1000} images={img} resizeMethod={'resize'} resizeMode={'cover'} />
+
+      <Text style={{ marginHorizontal: 9, marginTop: 50, fontSize: 18, fontWeight: 'bold', marginBottom:10}}>Some outstanding products</Text>
+
+      <View style={styles.container}>
+        {renderContent()}
+      </View>
+
+    </ScrollView>
   );
-//
-// import React from 'react';
-// import { View, StyleSheet, Dimensions, ScrollView, TextInput,Text } from 'react-native';
-// import ProductItem from './ProductItem'; 
-// import Icon from 'react-native-vector-icons/FontAwesome';
-// import { SliderBox } from "react-native-image-slider-box";
-
-// const products = [
-//   { id: '1', name: 'Product 1', price: 19.99, img: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png' },
-//   { id: '2', name: 'Product 2', price: 29.99, img: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png' },
-//   { id: '3', name: 'Product 3', price: 39.99, img: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png' },
-//   { id: '4', name: 'Product 4', price: 49.99, img: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png' },
-//   { id: '5', name: 'Product 5', price: 59.99, img: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png' },
-//   { id: '5', name: 'Product 5', price: 59.99, img: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png' },
-//   { id: '5', name: 'Product 5', price: 59.99, img: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png' },
-// ];
-
-// const img = [
-//   "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png",
-//   "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png",
-//   "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png",
-//   "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png",
-//   "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png",
-//   "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png",
-// ]
-
-// const ProductScreen = ({ navigation }) => {
-//   const handleProductPress = (product) => {
-//     console.log("Product Press")
-//   };
-
-//   const screenWidth = Dimensions.get('window').width;
-//   const itemWidth = screenWidth / 2 
-
-//   return (
-//     <ScrollView contentContainerStyle={styles.container}>
-
-//       <View style={{margin : 10}}>
-//         <Text style={{marginTop : 40, fontSize: 30, fontWeight : 'bold'}}>Hello</Text>
-//         <Text style={{marginBottom : 20, fontSize: 20}}>lamnhph18826@fpt.edu.vn</Text>
-//       </View>
-
-//       <View style={{ flexDirection :'row' , marginHorizontal: 10}}>
-//         <TextInput placeholder='Search Sneaker' style={styles.searchView}></TextInput>
-//         <Icon name='search' size={20} style={{position :'absolute',start : 9, top : 20}}></Icon>
-//       </View>
-
-//       <Text style={{marginHorizontal: 9, fontSize : 20, fontWeight : 'bold'}}>Some best-selling products</Text>
-    
-//       <SliderBox dotColor="tomato" autoPlay circleLoop autoplayInterval = {1000} images={img} resizeMethod={'resize'} resizeMode={'cover'}/>
-
-//       <Text style={{marginHorizontal : 9,marginTop : 50, fontSize : 20, fontWeight : 'bold'}}>Some outstanding products</Text>
-
-//       <View style={styles.row}>
-        
-//         {products.map((product, index) => (
-//           <View key={product.id} style={[{ width: itemWidth }]}>
-            
-//             <ProductItem product={product} onPress={() => handleProductPress(product)} />
-//           </View>
-//         ))}
-//         {products.length % 2 !== 0 && <View style={[styles, { width: itemWidth }]} />}
-//       </View>
-//     </ScrollView>
-//   );
 };
 function formatVND(number) {
   if (isNaN(number)) {
@@ -145,7 +123,7 @@ function formatVND(number) {
   const formatter = new Intl.NumberFormat('vi-VN', {
     style: 'currency',
     currency: 'VND',
-    minimumFractionDigits: 2, 
+    minimumFractionDigits: 0,
   });
 
   return formatter.format(numberAsFloat);
@@ -153,42 +131,47 @@ function formatVND(number) {
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
     backgroundColor: '#f5f5f5',
+    padding: 3
   },
-  productItem: {
-    width: '50%', // Set width to 50% for two columns
-    marginBottom: 10,
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 5,
-    backgroundColor: '#fff',
-    borderColor: '#ddd',
-    overflow: 'hidden',
-  },
-  productImage: {
+  searchView: {
     width: '100%',
-    height: 150, 
+    height: 60,
+    borderRadius: 9,
+    backgroundColor: '#ebecf0',
+    paddingVertical: 9,
+    paddingEnd: 9,
+    paddingStart: 38,
+    marginBottom: 20
+  },
+  itemContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    margin : 2.5,
+    maxWidth:'48.5%'
+  },
+  image: {
+    width: '100%',
+    aspectRatio: 1, 
+    borderRadius: 10,
+  },
+  detailsContainer: {
+    padding: 10,
   },
   productName: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginTop: 5,
+    overflow: 'hidden',
   },
-  productPrice: {
-    fontSize: 12,
-    marginBottom: 5,
+  price: {
+    fontSize: 14,
+    color: 'green',
+    marginTop: 5,
+    alignSelf: 'flex-end',
   },
-  searchView: {
-    width : '100%',
-    height :60,
-    borderRadius : 9,
-    backgroundColor : '#ebecf0',
-    paddingVertical : 9,
-    paddingEnd : 9,
-    paddingStart : 38,
-    marginBottom : 20
-  }
 });
 
 export default ProductScreen;

@@ -4,10 +4,12 @@ import { useNavigation } from '@react-navigation/native';
 
 const ProductItem = ({ product, itemWidth }) => {
   const navigation = useNavigation();
-
+  const navigateToProductDetail = (product) => {
+    navigation.navigate('ProductDetail', { product }); // Specify stack name and pass data
+  };
   return (
-    <TouchableOpacity style={[styles.container, { width: itemWidth }]} >
-      <Image source={{ uri: product.img }} style={styles.image} />
+    <TouchableOpacity style={[styles.container, { width: itemWidth }]} onPress={() => navigateToProductDetail(product)} >
+      <Image source={{ uri: product.imageProduct }} style={styles.image} />
       <View style={styles.detailsContainer}>
         <Text style={styles.productName}>{product.name}</Text>
         <Text style={styles.price}>${product.price}</Text>

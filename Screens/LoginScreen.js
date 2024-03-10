@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import IconPassWord from 'react-native-vector-icons/FontAwesome5';
 import { ScrollView } from 'react-native-gesture-handler';
-
+import { API_URL } from './Api';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -37,7 +37,7 @@ const LoginScreen = () => {
   };
 
   const handleLogin = async () => {
-    navigation.navigate('Home');
+    // navigation.navigate('Home');
     setIsLoading(true);
     // Basic validation using regular expressions (can be customized)
     const emailRegex = /^\w+@[a-zA-Z_\.]+\.[a-zA-Z]{2,}$/; // Email format
@@ -71,7 +71,7 @@ const LoginScreen = () => {
     }
 
     try {
-      const response = await fetch('http://192.168.1.77:3001/api/login', {
+      const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,6 +87,7 @@ const LoginScreen = () => {
         const userID = data.data.id;
 
         console.log(userID);
+        console.log(authToken);
 
         await AsyncStorage.setItem('authToken', authToken);
         await AsyncStorage.setItem('@userId', userID.toString());
@@ -205,11 +206,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 1, // IOS
     shadowRadius: 1, //IOS
     elevation: 2, // Android
-    height: 50,
     width: '100%',
     shadowColor :'red',
     marginTop : 20,
-    textAlign :'center'
+    textAlign :'center',
 },
   buttonText: {
     color: '#fff',
