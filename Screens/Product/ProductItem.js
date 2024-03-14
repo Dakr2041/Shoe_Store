@@ -7,16 +7,31 @@ const ProductItem = ({ product, itemWidth }) => {
   const navigateToProductDetail = (product) => {
     navigation.navigate('ProductDetail', { product }); // Specify stack name and pass data
   };
+  const formattedPrice = formatVND(product.price);
   return (
     <TouchableOpacity style={[styles.container, { width: itemWidth }]} onPress={() => navigateToProductDetail(product)} >
       <Image source={{ uri: product.imageProduct }} style={styles.image} />
       <View style={styles.detailsContainer}>
-        <Text style={styles.productName}>{product.name}</Text>
-        <Text style={styles.price}>${product.price}</Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.productName}>{product.name}</Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.price}>{formattedPrice}</Text>
       </View>
     </TouchableOpacity>
   );
 };
+function formatVND(number) {
+  if (isNaN(number)) {
+    throw new Error('Invalid input: Please provide a valid number.');
+  }
+  const numberAsFloat = parseFloat(number);
+
+  const formatter = new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+    minimumFractionDigits: 0,
+  });
+
+  return formatter.format(numberAsFloat);
+}
 
 const styles = StyleSheet.create({
   container: {

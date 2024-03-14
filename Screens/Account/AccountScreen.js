@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/core';
 import { API_URL } from '../Api';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 const AccountScreen = () => {
@@ -58,6 +59,9 @@ const AccountScreen = () => {
     navigation.navigate('Login');
     console.log('Logout!!!');
   };
+  const handleSettingsPress = () => {
+    navigation.navigate('Settings')
+  };
   const renderContent = () => {
     if (isLoading) {
       return (
@@ -73,10 +77,12 @@ const AccountScreen = () => {
     } else {
       return (
         <View>
-          <View >
-            {userInfo.avatar && <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />}
-            {!userInfo.avatar && <ActivityIndicator size="small" />}
-          </View>
+          <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+            <View>
+              {userInfo.avatar && <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />}
+              {!userInfo.avatar && <ActivityIndicator size="small" />}
+            </View>
+          </LinearGradient>
 
           <View style={styles.userInfo}>
             <Text style={{ alignSelf: 'center', fontSize: 30 }}>{userInfo.name}</Text>
@@ -89,11 +95,11 @@ const AccountScreen = () => {
           </TouchableOpacity>
 
           <TouchableOpacity>
-            <Text style={{ alignSelf: 'center', marginTop: 20 }}>SETTING</Text>
+            <Text style={{ alignSelf: 'center', marginTop: 20 }} onPress={handleSettingsPress}>SETTING</Text>
             <View style={{ height: 2, backgroundColor: '#ccc', marginTop: 10 }} />
           </TouchableOpacity>
 
-          <TouchableOpacity 
+          <TouchableOpacity
           // onPress={handleLogoutPress}
           >
             <Text style={{ alignSelf: 'center', marginTop: 20 }}>LOGOUT</Text>
@@ -116,9 +122,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
-    alignItems: 'center',
-    padding: 50,
-    marginTop:10
   },
   title: {
     fontSize: 24,
@@ -131,15 +134,18 @@ const styles = StyleSheet.create({
   },
   avatar: {
     width: '100%',
-    height: 250,
+    height: 200,
     borderRadius: 125,
     marginBottom: 20,
     overflow: 'hidden',
-    aspectRatio: 1, 
-    
+    aspectRatio: 1,
+    alignSelf: 'center',
+    alignContent: 'center',
+    marginTop: 60,
+
   },
   userInfo: {
-
+    alignSelf: 'center'
   },
 });
 
