@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { SliderBox } from "react-native-image-slider-box";
 const logo = require('../Product/logo.png');
 import { API_URL } from '../Api';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 const img = [
@@ -17,12 +18,8 @@ const img = [
 ]
 
 const ProductScreen = ({ navigation }) => {
-  // const handleProductPress = (product) => {
-  //   console.log("Product Press")
-  // };
-
   const screenWidth = Dimensions.get('window').width;
-  const itemWidth = screenWidth / 2 
+  const itemWidth = Math.floor(screenWidth / 2);
 
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -53,20 +50,6 @@ const ProductScreen = ({ navigation }) => {
   }, []);
 
 
-
-  const renderItem = ({ item }) => {
-    const formattedPrice = formatVND(item.price);
-    return (
-      <TouchableOpacity style={[styles.itemContainer, { width: itemWidth }]} onPress={() => navigateToProductDetail(item)} >
-        <Image source={{ uri: item.imageProduct }} style={styles.image} />
-        <View style={styles.detailsContainer}>
-          <Text style={styles.productName} numberOfLines={1} ellipsizeMode="tail">{item.name}</Text>
-          <Text style={styles.price} numberOfLines={1} ellipsizeMode="tail">{formattedPrice}</Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
   const renderContent = () => {
     if (isLoading) {
       return <ActivityIndicator size="large" color="#0000ff" />;
@@ -74,13 +57,13 @@ const ProductScreen = ({ navigation }) => {
       return <Text>No products found.</Text>;
     } else {
       return (
-        <View style={styles.container}>
-          <FlatList
-            data={products}
-            renderItem={renderItem}
-            keyExtractor={item => item.id} // Replace with unique identifier for each product
-            numColumns={2}
-          />
+        <View style={styles.row}>
+          {products.map((product, index) => (
+            <View key={product.id} style={[{ width: itemWidth }]}>
+              <ProductItem product={product} onPress={() => handleProductPress(product)} />
+            </View>
+          ))}
+          {products.length % 2 !== 0 && <View style={[styles, { width: itemWidth }]} />}
         </View>
       );
     }
@@ -89,23 +72,22 @@ const ProductScreen = ({ navigation }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
 
-      <View style={{ marginTop: 20}}>
-        {/* <Text style={{ marginTop: 40, fontSize: 30, fontWeight: 'bold' }}>Hello</Text> */}
-        {/* <Text style={{marginBottom : 20, fontSize: 20}}>lamnhph18826@fpt.edu.vn</Text> */}
+      <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+        <View style={{ marginTop: 20 }}>
+          <Image source={logo} style={{ width: 120, height: 120, alignSelf: 'center' }}></Image>
+        </View>
 
-        <Image source={logo} style={{width:120,height:120,alignSelf :'center'}}></Image>
-      </View>
+        <View style={{ flexDirection: 'row', marginHorizontal: 10 }}>
+          <TextInput placeholder='Search Sneaker' style={styles.searchView}></TextInput>
+          <Icon name='search' size={20} style={{ position: 'absolute', start: 9, top: 20 }}></Icon>
+        </View>
+      </LinearGradient>
 
-      <View style={{ flexDirection: 'row', marginHorizontal: 10 }}>
-        <TextInput placeholder='Search Sneaker' style={styles.searchView}></TextInput>
-        <Icon name='search' size={20} style={{ position: 'absolute', start: 9, top: 20 }}></Icon>
-      </View>
-
-      <Text style={{ marginHorizontal: 9, fontSize: 18, fontWeight: 'bold', marginBottom:10 }}>Some best-selling products</Text>
+      <Text style={{ marginHorizontal: 9, fontSize: 18, fontWeight: 'bold', marginBottom: 10, marginTop: 10 }}>Some best-selling products</Text>
 
       <SliderBox dotColor="tomato" autoPlay circleLoop autoplayInterval={1000} images={img} resizeMethod={'resize'} resizeMode={'cover'} />
 
-      <Text style={{ marginHorizontal: 9, marginTop: 50, fontSize: 18, fontWeight: 'bold', marginBottom:10}}>Some outstanding products</Text>
+      <Text style={{ marginHorizontal: 9, marginTop: 50, fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Some outstanding products</Text>
 
       <View style={styles.container}>
         {renderContent()}
@@ -132,7 +114,11 @@ function formatVND(number) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#f5f5f5',
-    padding: 3
+  },
+  row: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   searchView: {
     width: '100%',
@@ -149,12 +135,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#ddd',
-    margin : 2.5,
-    maxWidth:'48.5%'
+    margin: 2.5,
+    maxWidth: '48.5%'
   },
   image: {
     width: '100%',
-    aspectRatio: 1, 
+    aspectRatio: 1,
     borderRadius: 10,
   },
   detailsContainer: {

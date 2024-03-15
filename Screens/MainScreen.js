@@ -7,15 +7,10 @@ import ProductScreen from './Product/ProductScreen';
 import AccountScreen from './Account/AccountScreen';
 import ProductDetailScreen from './Product/ProductDetailScreen';
 import { createStackNavigator } from '@react-navigation/stack';
+import CartScreen from './Cart/CartScreen';
+import SettingsScreen from './Account/SettingScreen';
+import UpdateUserInfoScreen from './Account/UpdateUserInfoScreen';
 
-
-function CartScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Cart Screen</Text>
-    </View>
-  );
-}
 
 const Tab = createBottomTabNavigator();
 
@@ -30,6 +25,8 @@ export default function App() {
       <Stack.Navigator initialRouteName="Tabs" screenOptions={{ headerShown: false }} style={styles.container}>
         <Stack.Screen name="Tabs" component={TabsScreen} />
         <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="UpdateUserInfo" component={UpdateUserInfoScreen} />
       </Stack.Navigator>
 
     </NavigationContainer>

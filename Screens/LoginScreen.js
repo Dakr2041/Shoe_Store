@@ -81,7 +81,6 @@ const LoginScreen = () => {
       const data = await response.json();
       console.log(data.message);
       alert(data.message);
-      setIsLoading(false);
       if (data.status === 200) {
         const authToken = data.data.token;
         const userID = data.data.id;
@@ -92,6 +91,7 @@ const LoginScreen = () => {
         await AsyncStorage.setItem('authToken', authToken);
         await AsyncStorage.setItem('@userId', userID.toString());
         navigation.navigate('Home');
+        setIsLoading(false);
 
         return { success: true };
       } else {
@@ -100,6 +100,8 @@ const LoginScreen = () => {
       }
     } catch (error) {
       console.error('Error during login:', error);
+      setIsLoading(false);
+      alert(error);
       return { success: false, error: 'An error occurred during login' };
     }
   };
