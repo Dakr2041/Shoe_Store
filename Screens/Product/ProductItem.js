@@ -10,10 +10,11 @@ const ProductItem = ({ product, itemWidth }) => {
   const formattedPrice = formatVND(product.price);
   return (
     <TouchableOpacity style={[styles.container, { width: itemWidth }]} onPress={() => navigateToProductDetail(product)} >
+      <Text numberOfLines={1} ellipsizeMode="tail" style={styles.price}>{formattedPrice}</Text>
       <Image source={{ uri: product.imageProduct }} style={styles.image} />
       <View style={styles.detailsContainer}>
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.productName}>{product.name}</Text>
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.price}>{formattedPrice}</Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.quantity}>quantity: {product.quantity}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -36,10 +37,8 @@ function formatVND(number) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    margin : 4.5,
+    borderRadius: 22,
+    marginTop: 9,
     overflow: 'hidden', // Ensure image does not overflow container
   },
   image: {
@@ -50,14 +49,23 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   productName: {
-    fontSize: 16,
+    fontSize: 15,
+    color: 'black',
     fontWeight: 'bold',
-    marginTop: 5,
+    marginVertical: 9,
+    marginStart: 22
+  },
+  quantity: {
+    fontSize: 15,
+    color: 'grey',
+    marginStart: 22
   },
   price: {
-    fontSize: 14,
-    color: 'green',
-    marginTop: 5,
+    fontSize: 20,
+    color: 'black',
+    fontWeight: 'bold',
+    marginVertical: 9,
+    marginStart: 22
   },
 });
 

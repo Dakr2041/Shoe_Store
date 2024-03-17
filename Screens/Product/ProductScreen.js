@@ -59,7 +59,9 @@ const ProductScreen = ({ navigation }) => {
       return (
         <View style={styles.row}>
           {products.map((product, index) => (
-            <View key={product.id} style={[{ width: itemWidth }]}>
+            // <View key={product.id} style={[{ width: itemWidth }]}>
+            <View key={product.id}>
+              {console.log(product)}
               <ProductItem product={product} onPress={() => handleProductPress(product)} />
             </View>
           ))}
@@ -72,7 +74,7 @@ const ProductScreen = ({ navigation }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
 
-      <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+      <LinearGradient style={{borderRadius : 22}} colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
         <View style={{ marginTop: 20 }}>
           <Image source={logo} style={{ width: 120, height: 120, alignSelf: 'center' }}></Image>
         </View>
@@ -83,11 +85,11 @@ const ProductScreen = ({ navigation }) => {
         </View>
       </LinearGradient>
 
-      <Text style={{ marginHorizontal: 9, fontSize: 18, fontWeight: 'bold', marginBottom: 10, marginTop: 10 }}>Some best-selling products</Text>
+      <Text style={{ marginHorizontal: 9, fontSize: 18, fontWeight: 'bold', marginBottom: 10, marginTop: 50 }}>Some best-selling products</Text>
 
       <SliderBox dotColor="tomato" autoPlay circleLoop autoplayInterval={1000} images={img} resizeMethod={'resize'} resizeMode={'cover'} />
 
-      <Text style={{ marginHorizontal: 9, marginTop: 50, fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Some outstanding products</Text>
+      <Text style={{ marginHorizontal: 9, marginTop: 20, fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Some outstanding products</Text>
 
       <View style={styles.container}>
         {renderContent()}
@@ -119,11 +121,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    marginHorizontal: 9
   },
   searchView: {
     width: '100%',
     height: 60,
-    borderRadius: 9,
+    borderRadius: 22,
     backgroundColor: '#ebecf0',
     paddingVertical: 9,
     paddingEnd: 9,
