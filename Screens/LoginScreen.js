@@ -210,8 +210,7 @@ const styles = StyleSheet.create({
     elevation: 2, // Android
     width: '100%',
     shadowColor :'red',
-    marginTop : 20,
-    textAlign :'center',
+    marginTop : 20
 },
   buttonText: {
     color: '#fff',
