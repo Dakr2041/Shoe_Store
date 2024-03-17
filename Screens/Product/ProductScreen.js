@@ -32,7 +32,7 @@ const ProductScreen = ({ navigation }) => {
     const fetchProducts = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(`${API_URL}/getProductsUser`);
+        const response = await fetch(`${API_URL}/api/getProductsUser`);
         if (response.ok) {
           const data = await response.json();
           setProducts(data.data);

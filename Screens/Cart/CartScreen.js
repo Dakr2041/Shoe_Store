@@ -1,52 +1,229 @@
-import React, { useState } from 'react';
-import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, FlatList, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import CartItem from './CartItem'; // Import your CartItem component
 import { LinearGradient } from 'expo-linear-gradient';
+import { API_URL } from '../Api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
+import { formatVND } from '../Functions/FormatVND';
+import { useNavigation } from '@react-navigation/native';
 
-const FAKE_CART_ITEMS = [
-  { id: 1, name: 'Running Shoes', price: 99.000, imageUrl: 'https://kizik.com/cdn/shop/files/kizik-social-image.png?v=1693341281', quantity: 1 },
-  { id: 2, name: 'Walking Shoes', price: 179.000, imageUrl: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png', quantity: 3 },
-];
 
 const CartScreen = () => {
-  const [cartItems, setCartItems] = useState(FAKE_CART_ITEMS);
+  const [cartItems, setCartItems] = useState([]);
+  const [StoredToken, setStoredToken] = useState(null);
+  const [itemsId, setItemsId] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
-  const handleRemoveItem = (itemId) => {
-    setCartItems(cartItems.filter(item => item.id !== itemId));
+  useEffect(() => {
+    const fetchTOKEN = async () => {
+      setIsLoading(true);
+      try {
+        const storedToken = await AsyncStorage.getItem('authToken');
+        setStoredToken(storedToken ? String(storedToken) : null);
+      } catch (error) {
+        console.error('Error fetching Token from storage:', error);
+        setHasError(true);
+
+        setIsLoading(false);
+      }
+    };
+
+    fetchTOKEN();
+  }, []);
+
+  const fetchData = async () => {
+    if (!StoredToken) {
+      console.log('Waiting for token...');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${API_URL}/cart/getCart`, {
+        headers: {
+          Authorization: `Bearer ${StoredToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setItemsId(data.productId);
+      console.log("Cart done loading");
+      calculateTotal();
+    } catch (error) {
+      console.error('Error fetching cart items:', error);
+      setHasError(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const calculateTotal = () => {
-    let total = 0;
-    cartItems.forEach(item => total += item.price * item.quantity);
-    return total.toFixed(2);
+  useEffect(() => {
+    fetchData();
+  }, [StoredToken]);
+
+  const onRemoveItem = async (productId) => {
+    try {
+      if (!StoredToken) {
+        console.warn('No token available. User needs to log in.');
+        // Handle unauthorized case (e.g., display login prompt)
+        return;
+      }
+
+      await removeItemFromAPI(productId, StoredToken);
+      console.log('Item deleted from cart');
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      // Handle errors (e.g., display error message to user)
+    }
+  };
+  const removeItemFromAPI = async (productId, token) => {
+    try {
+      const response = await fetch(`${API_URL}/cart/deleteItemCart/${productId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.statusText}`);
+      }
+      fetchData();
+      return response.json();
+
+    } catch (error) {
+      throw new Error(`Failed to delete item: ${error.message}`);
+    }
   };
 
-  return (
-    <View style={styles.container}>
-      <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.header}>
-          <Text style={styles.headerText}>Cart</Text>
-        </LinearGradient>
-      {cartItems.length === 0 ? (
-        <Text style={styles.emptyCart}>Your cart is empty.</Text>
-      ) : (
-        <FlatList
-          data={cartItems}
-          renderItem={({ item }) => (
-            <CartItem item={item} onRemoveItem={handleRemoveItem} />
-          )}
-          keyExtractor={item => item.id}
-        />
-      )}
-      {cartItems.length > 0 && (
-        <View style={styles.checkoutContainer}>
-          {/* <Text style={styles.cartTotal}>Total: ${calculateTotal()}</Text> */}
-          <Text style={styles.cartTotal}>Total: </Text>
-          <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-            <Text style={styles.buttonText}> Check out</Text>
-          </LinearGradient>
-        </View>
-      )}
+  const handleRefresh = async () => {
+    setItemsId([]); // Clear existing data before refetching
+    await fetchData();
+  };
+
+  const handleDeleteConfirmation = (itemId) => {
+    Alert.alert(
+      'Confirm Delete',
+      `Are you sure you want to delete item from your cart?`,
+      [
+        { text: 'Cancel', onPress: () => console.log('Cancel deletion') },
+        { text: 'Delete', onPress: () => onRemoveItem(itemId), style: 'destructive' },
+      ],
+      { cancelable: false }, // Disable background dismissal
+    );
+  };
+
+  const renderEmptyView = () => (
+    <View style={styles.emptyCart}>
+      <Text style={{ fontSize: 20, textAlign: 'center', }} >Your list is empty !</Text>
+      <Text style={{ fontSize: 12, textAlign: 'center', }} >Swipe to reload</Text>
     </View>
+  );
+
+
+  const [totalPrice, setTotalPrice] = useState(0);
+  const handleSelectChange = (itemId, newIsSelected) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) => (item.id === itemId ? { ...item, isSelected: newIsSelected } : item))
+    );
+  };
+
+  // const calculateTotal = (cartItems) => {
+  //   let total = 0;
+  //   itemsId.forEach((item) => {
+  //     if (item.isSelected) {
+  //       total += item.quantity * item.price;
+  //       console.log("Total: " + formatVND(total) + "from qty:" + item.quantity + " with price:" + item.price);
+
+  //     }
+  //   });
+  //   // console.log(typeof itemsId, itemsId);
+  //   setTotalPrice(formatVND(total));
+  // };
+
+  // const calculateTotal = (item,quantity, price, isSelected) => {
+  //   let total = 0;
+  //   cartItems.forEach((item) => {
+  //     total += price;
+
+  //     // if (item.isSelected) {
+  //     //   // total += item.price * item.quantity; // Consider pre-calculating total price in CartItem
+  //     //   total += price;
+  //     // }
+  //   });
+  //   setTotalPrice(formatVND(total));
+  // };
+  let total = 0;
+
+  const calculateTotal = (item, quantity, price
+    // , isSelected
+  ) => {
+    itemsId.forEach((item) => {
+      total += item.price
+      console.log(quantity);
+      console.log(price);
+    });
+    if (total > 0) {
+      setTotalPrice(formatVND(total))
+    }
+
+  }
+
+
+  useEffect(() => {
+    // Call calculateTotal initially and whenever items or selections change
+    calculateTotal(itemsId);
+  }, [itemsId]);
+
+  const navigation = useNavigation();
+  const navigateToCheckout = () => {
+    navigation.navigate('Checkout', { cartItems, totalPrice });
+  };
+  
+  return (
+    <GestureHandlerRootView style={styles.container}>
+      <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.header}>
+        <Text style={styles.headerText}>Cart</Text>
+      </LinearGradient>
+
+      <Swipeable onSwipeableOpenStartDrag={handleRefresh} >
+        {isLoading ? (
+          <ActivityIndicator size="large" style={{ marginTop: 80 }} />
+        ) : itemsId.length > 0 ? (
+          <FlatList
+            style={{ height: '100%' }}
+            data={itemsId}
+            renderItem={({ item }) => (
+              <CartItem item={item} onRemoveItem={handleDeleteConfirmation}
+                onQuantityChange={calculateTotal}
+                isSelected={item.isSelected}
+                onSelectChange={handleSelectChange}
+              />
+            )}
+            keyExtractor={item => item.id}
+            onRefresh={handleRefresh}
+            refreshing={isLoading}
+          />
+        ) : (
+          renderEmptyView()
+        )}
+      </Swipeable>
+
+      <View style={styles.checkoutContainer}>
+        <Text style={styles.cartTotal}>Total: {totalPrice}</Text>
+        <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+          <Text style={styles.buttonText} 
+          onPress={navigateToCheckout}
+          > Check out</Text>
+        </LinearGradient>
+      </View>
+    </GestureHandlerRootView>
   );
 };
 
@@ -55,21 +232,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   emptyCart: {
-    fontSize: 18,
-    textAlign: 'center',
+    alignContent: 'center',
+    opacity: 0.35,
+    height: '100%',
+    padding: 50
+
   },
   checkoutContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 20,
-
+    position: 'absolute', // Use absolute positioning
+    bottom: 0, // Place the bottom edge at 0 (bottom of the screen)
+    width: '100%', // Span the entire width for full checkout container
   },
   cartTotal: {
     fontSize: 16,
     fontWeight: 'bold',
     paddingStart: 10,
-
   },
   header: {
     padding: 30,
@@ -80,12 +260,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingTop: 25,
     color: '#fff',
-
   },
   buttonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     alignSelf: 'center',
     padding: 10,
   },

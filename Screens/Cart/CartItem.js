@@ -1,35 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { formatVND } from '../Functions/FormatVND';
+import QuantityPicker from '../Functions/QuantityPicker';
 
 const CartItem = ({ item, onRemoveItem, onQuantityChange, isSelected, onSelectChange }) => {
-  const defaultImage = 'https://via.placeholder.com/150'; // Placeholder image URL
-
+  const defaultImage = 'https://via.placeholder.com/250'; // Placeholder image URL
+  const [isChecked, setIsChecked] = useState(false);
   const getImageSource = () => {
-    if (item.imageUrl && item.imageUrl.length > 0) {
-      return { uri: item.imageUrl };
+    if (item.imageProduct && item.imageProduct.length > 0) {
+      return { uri: item.imageProduct };
     } else {
       return { uri: defaultImage };
     }
   };
 
-  const handleQuantityChange = (delta) => {
-    if (onQuantityChange) {
-      onQuantityChange(item.id, Math.max(item.quantity + delta, 1)); // Ensure quantity stays positive
-    }
+  const [selectedQuantity, setSelectedQuantity] = useState(1);
+  const [itemPrice, setItemPrice] = useState(item.price);
+
+  const handleQuantityChange = (newQuantity) => {
+    setSelectedQuantity(newQuantity);
+    const itemPrice = item.price * newQuantity;
+    setItemPrice(itemPrice)
+    // console.log(itemPrice);
+    onQuantityChange(newQuantity, item.price, itemPrice); // Pass calculated price
   };
+  const handleSelectChange = (itemPrice,quantity,isSelected) => {
+    // onSelectChange(item.id, !isSelected); // Toggle selection state
+    
 
-  const handleSelectChange = () => {
-    if (onSelectChange) {
-      onSelectChange(item.id, !isSelected); // Toggle selection state
-    }
-  }
-
+  };
+  const handlePress = () => {
+    setIsChecked(!isChecked);
+  };
+  
   return (
     <View style={styles.cartItem}>
-      {/* Image with error handling */}
-      <TouchableOpacity onPress={handleSelectChange}>
-        <MaterialCommunityIcons name={isSelected ? 'check-box-outline' : 'checkbox-blank-outline'} size={24} color="#ccc" />
+      <TouchableOpacity onPress={handlePress}>
+        <View style={styles.checkboxContainer}>
+          <MaterialCommunityIcons
+            name={isChecked ? 'checkbox-outline' : 'checkbox-blank-outline'}
+            size={30}
+            color={isChecked ? '#f5ca0c' : '#ccc'}
+            onSelectChange={handleSelectChange(item,item.price,selectedQuantity,isChecked)}
+            // onPress={() => onSelectChange(item, !isSelected)}
+          />
+        </View>
       </TouchableOpacity>
       <Image
         source={getImageSource()}
@@ -37,10 +53,9 @@ const CartItem = ({ item, onRemoveItem, onQuantityChange, isSelected, onSelectCh
         onError={(error) => console.warn('Error loading image:', error)} // Handle image loading errors
       />
       <View style={styles.cartDetails}>
-        <Text style={styles.cartTitle}>{item.name}</Text>
-        <Text style={styles.cartPrice}>{item.price.toFixed(2)}</Text>
-        <View style={styles.quantityControl}>
-          {/* Quantity controls with disabled states */}
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.cartTitle}>{item.name}</Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.cartPrice}>{formatVND(item.price)}</Text>
+        {/* <View style={styles.quantityControl}>
           <TouchableOpacity onPress={() => handleQuantityChange(-1)} disabled={item.quantity <= 1}>
             <MaterialCommunityIcons name="minus" size={20} color={item.quantity <= 1 ? '#ccc' : '#000'} />
           </TouchableOpacity>
@@ -48,7 +63,16 @@ const CartItem = ({ item, onRemoveItem, onQuantityChange, isSelected, onSelectCh
           <TouchableOpacity onPress={() => handleQuantityChange(1)}>
             <MaterialCommunityIcons name="plus" size={20} color="#000" />
           </TouchableOpacity>
-        </View>
+        </View> */}
+
+        <QuantityPicker
+          initialQuantity={selectedQuantity}
+          onQuantityChange={handleQuantityChange}
+          minValue={1}
+          maxValue={item.quantity}
+          
+        />
+        <Text>Price: {formatVND(itemPrice)}</Text>
       </View>
       <TouchableOpacity style={styles.removeButton} onPress={() => onRemoveItem(item.id)}>
         <MaterialCommunityIcons name="delete" size={24} color="#f00" />
@@ -66,8 +90,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
   },
   cartImage: {
-    width: 80,
-    height: 80,
+    width: 100,
+    height: 100,
     marginRight: 10,
     marginLeft: 10,
   },

@@ -10,6 +10,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import CartScreen from './Cart/CartScreen';
 import SettingsScreen from './Account/SettingScreen';
 import UpdateUserInfoScreen from './Account/UpdateUserInfoScreen';
+import SetupUserInfoScreen from './Account/SetupUserInfoScreen';
+import CheckoutScreen from './Cart/CheckoutScreen';
 
 
 const Tab = createBottomTabNavigator();
@@ -27,6 +29,8 @@ export default function App() {
         <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="UpdateUserInfo" component={UpdateUserInfoScreen} />
+        <Stack.Screen name="SetupUserInfo" component={SetupUserInfoScreen} />
+        <Stack.Screen name="Checkout" component={CheckoutScreen} />
       </Stack.Navigator>
 
     </NavigationContainer>
@@ -54,7 +58,7 @@ const TabsScreen = () => {
         },
       })}
       tabBarOptions={{
-        activeTintColor: 'blue',
+        activeTintColor: '#f5ca0c',
         inactiveTintColor: 'gray',
         labelStyle: {
           fontSize: 12,

@@ -64,14 +64,14 @@ const LoginScreen = () => {
       return alert('Invalid email format.');
     }
 
-    if (!passwordRegex.test(password)) {
-      setIsLoading(false);
-      // passwordInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
-      return alert('Password must be at least 6 characters and include a number, lowercase letter, and uppercase letter.');
-    }
+    // if (!passwordRegex.test(password)) {
+    //   setIsLoading(false);
+    //   // passwordInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
+    //   return alert('Password must be at least 6 characters and include a number, lowercase letter, and uppercase letter.');
+    // }
 
     try {
-      const response = await fetch(`${API_URL}/login`, {
+      const response = await fetch(`${API_URL}/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ const LoginScreen = () => {
     } catch (error) {
       console.error('Error during login:', error);
       setIsLoading(false);
-      alert(error);
+      alert(data.message);
       return { success: false, error: 'An error occurred during login' };
     }
   };
