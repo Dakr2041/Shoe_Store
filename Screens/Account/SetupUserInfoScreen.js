@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../Api';
 import { ActivityIndicator } from 'react-native-paper';
 
-const UpdateUserInfoScreen = ({ navigation }) => {
+const SetupUserInfoScreen = ({ navigation }) => {
     const [image, setImage] = useState(null);
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
@@ -266,4 +266,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default UpdateUserInfoScreen;
+export default SetupUserInfoScreen;

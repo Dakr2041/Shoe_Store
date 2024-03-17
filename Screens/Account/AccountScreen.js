@@ -33,7 +33,7 @@ const AccountScreen = () => {
       if (userId) {
         setIsLoading(true);
         try {
-          const response = await fetch(`${API_URL}/getInfoUser/${userId}`);
+          const response = await fetch(`${API_URL}/api/getInfoUser/${userId}`);
           if (response.ok) {
             const data = await response.json();
             // alert(data.data.message);
