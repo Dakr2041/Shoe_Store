@@ -101,9 +101,7 @@ const styles = StyleSheet.create({
       },
       button: {
         padding: 15,
-        borderRadius: 22,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        borderRadius: 22
       },
       buttonGR: {
         shadowColor: 'rgba(0,0,0, .4)', // IOS
@@ -114,12 +112,13 @@ const styles = StyleSheet.create({
         height: 50,
         width: '100%',
         shadowColor :'red',
-        alignSelf: 'flex-end',
         marginTop : 20
     },
     buttonText: {
         color: '#fff',
         fontSize: 18,
+        fontWeight : "bold",
+        alignSelf :'center'
     },
     higlightText: {
         color: '#007bff',

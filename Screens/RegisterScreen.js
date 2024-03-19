@@ -250,8 +250,7 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 15,
-    borderRadius: 22,
-    alignItems :'center'
+    borderRadius: 22
   },
   buttonGR: {
     shadowColor: 'rgba(0,0,0, .4)', // IOS
@@ -266,6 +265,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 18,
+    fontWeight : "bold",
+    alignSelf :'center'
   },
   passwordInputContainer: {
     flexDirection: 'row',

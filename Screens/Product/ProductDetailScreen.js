@@ -98,32 +98,39 @@ const ProductDetailScreen = ({ route }) => {
               <ActivityIndicator size="large" style={styles.loadingIndicator} />
             </View>
           </Modal>
+          {/* Toolbar */}
           <View style={styles.headerContainer}>
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
               <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
             </TouchableOpacity>
+            <Text style={{marginHorizontal: 22,fontSize: 18,fontWeight:'bold'}}>{product.name}</Text>
           </View>
           <Image source={{ uri: product.imageProduct }} style={styles.productImage} />
-          <ScrollView style={{ backgroundColor: '#fff' }}>
+          <ScrollView style={{ backgroundColor: '#fff', borderTopStartRadius: 22, borderTopEndRadius: 22}}>
             <View style={styles.infoContainer}>
 
               <View style={styles.productInfo}>
-                <Text style={styles.productName}>{product.name}</Text>
-                <Text style={styles.productPrice}>{formatVND(product.price)}</Text>
-                <Text >Qty: {product.quantity} </Text>
+                <View style={{flexDirection:'row',marginBottom: 9,justifyContent: 'space-between',}}>
+                  <Text style={styles.productName}>{product.name}</Text>
+                  <Text style={styles.productPrice}>{formatVND(product.price)}</Text>
+                </View>
+                
+                <Text style={{fontStyle:'italic',fontSize: 15,marginBottom: 12}}>Quantity: {product.quantity} </Text>
 
                 {/* <TouchableOpacity style={styles.buttonGR}>
                   <Button style={styles.button}>
                     <Text style={styles.buttonText}>Add to cart</Text>
                   </Button>
                 </TouchableOpacity> */}
-                <Text >Description:</Text>
-                <Text >{product.description}</Text>
+                <Text >Description: {product.description}</Text>
                 {/* <Text >Comments:</Text> */}
               </View>
             </View>
-
-
+            <TouchableOpacity onPress={handleAddToCart} style={styles.buttonGR}>
+            <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.addButton}>
+              <Text style={styles.addButtonText}>Add to cart</Text>
+            </LinearGradient>
+          </TouchableOpacity>
           </ScrollView>
 
           {/* //////////////////////////////////////////////////// */}
@@ -134,14 +141,6 @@ const ProductDetailScreen = ({ route }) => {
             maxValue={product.quantity}
           /> */}
           {/* //////////////////////////////////////////////////// */}
-
-          <TouchableOpacity
-            onPress={handleAddToCart}
-          >
-            <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.addButton}>
-              <Text style={styles.addButtonText}>Add to cart</Text>
-            </LinearGradient>
-          </TouchableOpacity>
         </View>
       );
     }
@@ -170,13 +169,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     zIndex: 10,
   },
-
   loadingIndicator: {
     // Optional styles for the ActivityIndicator itself
   },
   infoContainer: {
     padding: 20,
-
   },
   productImage: {
     width: '100%',
@@ -187,25 +184,21 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   productInfo: {
-    margin: 10,
-
+    margin: 9
   },
   productName: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 10,
   },
   productPrice: {
-    fontSize: 18,
-    marginBottom: 20,
+    fontSize: 15,
     alignSelf: 'flex-end',
-    color: 'green',
-
+    color: 'black',
+    fontWeight: 'bold',
   },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     paddingLeft: 15,
     // backgroundColor: '#fff'
   },
@@ -221,14 +214,16 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   buttonGR: {
-    margin: 20,
-    borderWidth: 1,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: '#ddd',
-
-  },
+    shadowColor: 'rgba(0,0,0, .4)', // IOS
+    shadowOffset: { height: 1, width: 1 }, // IOS
+    shadowOpacity: 1, // IOS
+    shadowRadius: 1, //IOS
+    elevation: 2, // Android
+    width: '90%',
+    shadowColor :'red',
+    marginBottom: 22,
+    alignSelf : 'center'
+},
   button: {
     borderRadius: 22,
     alignItems: 'center',
@@ -244,14 +239,13 @@ const styles = StyleSheet.create({
   },
   addButton: {
     padding: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-
+    borderRadius: 22
   },
   addButtonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight : "bold",
+    alignSelf :'center'
   },
 });
 
