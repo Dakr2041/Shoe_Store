@@ -11,6 +11,7 @@ const AccountScreen = () => {
   const [userId, setUserId] = useState(null);
   const [userInfo, setUserInfo] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [shouldRedirectToSetup, setShouldRedirectToSetup] = useState(false);
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -37,14 +38,14 @@ const AccountScreen = () => {
           if (response.ok) {
             const data = await response.json();
             // alert(data.data.message);
-
-            console.log(data.data);
+            // console.log(data.data);
             setUserInfo(data.data);
           } else {
             console.error('Error fetching user info:', response.status);
           }
         } catch (error) {
           console.error('Error fetching user info:-', error);
+          setShouldRedirectToSetup(true);
         } finally {
           setIsLoading(false);
         }
@@ -69,11 +70,15 @@ const AccountScreen = () => {
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       );
-      // } else if (userInfo === null) {
-      //   <View>
-      //     <Text style={styles.title}>Account Details</Text>
-
-      //   </View>
+    } else if (shouldRedirectToSetup) {
+      return (
+        <View>
+          <Text>Please complete your setup information first.</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('SetupUserInfo')}>
+            <Text>Go to Setup</Text>
+          </TouchableOpacity>
+        </View>
+      );
     } else {
       return (
         <View>

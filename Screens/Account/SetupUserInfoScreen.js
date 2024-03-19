@@ -22,47 +22,7 @@ const SetupUserInfoScreen = ({ navigation }) => {
     const [userInfo, setUserInfo] = useState({});
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchUserId = async () => {
-            try {
-                const storedUserId = await AsyncStorage.getItem('@userId');
-                setUserId(storedUserId ? Number(storedUserId) : null);
-            } catch (error) {
-                console.error('Error fetching user ID from storage:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
 
-        fetchUserId();
-
-    }, []);
-
-    useEffect(() => {
-        const fetchUserInfo = async () => {
-            if (userId) {
-                setIsLoading(true);
-                try {
-                    const response = await fetch(`${API_URL}/api/getInfoUser/${userId}`);
-                    if (response.ok) {
-                        const data = await response.json();
-                        // alert(data.data.message);
-
-                        console.log(data.data);
-                        setUserInfo(data.data);
-                    } else {
-                        console.error('Error fetching user info:', response.status);
-                    }
-                } catch (error) {
-                    console.error('Error fetching user info:-', error);
-                } finally {
-                    setIsLoading(false);
-                }
-            }
-        };
-
-        fetchUserInfo();
-    }, [userId]);
 
 
     const pickImage = async () => {
@@ -81,7 +41,7 @@ const SetupUserInfoScreen = ({ navigation }) => {
         });
 
         if (!result.canceled) {
-            setImage(result.uri);
+            setImage(result.assets[0].uri);
         }
     };
 
@@ -105,93 +65,102 @@ const SetupUserInfoScreen = ({ navigation }) => {
     // Format the date object to dd/mm/yyyy format using toLocaleDateString()
     const formattedDate = dateObj.toLocaleDateString("en-GB");
 
-    if (isLoading) {
-        return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#0000ff" />
-            </View>
-        );
-    } else {
-        return (
+    // if (isLoading) {
+    //     return (
+    //         <View style={styles.loadingContainer}>
+    //             <ActivityIndicator size="large" color="#0000ff" />
+    //         </View>
+    //     );
+    // } else {
+    return (
 
-            <View style={styles.container}>
-                <View>
-                    <TouchableOpacity onPress={handleGoBack}>
-                        <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
+        <View style={styles.container}>
+            <View style={styles.headerContainer}>
+                <TouchableOpacity onPress={handleGoBack}>
+                    <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
+                </TouchableOpacity>
+                <View></View>
+                    <Text style={styles.screenNameText}>Setup User Info</Text>
+                    <View></View>
+                    <View></View>
+            </View>
+            {/* Profile Picture */}
+            <View style={styles.imageContainer}>
+                {image ? (
+                    <TouchableOpacity onPress={pickImage}>
+                        <Image source={{ uri: image }} style={styles.profileImage} />
                     </TouchableOpacity>
 
-                </View>
-                {/* Profile Picture */}
-                <View style={styles.imageContainer}>
-                    {image ? (
-                        <Image source={{ uri: image }} style={styles.profileImage} />
-                    ) : (
-                        <TouchableOpacity onPress={pickImage} style={styles.imagePlaceholder}>
-                            <Text style={styles.imagePlaceholderText}>Choose Profile Picture</Text>
-                        </TouchableOpacity>
-                    )}
-                </View>
-
-                {/* User Information Inputs */}
-                <TextInput
-                    style={styles.textInput}
-                    placeholder={userInfo.name}
-                    value={name}
-                    onChangeText={setName}
-                />
-                <TextInput
-                    style={styles.textInput}
-                    placeholder={userInfo.phone}
-                    keyboardType="phone-pad"
-                    value={phone}
-                    onChangeText={setPhone}
-                />
-                <TextInput
-                    style={styles.textInput}
-                    placeholder={userInfo.address}
-                    value={address}
-                    onChangeText={setAddress}
-                />
-                <TextInput style={styles.textInput} placeholder={userInfo.city} value={city} onChangeText={setCity} />
-
-                {/* Date of Birth Picker */}
-                <TouchableOpacity style={styles.dateInput}
-                // onPress={() => setShowDatePicker(true)}//picker only work when setting up new account
-                >
-                    <Text style={styles.dateInputText}>
-                        {/* {dateOfBirth.toLocaleDateString()} */}
-                        {formattedDate}
-                    </Text>
-                </TouchableOpacity>
-                {showDatePicker && (
-                    <DateTimePicker
-                        testID="dateTimePicker"
-                        value={dateOfBirth}
-                        mode="date"
-                        is24Hour={true}
-                        display="default"
-                        onChange={onChangeDate}
-                    />
+                ) : (
+                    <TouchableOpacity onPress={pickImage} style={styles.imagePlaceholder}>
+                        <Text style={styles.imagePlaceholderText}>Choose Profile Picture</Text>
+                    </TouchableOpacity>
                 )}
-                {/* Gender Selection */}
-                {/* <Picker //picker only work when setting up new account
-                    selectedValue={gender}
-                    style={styles.picker}
-                    onValueChange={setGender}>
-                    <Picker.Item label="Select Gender" value="" />
-                    <Picker.Item label="Male" value="male" />
-                    <Picker.Item label="Female" value="female" />
-                </Picker> */}
-
-                {/* Save Button */}
-                <TouchableOpacity onPress={handleSave} style={styles.buttonBG} >
-                    <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.saveButton} >
-                        <Text style={styles.saveButtonText}>Save Updates</Text>
-                    </LinearGradient>
-                </TouchableOpacity>
             </View>
-        );
-    }
+
+            {/* User Information Inputs */}
+            <TextInput
+                style={styles.textInput}
+                value={name}
+                placeholder='Name'
+                onChangeText={setName}
+            />
+            <TextInput
+                style={styles.textInput}
+                keyboardType="phone-pad"
+                value={phone}
+                onChangeText={setPhone}
+                placeholder='Phone Number'
+
+            />
+            <TextInput
+                style={styles.textInput}
+                value={address}
+                onChangeText={setAddress}
+                placeholder='Address'
+            />
+            <TextInput style={styles.textInput}
+                value={city}
+                onChangeText={setCity}
+                placeholder='City' />
+
+            {/* Date of Birth Picker */}
+            <TouchableOpacity style={styles.dateInput}
+                onPress={() => setShowDatePicker(true)}
+            >
+                <Text style={styles.dateInputText}>
+                    {dateOfBirth.toLocaleDateString("en-GB")}
+                </Text>
+            </TouchableOpacity>
+            {showDatePicker && (
+                <DateTimePicker
+                    testID="dateTimePicker"
+                    value={dateOfBirth}
+                    mode="date"
+                    is24Hour={true}
+                    display="default"
+                    onChange={onChangeDate}
+                />
+            )}
+            {/* Gender Selection */}
+            <Picker //picker only work when setting up new account
+                selectedValue={gender}
+                style={styles.picker}
+                onValueChange={setGender}>
+                <Picker.Item label="Select Gender" value="" />
+                <Picker.Item label="Male" value="male" />
+                <Picker.Item label="Female" value="female" />
+            </Picker>
+
+            {/* Save Button */}
+            <TouchableOpacity onPress={handleSave} style={styles.buttonBG} >
+                <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.saveButton} >
+                    <Text style={styles.saveButtonText}>Save Updates</Text>
+                </LinearGradient>
+            </TouchableOpacity>
+        </View>
+    );
+    // }
 };
 
 const styles = StyleSheet.create({
@@ -199,6 +168,16 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         marginTop: 30,
+    },
+    headerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    screenNameText: {
+        fontSize: 20,
+        fontWeight: 'bold',
     },
     loadingContainer: {
         flex: 1,
@@ -210,14 +189,14 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     profileImage: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
+        width: 200,
+        height: 200,
+        borderRadius: 125,
     },
     imagePlaceholder: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
+        width: 200,
+        height: 200,
+        borderRadius: 125,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#eee',
