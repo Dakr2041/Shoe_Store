@@ -12,6 +12,7 @@ import SettingsScreen from './Account/SettingScreen';
 import UpdateUserInfoScreen from './Account/UpdateUserInfoScreen';
 import SetupUserInfoScreen from './Account/SetupUserInfoScreen';
 import CheckoutScreen from './Cart/CheckoutScreen';
+import ResetPasswordScreen from './Account/ResetPassword';
 
 
 const Tab = createBottomTabNavigator();
@@ -31,6 +32,7 @@ export default function App() {
         <Stack.Screen name="UpdateUserInfo" component={UpdateUserInfoScreen} />
         <Stack.Screen name="SetupUserInfo" component={SetupUserInfoScreen} />
         <Stack.Screen name="Checkout" component={CheckoutScreen} />
+        <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
       </Stack.Navigator>
 
     </NavigationContainer>

@@ -153,47 +153,52 @@ const UpdateUserInfoScreen = ({ navigation }) => {
         return true;
     }
 
+    // const handleSave = async () => {
+    //     const formData = new FormData();
+    //     // formData.append('avatar', {
+    //     //     uri: image,
+    //     //     type: imageType,
+    //     //     name: 'avatar.jpg',
+    //     // });
+    //     formData.append('name', name);
+    //     formData.append('phone', phone);
+    //     formData.append('address', address);
+    //     formData.append('city', city);
+    //     formData.append('dob', dateOfBirth);
+    //     formData.append('gender', gender);
+
+
+    //     try {
+    //         const response = await fetch(`${API_URL}/api/updateInfoUser`, formData, {
+    //             headers: {
+    //                 'Content-Type': 'multipart/form-data',
+    //                 Authorization: `Bearer ${StoredToken}`,
+    //             },
+    //         });
+
+    //         if (response.data.success) {
+    //             console.log('Updated successfully!');
+    //             // You can perform further actions here, like updating user info
+    //         } else {
+    //             console.error('Error Updated image:', response.data.error);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error Updated request:', error);
+    //     }
+    //     // // Send the request to your API
+    //     // if (deepCompare(formData, userInfo)) {
+    //     //     alert('No changes made');
+    //     //     return;
+    //     // } else {
+            
+    //     // }
+
+
+    // };
+
     const handleSave = async () => {
-        const formData = new FormData();
-        formData.append('avatar', {
-            uri: image,
-            type: imageType,
-            name: 'avatar.jpg',
-        });
-        formData.append('name', name);
-        formData.append('phone', phone);
-        formData.append('address', address);
-        formData.append('city', city);
-        formData.append('dob', dateOfBirth);
-        formData.append('gender', gender);
-
-        // Send the request to your API
-        if (deepCompare(formData, userInfo)) {
-            alert('No changes made');
-            return;
-        } else {
-            try {
-                const response = await axios.post(`${API_URL}/api/updateInfoUser`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        Authorization: `Bearer ${StoredToken}`,
-                    },
-                });
-
-                if (response.data.success) {
-                    console.log('Image uploaded successfully!');
-                    // You can perform further actions here, like updating user info
-                } else {
-                    console.error('Error uploading image:', response.data.error);
-                }
-            } catch (error) {
-                console.error('Error sending image request:', error);
-            }
-        }
-
 
     };
-
     const handleGoBack = () => {
         navigation.goBack();
     };

@@ -80,9 +80,9 @@ const SetupUserInfoScreen = ({ navigation }) => {
                     <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
                 </TouchableOpacity>
                 <View></View>
-                    <Text style={styles.screenNameText}>Setup User Info</Text>
-                    <View></View>
-                    <View></View>
+                <Text style={styles.screenNameText}>Setup User Info</Text>
+                <View></View>
+                <View></View>
             </View>
             {/* Profile Picture */}
             <View style={styles.imageContainer}>

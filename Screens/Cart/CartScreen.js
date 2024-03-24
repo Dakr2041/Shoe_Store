@@ -15,6 +15,8 @@ const CartScreen = () => {
   const [itemsId, setItemsId] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
     const fetchTOKEN = async () => {
@@ -53,8 +55,10 @@ const CartScreen = () => {
 
       const data = await response.json();
       setItemsId(data.productId);
+      console.log(itemsId.disscount);
       console.log("Cart done loading");
-      calculateTotal();
+      setTotalPrice(0)
+      setSelectedItems([]);
     } catch (error) {
       console.error('Error fetching cart items:', error);
       setHasError(true);
@@ -126,66 +130,62 @@ const CartScreen = () => {
     </View>
   );
 
-
-  const [totalPrice, setTotalPrice] = useState(0);
-  const handleSelectChange = (itemId, newIsSelected) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) => (item.id === itemId ? { ...item, isSelected: newIsSelected } : item))
-    );
-  };
-
-  // const calculateTotal = (cartItems) => {
-  //   let total = 0;
-  //   itemsId.forEach((item) => {
-  //     if (item.isSelected) {
-  //       total += item.quantity * item.price;
-  //       console.log("Total: " + formatVND(total) + "from qty:" + item.quantity + " with price:" + item.price);
-
-  //     }
-  //   });
-  //   // console.log(typeof itemsId, itemsId);
-  //   setTotalPrice(formatVND(total));
-  // };
-
-  // const calculateTotal = (item,quantity, price, isSelected) => {
-  //   let total = 0;
-  //   cartItems.forEach((item) => {
-  //     total += price;
-
-  //     // if (item.isSelected) {
-  //     //   // total += item.price * item.quantity; // Consider pre-calculating total price in CartItem
-  //     //   total += price;
-  //     // }
-  //   });
-  //   setTotalPrice(formatVND(total));
-  // };
-  let total = 0;
-
-  const calculateTotal = (item, quantity, price
-    // , isSelected
-  ) => {
-    itemsId.forEach((item) => {
-      total += item.price
-      console.log(quantity);
-      console.log(price);
-    });
-    if (total > 0) {
-      setTotalPrice(formatVND(total))
+  const handleItemChecked = (isChecked, itemPrice, quantity,item) => {
+    if (typeof itemPrice !== 'number' || typeof quantity !== 'number') {
+      console.error('Invalid input: Please provide a valid number.');
+      return;
     }
 
-  }
+    setTotalPrice(prevTotal => {
+      let newTotal = 0;
+      if (isChecked) {
+        newTotal = prevTotal + itemPrice * quantity;
+        // console.log("Checked new total: " + newTotal + " = prevTotal(" + prevTotal + ")  + itemPrice(" + itemPrice + ") * quantity(" + quantity + ")");
 
+      } else {
+        if (totalPrice > 0) {
+          newTotal = prevTotal - itemPrice * quantity;
+          // console.log("Unchecked new total: " + newTotal + " = prevTotal(" + prevTotal + ")  - itemPrice(" + itemPrice + ") * quantity(" + quantity + ")");
 
-  useEffect(() => {
-    // Call calculateTotal initially and whenever items or selections change
-    calculateTotal(itemsId);
-  }, [itemsId]);
+        }
+      }
+      setSelectedItems(prevItems => {
+        if (isChecked) {
+          return [...prevItems, { id: item.id, quantity }];
+        } else {
+          return prevItems.filter(i => i.id !== item.id);
+        }
+      });
+      return newTotal < 0 ? 0 : newTotal;
+    });
+  };
+
+  const onQuantityChange = (oldQuantity, newQuantity, itemPrice, isChecked,item) => {
+    console.log("-------------------");
+    if (isChecked) {
+      setTotalPrice(prevTotal => {
+        let quantityDifference = newQuantity - oldQuantity;
+        let newTotal = prevTotal + itemPrice * quantityDifference;
+        // console.log("Quantity change new total: " + newTotal + " = prevTotal(" + prevTotal + ") + itemPrice(" + itemPrice + ") * quantityDifference(" + quantityDifference + ")");
+        return newTotal < 0 ? 0 : newTotal;
+      });
+      setSelectedItems(prevItems =>
+        prevItems.map(i => (i.id === item.id ? { ...i, quantity: newQuantity } : i))
+      );
+    }
+    return;
+  };
 
   const navigation = useNavigation();
   const navigateToCheckout = () => {
-    navigation.navigate('Checkout', { cartItems, totalPrice });
+    if (selectedItems.length === 0 || totalPrice === 0) {
+      Alert.alert('No items selected', 'Please select at least one item before checking out.');
+    } else {
+      console.log('Selected items:', selectedItems, 'Total price:', totalPrice);
+      navigation.navigate('Checkout', { cartItems: selectedItems, totalPrice });
+    }
   };
-  
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.header}>
@@ -200,10 +200,10 @@ const CartScreen = () => {
             style={{ height: '100%' }}
             data={itemsId}
             renderItem={({ item }) => (
-              <CartItem item={item} onRemoveItem={handleDeleteConfirmation}
-                onQuantityChange={calculateTotal}
-                isSelected={item.isSelected}
-                onSelectChange={handleSelectChange}
+              <CartItem item={item}
+                onRemoveItem={handleDeleteConfirmation}
+                onQuantityChange={onQuantityChange}
+                onItemChecked={handleItemChecked}
               />
             )}
             keyExtractor={item => item.id}
@@ -216,10 +216,10 @@ const CartScreen = () => {
       </Swipeable>
 
       <View style={styles.checkoutContainer}>
-        <Text style={styles.cartTotal}>Total: {totalPrice}</Text>
+        <Text style={styles.cartTotal}>Total: {formatVND(totalPrice)}</Text>
         <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-          <Text style={styles.buttonText} 
-          onPress={navigateToCheckout}
+          <Text style={styles.buttonText}
+            onPress={navigateToCheckout}
           > Check out</Text>
         </LinearGradient>
       </View>
@@ -242,9 +242,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    position: 'absolute', // Use absolute positioning
-    bottom: 0, // Place the bottom edge at 0 (bottom of the screen)
-    width: '100%', // Span the entire width for full checkout container
+    position: 'absolute', 
+    bottom: 0, 
+    width: '100%', 
   },
   cartTotal: {
     fontSize: 16,
