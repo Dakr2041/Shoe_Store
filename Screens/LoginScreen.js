@@ -101,7 +101,6 @@ const LoginScreen = () => {
     } catch (error) {
       console.error('Error during login:', error);
       setIsLoading(false);
-      alert(data.message);
       return { success: false, error: 'An error occurred during login' };
     }
   };

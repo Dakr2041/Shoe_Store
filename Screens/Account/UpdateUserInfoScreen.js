@@ -8,6 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../Api';
 import { ActivityIndicator } from 'react-native-paper';
+import axios from 'axios';
 
 const UpdateUserInfoScreen = ({ navigation }) => {
     const [image, setImage] = useState(null);
@@ -21,6 +22,8 @@ const UpdateUserInfoScreen = ({ navigation }) => {
     const [userId, setUserId] = useState(null);
     const [userInfo, setUserInfo] = useState({});
     const [isLoading, setIsLoading] = useState(true);
+    const [StoredToken, setStoredToken] = useState(null);
+    const [imageType, setImageType] = useState(null)
 
     useEffect(() => {
         const fetchUserId = async () => {
@@ -46,10 +49,16 @@ const UpdateUserInfoScreen = ({ navigation }) => {
                     const response = await fetch(`${API_URL}/api/getInfoUser/${userId}`);
                     if (response.ok) {
                         const data = await response.json();
-                        // alert(data.data.message);
-
                         console.log(data.data);
                         setUserInfo(data.data);
+                        //
+                        setImage(data.data.avatar);
+                        setGender(data.data.gender);
+                        setAddress(data.data.address);
+                        setCity(data.data.city);
+                        setPhone(data.data.phone);
+                        setName(data.data.name);
+                        setDateOfBirth(new Date(data.data.dob));
                     } else {
                         console.error('Error fetching user info:', response.status);
                     }
@@ -64,6 +73,31 @@ const UpdateUserInfoScreen = ({ navigation }) => {
         fetchUserInfo();
     }, [userId]);
 
+    useEffect(() => {
+        const fetchTOKEN = async () => {
+            setIsLoading(true);
+            try {
+                const storedToken = await AsyncStorage.getItem('authToken');
+                setStoredToken(storedToken ? String(storedToken) : null);
+            } catch (error) {
+                console.error('Error fetching Token from storage:', error);
+                setHasError(true);
+
+                setIsLoading(false);
+            }
+        };
+
+        fetchTOKEN();
+    }, []);
+
+    function getFileTypeFromUri(uri) {
+        const extensionIndex = uri.lastIndexOf('.'); // Find the last dot (.)
+        if (extensionIndex !== -1) {
+          return uri.substring(extensionIndex + 1); // Extract the extension after the dot
+        } else {
+          return ''; // No extension found
+        }
+      }
 
     const pickImage = async () => {
         // Request camera or library permission if needed
@@ -74,14 +108,17 @@ const UpdateUserInfoScreen = ({ navigation }) => {
         }
 
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
         });
 
         if (!result.canceled) {
-            setImage(result.uri);
+            setImage(result.assets[0].uri);
+            const fileType = getFileTypeFromUri(result.assets[0].uri)
+            setImageType(fileType);
+            console.log("----------- image uri: " + image+" Type: "+imageType);
         }
     };
 
@@ -91,19 +128,91 @@ const UpdateUserInfoScreen = ({ navigation }) => {
         setDateOfBirth(currentDate);
     };
 
-    const handleSave = () => {
-        // Send updated user info to your backend
-        navigation.goBack(); // Assuming navigation back after save
-        alert('finnished ')
+    function deepCompare(obj1, obj2) {
+        if (typeof obj1 !== typeof obj2 || Object.keys(obj1).length !== Object.keys(obj2).length) {
+            return false;
+        }
+
+        for (const key in obj1) {
+            const value1 = obj1[key];
+            const value2 = obj2.get ? obj2.get(key) : obj2[key]; // Handle FormData key retrieval
+
+            if (typeof value1 !== typeof value2) {
+                return false;
+            }
+
+            if (typeof value1 === 'object' && value1 !== null && value2 !== null) {
+                if (!deepCompare(value1, value2)) {
+                    return false;
+                }
+            } else if (value1 !== value2) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // const handleSave = async () => {
+    //     const formData = new FormData();
+    //     // formData.append('avatar', {
+    //     //     uri: image,
+    //     //     type: imageType,
+    //     //     name: 'avatar.jpg',
+    //     // });
+    //     formData.append('name', name);
+    //     formData.append('phone', phone);
+    //     formData.append('address', address);
+    //     formData.append('city', city);
+    //     formData.append('dob', dateOfBirth);
+    //     formData.append('gender', gender);
+
+
+    //     try {
+    //         const response = await fetch(`${API_URL}/api/updateInfoUser`, formData, {
+    //             headers: {
+    //                 'Content-Type': 'multipart/form-data',
+    //                 Authorization: `Bearer ${StoredToken}`,
+    //             },
+    //         });
+
+    //         if (response.data.success) {
+    //             console.log('Updated successfully!');
+    //             // You can perform further actions here, like updating user info
+    //         } else {
+    //             console.error('Error Updated image:', response.data.error);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error Updated request:', error);
+    //     }
+    //     // // Send the request to your API
+    //     // if (deepCompare(formData, userInfo)) {
+    //     //     alert('No changes made');
+    //     //     return;
+    //     // } else {
+            
+    //     // }
+
+
+    // };
+
+    const handleSave = async () => {
+
     };
     const handleGoBack = () => {
         navigation.goBack();
     };
 
-    const dateObj = new Date(userInfo.dob);
+    // const dateObj = new Date(userInfo.dob);
+    // const dateObj = new Date(userInfo.dob);
+    // console.log(userInfo.dob);
+    // console.log("----"+dateObj);
+    console.log("--------"+dateOfBirth);
+
 
     // Format the date object to dd/mm/yyyy format using toLocaleDateString()
-    const formattedDate = dateObj.toLocaleDateString("en-GB");
+    const formattedDate = dateOfBirth.toLocaleDateString("en-GB");
+    console.log("-----------"+formattedDate);
 
     if (isLoading) {
         return (
@@ -115,21 +224,23 @@ const UpdateUserInfoScreen = ({ navigation }) => {
         return (
 
             <View style={styles.container}>
-                <View>
+                {/* <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+                    
+                </LinearGradient> */}
+                <View style={styles.headerContainer}>
                     <TouchableOpacity onPress={handleGoBack}>
                         <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
                     </TouchableOpacity>
-
+                    <View></View>
+                    <Text style={styles.screenNameText}>Update User Info</Text>
+                    <View></View>
+                    <View></View>
                 </View>
                 {/* Profile Picture */}
                 <View style={styles.imageContainer}>
-                    {image ? (
+                    <TouchableOpacity onPress={pickImage} >
                         <Image source={{ uri: image }} style={styles.profileImage} />
-                    ) : (
-                        <TouchableOpacity onPress={pickImage} style={styles.imagePlaceholder}>
-                            <Text style={styles.imagePlaceholderText}>Choose Profile Picture</Text>
-                        </TouchableOpacity>
-                    )}
+                    </TouchableOpacity>
                 </View>
 
                 {/* User Information Inputs */}
@@ -156,10 +267,9 @@ const UpdateUserInfoScreen = ({ navigation }) => {
 
                 {/* Date of Birth Picker */}
                 <TouchableOpacity style={styles.dateInput}
-                // onPress={() => setShowDatePicker(true)}//picker only work when setting up new account
+                    onPress={() => setShowDatePicker(true)}//picker only work when setting up new account
                 >
                     <Text style={styles.dateInputText}>
-                        {/* {dateOfBirth.toLocaleDateString()} */}
                         {formattedDate}
                     </Text>
                 </TouchableOpacity>
@@ -173,15 +283,16 @@ const UpdateUserInfoScreen = ({ navigation }) => {
                         onChange={onChangeDate}
                     />
                 )}
+
                 {/* Gender Selection */}
-                {/* <Picker //picker only work when setting up new account
+                <Picker //picker only work when setting up new account
                     selectedValue={gender}
                     style={styles.picker}
                     onValueChange={setGender}>
                     <Picker.Item label="Select Gender" value="" />
                     <Picker.Item label="Male" value="male" />
                     <Picker.Item label="Female" value="female" />
-                </Picker> */}
+                </Picker>
 
                 {/* Save Button */}
                 <TouchableOpacity onPress={handleSave} style={styles.buttonBG} >
@@ -205,15 +316,29 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    imageContainer: {
+    headerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 20,
     },
-    profileImage: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
+    screenNameText: {
+        fontSize: 20,
+        fontWeight: 'bold',
     },
+    imageContainer: {
+        alignItems: 'center',
+        marginBottom: 20,
+        // width: 300, 
+        // height: 300, 
+    },
+
+    profileImage: {
+        width: 200,
+        height: 200,
+        borderRadius: 125,
+    },
+
     imagePlaceholder: {
         width: 100,
         height: 100,

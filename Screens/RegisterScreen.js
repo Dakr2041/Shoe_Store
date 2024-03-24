@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ToastAndroid, Image, ActivityIndicator,TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ToastAndroid, Image, ActivityIndicator, TextInput } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -110,7 +110,7 @@ const RegisterScreen = () => {
     }
 
     try {
-      const response = await fetch(`${API_URL}/register`, {
+      const response = await fetch(`${API_URL}/api/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -118,7 +118,7 @@ const RegisterScreen = () => {
         body: JSON.stringify({ email, password, name }),
       });
       const data = await response.json();
-      console.log(data.message);
+      console.log("msg: "+data.message);
       alert(data.message);
       setIsLoading(false);
       if (data.status === 200) {
@@ -155,72 +155,72 @@ const RegisterScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' , padding : 20 }}>
-      <Image source={logo} style={{width:200,height:200,alignSelf :'center'}}></Image>
-      <Text style={styles.title}>Register</Text>
-      <Text style={styles.messenger}>Please enter complete information</Text>
-      <TextInput
-        style={styles.textInput}
-        placeholder="Email"
-        value={email}
-        onChangeText={handleEmailChange}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        ref={emailInputRef}
-      />
-      <TextInput
-        style={styles.textInput}
-        placeholder="Name"
-        value={name}
-        onChangeText={handleNameChange}
-        autoCapitalize="words"
-        ref={nameInputRef}
-      />
-
-      <View style={styles.passwordInputContainer}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
+        <Image source={logo} style={{ width: 200, height: 200, alignSelf: 'center' }}></Image>
+        <Text style={styles.title}>Register</Text>
+        <Text style={styles.messenger}>Please enter complete information</Text>
         <TextInput
           style={styles.textInput}
-          placeholder="Password"
-          onChangeText={handlePasswordChange}
-          value={password}
-          secureTextEntry={!isPasswordVisible}
-          ref={passwordInputRef}
+          placeholder="Email"
+          value={email}
+          onChangeText={handleEmailChange}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          ref={emailInputRef}
         />
-        <TouchableOpacity style={styles.showPasswordButton} onPress={() => togglePasswordVisibility('password')}>
-          <EyeIcon visible={isPasswordVisible} />
-        </TouchableOpacity>
-      </View>
-
-      <View>
         <TextInput
           style={styles.textInput}
-          placeholder="Confirm Password"
-          onChangeText={handleConfirmPasswordChange}
-          value={confirmPassword}
-          secureTextEntry={!isConfirmPasswordVisible}
-          ref={confirmPasswordInputRef}
+          placeholder="Name"
+          value={name}
+          onChangeText={handleNameChange}
+          autoCapitalize="words"
+          ref={nameInputRef}
         />
-        <TouchableOpacity style={styles.showPasswordButton} onPress={() => togglePasswordVisibility('confirmPassword')}>
-          <EyeIcon visible={isConfirmPasswordVisible} />
-        </TouchableOpacity>
-      </View>
 
-      <TouchableOpacity  onPress={handleRegister} style={styles.buttonGR}>
-          <LinearGradient colors={['#f7c458', '#fea239']} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.button}>
-            <Text style={styles.buttonText}>Register</Text>
-          </LinearGradient>  
-      </TouchableOpacity>
-
-
-
-      <TouchableOpacity onPress={handleLoginPress}>
-        <Text style={styles.higlightText}>Already have an account</Text>
-      </TouchableOpacity>
-      {isLoading && (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#0000ff" />
+        <View style={styles.passwordInputContainer}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Password"
+            onChangeText={handlePasswordChange}
+            value={password}
+            secureTextEntry={!isPasswordVisible}
+            ref={passwordInputRef}
+          />
+          <TouchableOpacity style={styles.showPasswordButton} onPress={() => togglePasswordVisibility('password')}>
+            <EyeIcon visible={isPasswordVisible} />
+          </TouchableOpacity>
         </View>
-      )}
+
+        <View>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Confirm Password"
+            onChangeText={handleConfirmPasswordChange}
+            value={confirmPassword}
+            secureTextEntry={!isConfirmPasswordVisible}
+            ref={confirmPasswordInputRef}
+          />
+          <TouchableOpacity style={styles.showPasswordButton} onPress={() => togglePasswordVisibility('confirmPassword')}>
+            <EyeIcon visible={isConfirmPasswordVisible} />
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity onPress={handleRegister} style={styles.buttonGR}>
+          <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.button}>
+            <Text style={styles.buttonText}>Register</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+
+
+
+        <TouchableOpacity onPress={handleLoginPress}>
+          <Text style={styles.higlightText}>Already have an account</Text>
+        </TouchableOpacity>
+        {isLoading && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        )}
       </ScrollView>
 
     </View>
@@ -234,19 +234,19 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
-    fontWeight : "bold",
+    fontWeight: "bold",
     marginBottom: 10
   },
   messenger: {
     fontSize: 15,
     marginBottom: 20,
-    color : "#4f4f4d"
+    color: "#4f4f4d"
   },
   higlightText: {
     color: '#007bff',
     margin: 9,
-    textAlign : 'center',
-    marginTop : 100
+    textAlign: 'center',
+    marginTop: 100
   },
   button: {
     padding: 15,
@@ -259,14 +259,14 @@ const styles = StyleSheet.create({
     shadowRadius: 1, //IOS
     elevation: 2, // Android
     width: '100%',
-    shadowColor :'red',
-    marginTop : 20,
-},
+    shadowColor: 'red',
+    marginTop: 20,
+  },
   buttonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight : "bold",
-    alignSelf :'center'
+    fontWeight: "bold",
+    alignSelf: 'center'
   },
   passwordInputContainer: {
     flexDirection: 'row',
@@ -276,8 +276,8 @@ const styles = StyleSheet.create({
   showPasswordButton: {
     position: 'absolute', // Make it absolute within the input
     right: 15, // Adjust right padding and position as needed
-    top : 30
-  
+    top: 30
+
   },
   eyeIcon: {
     width: 25,
@@ -294,12 +294,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.2)', // Semi-transparent background
   },
   textInput: {
-    width : "100%",
-    height : 60,
-    borderRadius : 9,
-    padding : 9,
-    marginTop : 9,
-    backgroundColor : '#ebecf0'
+    width: "100%",
+    height: 60,
+    borderRadius: 9,
+    padding: 9,
+    marginTop: 9,
+    backgroundColor: '#ebecf0'
   }
 });
 
