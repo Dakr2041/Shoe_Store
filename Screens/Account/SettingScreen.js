@@ -36,10 +36,10 @@ const SettingsScreen = () => {
         <Text style={styles.settingText}>Update User Info</Text>
         <Feather name="chevron-right" size={24} color="#ccc" style={styles.icon} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.settingItem} onPress={() => handleNavigate('SetupUserInfo')}>
+      {/* <TouchableOpacity style={styles.settingItem} onPress={() => handleNavigate('SetupUserInfo')}>
         <Text style={styles.settingText}>Setup User Info</Text>
         <Feather name="chevron-right" size={24} color="#ccc" style={styles.icon} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <TouchableOpacity style={styles.settingItem} onPress={() => handleNavigate('ResetPassword')}>
         <Text style={styles.settingText}>Reset Password</Text>
         <Feather name="chevron-right" size={24} color="#ccc" style={styles.icon} />

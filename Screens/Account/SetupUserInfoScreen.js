@@ -21,6 +21,7 @@ const SetupUserInfoScreen = ({ navigation }) => {
     const [userId, setUserId] = useState(null);
     const [userInfo, setUserInfo] = useState({});
     const [isLoading, setIsLoading] = useState(true);
+    const [token, setToken] = useState('');
 
 
 
@@ -44,18 +45,69 @@ const SetupUserInfoScreen = ({ navigation }) => {
             setImage(result.assets[0].uri);
         }
     };
+    useEffect(() => {
+        const fetchTOKEN = async () => {
+            try {
+                const storedToken = await AsyncStorage.getItem('authToken');
+                setToken(storedToken ? String(storedToken) : null);
+                console.log(storedToken);
+            } catch (error) {
+                console.error('Error fetching Token from storage:', error);
 
+            }
+        };
+
+        fetchTOKEN();
+    }, []);
     const onChangeDate = (event, selectedDate) => {
         const currentDate = selectedDate || dateOfBirth;
         setShowDatePicker(false);
-        setDateOfBirth(currentDate);
+        setDateOfBirth(currentDate.toISOString().slice(0, 10));
+        console.log(dateOfBirth);
     };
 
-    const handleSave = () => {
-        // Send updated user info to your backend
-        navigation.goBack(); // Assuming navigation back after save
-        alert('finnished ')
+    // const handleSave = () => {
+    //     // Send updated user info to your backend
+    //     navigation.goBack(); // Assuming navigation back after save
+    //     alert('finnished ')
+    // };
+
+    const handleSave = async () => {
+        if (image) {
+            let formData = new FormData();
+            let filename = image.split('/').pop();
+
+            let match = /\.(\w+)$/.exec(filename);
+            let type = match ? `image/${match[1]}` : `image`;
+
+            formData.append('image', { uri: image, name: filename, type });
+            formData.append('name', name);
+            formData.append('phone', phone);
+            formData.append('address', address);
+            formData.append('city', city);
+            formData.append('dateOfBirth', dateOfBirth);
+            formData.append('gender', gender);
+
+            try {
+                let response = await fetch(`${API_URL}/api/infoUser`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'content-type': 'multipart/form-data',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                let responseJson = await response.json();
+                console.log(responseJson);
+                navigation.goBack(); // Assuming navigation back after save
+                alert('Finished');
+            } catch (error) {
+                console.error(error);
+            }
+        }
     };
+
     const handleGoBack = () => {
         navigation.goBack();
     };
