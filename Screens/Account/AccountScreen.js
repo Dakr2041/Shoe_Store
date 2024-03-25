@@ -38,7 +38,7 @@ const AccountScreen = () => {
           if (response.ok) {
             const data = await response.json();
             // alert(data.data.message);
-            // console.log(data.data);
+            console.log(data.data);
             setUserInfo(data.data);
           } else {
             console.error('Error fetching user info:', response.status);
@@ -62,6 +62,9 @@ const AccountScreen = () => {
   };
   const handleSettingsPress = () => {
     navigation.navigate('Settings')
+  };
+  const handleOrdersPress = () => {
+    navigation.navigate('Orders')
   };
   const renderContent = () => {
     if (isLoading) {
@@ -94,16 +97,18 @@ const AccountScreen = () => {
             <Text>Phone: {userInfo.phone}</Text>
             <Text>Address: {userInfo.address} - {userInfo.city}</Text>
           </View>
-          <TouchableOpacity>
-            <Text style={{ alignSelf: 'center', marginTop: 20 }}>HISTORY</Text>
+          <TouchableOpacity onPress={handleOrdersPress}>
+            <Text style={{ alignSelf: 'center', marginTop: 20 }}>ORDERS</Text>
             <View style={{ height: 2, backgroundColor: '#ccc', marginTop: 10 }} />
           </TouchableOpacity>
-
           <TouchableOpacity>
-            <Text style={{ alignSelf: 'center', marginTop: 20 }} onPress={handleSettingsPress}>SETTING</Text>
+            <Text style={{ alignSelf: 'center', marginTop: 20 }}>FAVORITES</Text>
             <View style={{ height: 2, backgroundColor: '#ccc', marginTop: 10 }} />
           </TouchableOpacity>
-
+          <TouchableOpacity onPress={handleSettingsPress}>
+            <Text style={{ alignSelf: 'center', marginTop: 20 }}>SETTING</Text>
+            <View style={{ height: 2, backgroundColor: '#ccc', marginTop: 10 }} />
+          </TouchableOpacity>
           <TouchableOpacity
           // onPress={handleLogoutPress}
           >

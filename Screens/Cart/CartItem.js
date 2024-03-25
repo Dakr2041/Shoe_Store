@@ -5,7 +5,7 @@ import { formatVND } from '../Functions/FormatVND';
 import QuantityPicker from '../Functions/QuantityPicker';
 import { Checkbox } from 'react-native-paper';
 
-const CartItem = ({ item, onRemoveItem, onQuantityChange, isSelected ,onItemChecked}) => {
+const CartItem = ({ item, onRemoveItem, onQuantityChange ,onItemChecked}) => {
   const defaultImage = 'https://via.placeholder.com/250'; // Placeholder image URL
   const [isChecked, setIsChecked] = useState(false);
 

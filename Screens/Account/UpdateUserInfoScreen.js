@@ -8,7 +8,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../Api';
 import { ActivityIndicator } from 'react-native-paper';
-import axios from 'axios';
 
 const UpdateUserInfoScreen = ({ navigation }) => {
     const [image, setImage] = useState(null);
@@ -51,7 +50,6 @@ const UpdateUserInfoScreen = ({ navigation }) => {
                         const data = await response.json();
                         console.log(data.data);
                         setUserInfo(data.data);
-                        //
                         setImage(data.data.avatar);
                         setGender(data.data.gender);
                         setAddress(data.data.address);
@@ -89,15 +87,16 @@ const UpdateUserInfoScreen = ({ navigation }) => {
 
         fetchTOKEN();
     }, []);
+    console.log(StoredToken);
 
     function getFileTypeFromUri(uri) {
         const extensionIndex = uri.lastIndexOf('.'); // Find the last dot (.)
         if (extensionIndex !== -1) {
-          return uri.substring(extensionIndex + 1); // Extract the extension after the dot
+            return uri.substring(extensionIndex + 1); // Extract the extension after the dot
         } else {
-          return ''; // No extension found
+            return ''; // No extension found
         }
-      }
+    }
 
     const pickImage = async () => {
         // Request camera or library permission if needed
@@ -118,101 +117,75 @@ const UpdateUserInfoScreen = ({ navigation }) => {
             setImage(result.assets[0].uri);
             const fileType = getFileTypeFromUri(result.assets[0].uri)
             setImageType(fileType);
-            console.log("----------- image uri: " + image+" Type: "+imageType);
+            console.log("----------- image uri: " + image + " Type: " + imageType);
         }
     };
 
     const onChangeDate = (event, selectedDate) => {
         const currentDate = selectedDate || dateOfBirth;
         setShowDatePicker(false);
-        setDateOfBirth(currentDate);
+        setDateOfBirth(formattedDate);
     };
-
-    function deepCompare(obj1, obj2) {
-        if (typeof obj1 !== typeof obj2 || Object.keys(obj1).length !== Object.keys(obj2).length) {
-            return false;
-        }
-
-        for (const key in obj1) {
-            const value1 = obj1[key];
-            const value2 = obj2.get ? obj2.get(key) : obj2[key]; // Handle FormData key retrieval
-
-            if (typeof value1 !== typeof value2) {
-                return false;
-            }
-
-            if (typeof value1 === 'object' && value1 !== null && value2 !== null) {
-                if (!deepCompare(value1, value2)) {
-                    return false;
-                }
-            } else if (value1 !== value2) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    // const handleSave = async () => {
-    //     const formData = new FormData();
-    //     // formData.append('avatar', {
-    //     //     uri: image,
-    //     //     type: imageType,
-    //     //     name: 'avatar.jpg',
-    //     // });
-    //     formData.append('name', name);
-    //     formData.append('phone', phone);
-    //     formData.append('address', address);
-    //     formData.append('city', city);
-    //     formData.append('dob', dateOfBirth);
-    //     formData.append('gender', gender);
-
-
-    //     try {
-    //         const response = await fetch(`${API_URL}/api/updateInfoUser`, formData, {
-    //             headers: {
-    //                 'Content-Type': 'multipart/form-data',
-    //                 Authorization: `Bearer ${StoredToken}`,
-    //             },
-    //         });
-
-    //         if (response.data.success) {
-    //             console.log('Updated successfully!');
-    //             // You can perform further actions here, like updating user info
-    //         } else {
-    //             console.error('Error Updated image:', response.data.error);
-    //         }
-    //     } catch (error) {
-    //         console.error('Error Updated request:', error);
-    //     }
-    //     // // Send the request to your API
-    //     // if (deepCompare(formData, userInfo)) {
-    //     //     alert('No changes made');
-    //     //     return;
-    //     // } else {
-            
-    //     // }
-
-
-    // };
 
     const handleSave = async () => {
+        const formData = new FormData();
+        setIsLoading(true);
 
+        if (image) {
+            formData.append('avatar', {
+                uri: image,
+                type: `image/${imageType}`,
+                name: `avatar.${imageType}`,
+            });
+        }
+
+        formData.append('name', name);
+        formData.append('phone', phone);
+        formData.append('address', address);
+        formData.append('city', city);
+        let formattedDate = dateOfBirth.toISOString().split('T')[0];
+        // console.log("-----------" + formattedDate);
+        formData.append('dob', formattedDate); // Format the date in "yyyy-mm-dd" format
+        formData.append('gender', gender);
+
+        try {
+            const response = await fetch(`${API_URL}/api/updateInfoUser`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${StoredToken}`,
+                },
+                body: formData,
+            });
+
+            const responseData = await response.json();
+
+            if (responseData.status === 200) {
+                console.log(responseData.message);
+                alert(responseData.message);
+                setIsLoading(false);
+
+                // You can perform further actions here, like updating user info
+            } else {
+                console.error('Error Updated :', responseData.message);
+                alert(responseData.message);
+                setIsLoading(false);
+
+            }
+        } catch (error) {
+            console.error('Error Updated request:', error);
+            alert(error);
+
+        }
     };
+
     const handleGoBack = () => {
         navigation.goBack();
     };
 
-    // const dateObj = new Date(userInfo.dob);
-    // const dateObj = new Date(userInfo.dob);
-    // console.log(userInfo.dob);
-    // console.log("----"+dateObj);
-    console.log("--------"+dateOfBirth);
-
-
     // Format the date object to dd/mm/yyyy format using toLocaleDateString()
     const formattedDate = dateOfBirth.toLocaleDateString("en-GB");
-    console.log("-----------"+formattedDate);
+    // console.log("-----------" + formattedDate);
 
     if (isLoading) {
         return (

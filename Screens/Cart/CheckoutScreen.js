@@ -56,6 +56,7 @@ const CheckoutScreen = ({ route }) => {
       }
     } else {
       // Implement online payment
+      alert('Online payment is not available yet!')
     }
   }
 
@@ -75,10 +76,12 @@ const CheckoutScreen = ({ route }) => {
     const data = await response.json();
     console.log(data.message);
     alert(data.message);
+    navigation.navigate('Tabs')
     if (data.status == 200) {
+      ;
+      
       console.log(data.message);
 
-      navigation.navigate('Tabs');
     } else {
       // Handle error
       console.error(data.message);

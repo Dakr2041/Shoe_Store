@@ -5,7 +5,6 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, ActivityIndicator, Mod
 import { ScrollView } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Button } from 'react-native-paper';
-// import QuantityPicker from '../Cart/QuantityPicker';
 import { API_URL } from '../Api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { formatVND } from '../Functions/FormatVND';
@@ -98,39 +97,39 @@ const ProductDetailScreen = ({ route }) => {
               <ActivityIndicator size="large" style={styles.loadingIndicator} />
             </View>
           </Modal>
-          {/* Toolbar */}
           <View style={styles.headerContainer}>
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
               <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
             </TouchableOpacity>
-            <Text style={{marginHorizontal: 22,fontSize: 18,fontWeight:'bold'}}>{product.name}</Text>
+
           </View>
           <Image source={{ uri: product.imageProduct }} style={styles.productImage} />
-          <ScrollView style={{ backgroundColor: '#fff', borderTopStartRadius: 22, borderTopEndRadius: 22}}>
+          <ScrollView style={{ backgroundColor: '#fff', borderTopStartRadius: 22, borderTopEndRadius: 22 }}>
             <View style={styles.infoContainer}>
 
               <View style={styles.productInfo}>
-                <View style={{flexDirection:'row',marginBottom: 9,justifyContent: 'space-between',}}>
-                  <Text style={styles.productName}>{product.name}</Text>
-                  <Text style={styles.productPrice}>{formatVND(product.price)}</Text>
-                </View>
-                
-                <Text style={{fontStyle:'italic',fontSize: 15,marginBottom: 12}}>Quantity: {product.quantity} </Text>
+                <View style={{ flexDirection: 'row', marginBottom: 9, justifyContent: 'space-between', }}>
+                  <View>
+                    <Text style={styles.productName}>{product.name}</Text>
+                    <Text style={styles.productPrice}>{formatVND(product.price)}</Text>
+                  </View>
 
-                {/* <TouchableOpacity style={styles.buttonGR}>
-                  <Button style={styles.button}>
-                    <Text style={styles.buttonText}>Add to cart</Text>
-                  </Button>
-                </TouchableOpacity> */}
+                  <TouchableOpacity style={{ alignSelf: 'center' }} >
+                    <MaterialCommunityIcons name="bookmark-outline" size={40} color="#333" />
+                  </TouchableOpacity>
+                </View>
+
+                <Text style={{ fontStyle: 'italic', fontSize: 15, marginBottom: 12 }}>Quantity: {product.quantity} </Text>
+
                 <Text >Description: {product.description}</Text>
                 {/* <Text >Comments:</Text> */}
               </View>
             </View>
             <TouchableOpacity onPress={handleAddToCart} style={styles.buttonGR}>
-            <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.addButton}>
-              <Text style={styles.addButtonText}>Add to cart</Text>
-            </LinearGradient>
-          </TouchableOpacity>
+              <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.addButton}>
+                <Text style={styles.addButtonText}>Add to cart</Text>
+              </LinearGradient>
+            </TouchableOpacity>
           </ScrollView>
 
           {/* //////////////////////////////////////////////////// */}
@@ -192,7 +191,7 @@ const styles = StyleSheet.create({
   },
   productPrice: {
     fontSize: 15,
-    alignSelf: 'flex-end',
+    alignSelf: 'flex-start',
     color: 'black',
     fontWeight: 'bold',
   },
@@ -220,10 +219,10 @@ const styles = StyleSheet.create({
     shadowRadius: 1, //IOS
     elevation: 2, // Android
     width: '90%',
-    shadowColor :'red',
+    shadowColor: 'red',
     marginBottom: 22,
-    alignSelf : 'center'
-},
+    alignSelf: 'center'
+  },
   button: {
     borderRadius: 22,
     alignItems: 'center',
@@ -244,8 +243,8 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight : "bold",
-    alignSelf :'center'
+    fontWeight: "bold",
+    alignSelf: 'center'
   },
 });
 

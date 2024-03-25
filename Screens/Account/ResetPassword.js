@@ -13,6 +13,23 @@ const ResetPasswordScreen = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [hasError, setHasError] = useState(false);
     const [userId, setUserId] = useState(null);
+    const [userEmail, setUserEmail] = useState(null);
+    const [token, setToken] = useState('');
+
+    useEffect(() => {
+        const fetchTOKEN = async () => {
+            try {
+                const storedToken = await AsyncStorage.getItem('authToken');
+                setToken(storedToken ? String(storedToken) : null);
+                console.log(storedToken);
+            } catch (error) {
+                console.error('Error fetching Token from storage:', error);
+
+            }
+        };
+
+        fetchTOKEN();
+    }, []);
 
     useEffect(() => {
         const fetchUserId = async () => {
@@ -28,6 +45,25 @@ const ResetPasswordScreen = () => {
 
         fetchUserId();
     }, []);
+    
+
+    useEffect(() => {
+        const fetchUserEmail = async () => {
+            try {
+                const storedUserEmail = await AsyncStorage.getItem('@userEmail');
+                setUserEmail(storedUserEmail ?storedUserEmail : null);
+            } catch (error) {
+                console.error('Error fetching user Email from storage:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchUserEmail();
+    }, []);
+
+    console.log("get email :", userEmail);
+    console.log("get token :", token);
     console.log("get id :", userId);
 
     const handleSubmit = async () => {
@@ -40,7 +76,7 @@ const ResetPasswordScreen = () => {
         setHasError(false); // Reset error state
 
         try {
-            const response = await fetch(`${API_URL}/api/changePassword/${userId}`, {
+            const response = await fetch(`${API_URL}/api/changePassword/${userId}/${userEmail}/${token}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
