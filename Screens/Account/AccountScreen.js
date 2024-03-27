@@ -37,15 +37,17 @@ const AccountScreen = () => {
           const response = await fetch(`${API_URL}/api/getInfoUser/${userId}`);
           if (response.ok) {
             const data = await response.json();
-            // alert(data.data.message);
-            console.log(data.data);
-            setUserInfo(data.data);
+            console.log(data);
+            if(data.status === 400) {
+              setShouldRedirectToSetup(true);
+            } else if (data.status === 200) {
+              setUserInfo(data.data);
+            }
           } else {
             console.error('Error fetching user info:', response.status);
           }
         } catch (error) {
           console.error('Error fetching user info:-', error);
-          setShouldRedirectToSetup(true);
         } finally {
           setIsLoading(false);
         }
@@ -75,10 +77,12 @@ const AccountScreen = () => {
       );
     } else if (shouldRedirectToSetup) {
       return (
-        <View>
+        <View style={styles.setupContainer}>
           <Text>Please complete your setup information first.</Text>
           <TouchableOpacity onPress={() => navigation.navigate('SetupUserInfo')}>
-            <Text>Go to Setup</Text>
+            <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.setupButton} >
+              <Text style={styles.setupButtonText}>Go to Setup</Text>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
       );
@@ -110,7 +114,7 @@ const AccountScreen = () => {
             <View style={{ height: 2, backgroundColor: '#ccc', marginTop: 10 }} />
           </TouchableOpacity>
           <TouchableOpacity
-          // onPress={handleLogoutPress}
+            // onPress={handleLogoutPress}
           >
             <Text style={{ alignSelf: 'center', marginTop: 20 }}>LOGOUT</Text>
             <View style={{ height: 2, backgroundColor: '#ccc', marginTop: 10 }} />
@@ -156,6 +160,21 @@ const styles = StyleSheet.create({
   },
   userInfo: {
     alignSelf: 'center'
+  },
+  setupContainer:{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  setupButton: {
+    padding: 15,
+    borderRadius: 15,
+    justifyContent: 'center',
+  },
+  setupButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

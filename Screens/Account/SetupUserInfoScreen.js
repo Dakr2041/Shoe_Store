@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker'; // For image picker
 import DateTimePicker from '@react-native-community/datetimepicker'; // For date picker
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -8,6 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../Api';
 import { ActivityIndicator } from 'react-native-paper';
+import axios from 'axios';
 
 const SetupUserInfoScreen = ({ navigation }) => {
     const [image, setImage] = useState(null);
@@ -18,16 +19,14 @@ const SetupUserInfoScreen = ({ navigation }) => {
     const [dateOfBirth, setDateOfBirth] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [gender, setGender] = useState('');
-    const [userId, setUserId] = useState(null);
-    const [userInfo, setUserInfo] = useState({});
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [token, setToken] = useState('');
-
+    const [displayDate, setDisplayDate] = useState('Select date of birth');
+    const [imageType, setImageType] = useState(null)
 
 
 
     const pickImage = async () => {
-        // Request camera or library permission if needed
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
             alert('Sorry, we need camera roll permissions to pick an image.');
@@ -35,7 +34,7 @@ const SetupUserInfoScreen = ({ navigation }) => {
         }
 
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
@@ -43,8 +42,21 @@ const SetupUserInfoScreen = ({ navigation }) => {
 
         if (!result.canceled) {
             setImage(result.assets[0].uri);
+            const fileType = getFileTypeFromUri(result.assets[0].uri)
+            setImageType(fileType);
+            console.log("----------- image uri: " + image + " Type: " + imageType);
         }
     };
+
+    function getFileTypeFromUri(uri) {
+        const extensionIndex = uri.lastIndexOf('.');
+        if (extensionIndex !== -1) {
+            return uri.substring(extensionIndex + 1);
+        } else {
+            return '';
+        }
+    }
+
     useEffect(() => {
         const fetchTOKEN = async () => {
             try {
@@ -62,49 +74,121 @@ const SetupUserInfoScreen = ({ navigation }) => {
     const onChangeDate = (event, selectedDate) => {
         const currentDate = selectedDate || dateOfBirth;
         setShowDatePicker(false);
-        setDateOfBirth(currentDate.toISOString().slice(0, 10));
+        setDateOfBirth(currentDate);
+        setDisplayDate(currentDate ? currentDate.toISOString().slice(0, 10) : 'Select a date');
         console.log(dateOfBirth);
     };
 
-    // const handleSave = () => {
-    //     // Send updated user info to your backend
-    //     navigation.goBack(); // Assuming navigation back after save
-    //     alert('finnished ')
-    // };
-
     const handleSave = async () => {
+        setIsLoading(true);
+        if (!image) {
+            alert('Please choose a profile picture.');
+            setIsLoading(false);
+            return;
+        }
+        if (!name.trim()) {
+            alert('Please enter your name.');
+            setIsLoading(false);
+            return;
+        }
+
+        if (!phone.trim()) {
+            alert('Please enter your phone number.');
+            setIsLoading(false);
+            return;
+        }
+
+        if (!address.trim()) {
+            alert('Please enter your address.');
+            setIsLoading(false);
+            return;
+        }
+
+        if (!city.trim()) {
+            alert('Please enter your city.');
+            setIsLoading(false);
+            return;
+        }
+        if (displayDate === 'Select date of birth') {
+            alert('Please select your date of birth.');
+            setIsLoading(false);
+            return;
+        }
+
+        if (!gender) {
+            alert('Please select your gender.');
+            setIsLoading(false);
+            return;
+        }
         if (image) {
-            let formData = new FormData();
-            let filename = image.split('/').pop();
+            const formData = new FormData();
 
-            let match = /\.(\w+)$/.exec(filename);
-            let type = match ? `image/${match[1]}` : `image`;
-
-            formData.append('image', { uri: image, name: filename, type });
+            formData.append('avatar', {
+                uri: image,
+                type: `image/${imageType}`,
+                name: `avatar.${imageType}`,
+            });
             formData.append('name', name);
             formData.append('phone', phone);
             formData.append('address', address);
             formData.append('city', city);
-            formData.append('dateOfBirth', dateOfBirth);
+            formData.append('dob', dateOfBirth.toISOString().slice(0, 10));
             formData.append('gender', gender);
 
             try {
-                let response = await fetch(`${API_URL}/api/infoUser`, {
-                    method: 'POST',
-                    body: formData,
+                const response = await axios({
+                    method: 'post',
+                    url: `${API_URL}/api/infoUser`,
+                    data: formData,
                     headers: {
-                        'content-type': 'multipart/form-data',
-                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${token}`,
                     },
                 });
-
-                let responseJson = await response.json();
-                console.log(responseJson);
-                navigation.goBack(); // Assuming navigation back after save
-                alert('Finished');
+        
+                if (response.status === 200) {
+                    console.log(response.data.message);
+                    alert(response.data.message);
+                    setIsLoading(false);
+                } else {
+                    console.error('Error Updated :', response.data.message);
+                    alert(response.data.message);
+                    setIsLoading(false);
+                }
             } catch (error) {
-                console.error(error);
-            }
+                console.error('Error Updated request:', error);
+                setIsLoading(false);
+            } 
+
+
+            // try {
+            //     const response = await fetch(`${API_URL}/api/infoUser`, {
+            //         method: 'POST',
+            //         headers: {
+            //             'content-type': 'multipart/form-data',
+            //             Authorization: `Bearer ${token}`,
+            //         },
+            //         body: formData,
+            //     });
+
+            //     const responseJson = await response.json();
+            //     console.log(responseJson);
+            //     if (responseJson.status === 200) {
+            //         console.log(responseJson.message);
+            //         alert(responseJson.message);
+            //         setIsLoading(false);
+            //         navigation.goBack();
+            //     } else {
+            //         console.log(responseJson.message);
+            //         alert(responseJson.message);
+            //         setIsLoading(false);
+            //     }
+            // } catch (error) {
+            //     console.error("error during setup user info",error);
+            //     setIsLoading(false);
+            //     alert(error.message);
+
+            // }
         }
     };
 
@@ -112,21 +196,17 @@ const SetupUserInfoScreen = ({ navigation }) => {
         navigation.goBack();
     };
 
-    const dateObj = new Date(userInfo.dob);
 
-    // Format the date object to dd/mm/yyyy format using toLocaleDateString()
-    const formattedDate = dateObj.toLocaleDateString("en-GB");
 
-    // if (isLoading) {
-    //     return (
-    //         <View style={styles.loadingContainer}>
-    //             <ActivityIndicator size="large" color="#0000ff" />
-    //         </View>
-    //     );
-    // } else {
+    if (isLoading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        );
+    }
     return (
-
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
             <View style={styles.headerContainer}>
                 <TouchableOpacity onPress={handleGoBack}>
                     <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
@@ -150,7 +230,6 @@ const SetupUserInfoScreen = ({ navigation }) => {
                 )}
             </View>
 
-            {/* User Information Inputs */}
             <TextInput
                 style={styles.textInput}
                 value={name}
@@ -176,12 +255,11 @@ const SetupUserInfoScreen = ({ navigation }) => {
                 onChangeText={setCity}
                 placeholder='City' />
 
-            {/* Date of Birth Picker */}
             <TouchableOpacity style={styles.dateInput}
                 onPress={() => setShowDatePicker(true)}
             >
                 <Text style={styles.dateInputText}>
-                    {dateOfBirth.toLocaleDateString("en-GB")}
+                    {displayDate}
                 </Text>
             </TouchableOpacity>
             {showDatePicker && (
@@ -194,8 +272,8 @@ const SetupUserInfoScreen = ({ navigation }) => {
                     onChange={onChangeDate}
                 />
             )}
-            {/* Gender Selection */}
-            <Picker //picker only work when setting up new account
+
+            <Picker
                 selectedValue={gender}
                 style={styles.picker}
                 onValueChange={setGender}>
@@ -204,15 +282,13 @@ const SetupUserInfoScreen = ({ navigation }) => {
                 <Picker.Item label="Female" value="female" />
             </Picker>
 
-            {/* Save Button */}
             <TouchableOpacity onPress={handleSave} style={styles.buttonBG} >
                 <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.saveButton} >
                     <Text style={styles.saveButtonText}>Save Updates</Text>
                 </LinearGradient>
             </TouchableOpacity>
-        </View>
+        </ScrollView>
     );
-    // }
 };
 
 const styles = StyleSheet.create({

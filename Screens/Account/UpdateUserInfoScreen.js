@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
-import * as ImagePicker from 'expo-image-picker'; // For image picker
-import DateTimePicker from '@react-native-community/datetimepicker'; // For date picker
+import * as ImagePicker from 'expo-image-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Picker } from '@react-native-picker/picker'; // For gender selection
+import { Picker } from '@react-native-picker/picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../Api';
 import { ActivityIndicator } from 'react-native-paper';
+import axios from 'axios';
 
 const UpdateUserInfoScreen = ({ navigation }) => {
     const [image, setImage] = useState(null);
@@ -23,6 +24,7 @@ const UpdateUserInfoScreen = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [StoredToken, setStoredToken] = useState(null);
     const [imageType, setImageType] = useState(null)
+    const [displayDate, setDisplayDate] = useState('');
 
     useEffect(() => {
         const fetchUserId = async () => {
@@ -40,34 +42,34 @@ const UpdateUserInfoScreen = ({ navigation }) => {
 
     }, []);
 
-    useEffect(() => {
-        const fetchUserInfo = async () => {
-            if (userId) {
-                setIsLoading(true);
-                try {
-                    const response = await fetch(`${API_URL}/api/getInfoUser/${userId}`);
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log(data.data);
-                        setUserInfo(data.data);
-                        setImage(data.data.avatar);
-                        setGender(data.data.gender);
-                        setAddress(data.data.address);
-                        setCity(data.data.city);
-                        setPhone(data.data.phone);
-                        setName(data.data.name);
-                        setDateOfBirth(new Date(data.data.dob));
-                    } else {
-                        console.error('Error fetching user info:', response.status);
-                    }
-                } catch (error) {
-                    console.error('Error fetching user info:-', error);
-                } finally {
-                    setIsLoading(false);
+    const fetchUserInfo = async () => {
+        if (userId) {
+            setIsLoading(true);
+            try {
+                const response = await fetch(`${API_URL}/api/getInfoUser/${userId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data.data);
+                    setUserInfo(data.data);
+                    setImage(data.data.avatar);
+                    setGender(data.data.gender);
+                    setAddress(data.data.address);
+                    setCity(data.data.city);
+                    setPhone(data.data.phone);
+                    setName(data.data.name);
+                    setDateOfBirth(new Date(data.data.dob));
+                } else {
+                    console.error('Error fetching user info:', response.status);
                 }
+            } catch (error) {
+                console.error('Error fetching user info:-', error);
+            } finally {
+                setIsLoading(false);
             }
-        };
+        }
+    };
 
+    useEffect(() => {
         fetchUserInfo();
     }, [userId]);
 
@@ -87,19 +89,17 @@ const UpdateUserInfoScreen = ({ navigation }) => {
 
         fetchTOKEN();
     }, []);
-    console.log(StoredToken);
 
     function getFileTypeFromUri(uri) {
-        const extensionIndex = uri.lastIndexOf('.'); // Find the last dot (.)
+        const extensionIndex = uri.lastIndexOf('.');
         if (extensionIndex !== -1) {
-            return uri.substring(extensionIndex + 1); // Extract the extension after the dot
+            return uri.substring(extensionIndex + 1);
         } else {
-            return ''; // No extension found
+            return ''; 
         }
     }
 
     const pickImage = async () => {
-        // Request camera or library permission if needed
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
             alert('Sorry, we need camera roll permissions to pick an image.');
@@ -117,14 +117,17 @@ const UpdateUserInfoScreen = ({ navigation }) => {
             setImage(result.assets[0].uri);
             const fileType = getFileTypeFromUri(result.assets[0].uri)
             setImageType(fileType);
-            console.log("----------- image uri: " + image + " Type: " + imageType);
+            console.log("----+++++++------- image uri: " + result.assets[0].uri+ " Type: " +fileType);
+
         }
     };
 
     const onChangeDate = (event, selectedDate) => {
         const currentDate = selectedDate || dateOfBirth;
         setShowDatePicker(false);
-        setDateOfBirth(formattedDate);
+        setDateOfBirth(currentDate);
+        setDisplayDate(currentDate.toISOString().slice(0, 10));
+        console.log(dateOfBirth);
     };
 
     const handleSave = async () => {
@@ -143,49 +146,41 @@ const UpdateUserInfoScreen = ({ navigation }) => {
         formData.append('phone', phone);
         formData.append('address', address);
         formData.append('city', city);
-        let formattedDate = dateOfBirth.toISOString().split('T')[0];
-        // console.log("-----------" + formattedDate);
-        formData.append('dob', formattedDate); // Format the date in "yyyy-mm-dd" format
+        formData.append('dob', dateOfBirth.toISOString().slice(0, 10));
         formData.append('gender', gender);
+        console.log(formData);
 
         try {
-            const response = await fetch(`${API_URL}/api/updateInfoUser`, {
-                method: 'POST',
+            const response = await axios({
+                method: 'post',
+                url: `${API_URL}/api/updateInfoUser`,
+                data: formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${StoredToken}`,
                 },
-                body: formData,
             });
-
-            const responseData = await response.json();
-
-            if (responseData.status === 200) {
-                console.log(responseData.message);
-                alert(responseData.message);
+    
+            if (response.status === 200) {
+                console.log(response.data.message);
+                alert(response.data.message);
                 setIsLoading(false);
-
-                // You can perform further actions here, like updating user info
             } else {
-                console.error('Error Updated :', responseData.message);
-                alert(responseData.message);
+                console.error('Error Updated :', response.data.message);
+                alert(response.data.message);
                 setIsLoading(false);
-
             }
         } catch (error) {
             console.error('Error Updated request:', error);
-            alert(error);
-
+            setIsLoading(false);
+        } finally {
+            fetchUserInfo();
         }
     };
 
     const handleGoBack = () => {
         navigation.goBack();
     };
-
-    // Format the date object to dd/mm/yyyy format using toLocaleDateString()
-    const formattedDate = dateOfBirth.toLocaleDateString("en-GB");
-    // console.log("-----------" + formattedDate);
 
     if (isLoading) {
         return (
@@ -197,9 +192,6 @@ const UpdateUserInfoScreen = ({ navigation }) => {
         return (
 
             <View style={styles.container}>
-                {/* <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-                    
-                </LinearGradient> */}
                 <View style={styles.headerContainer}>
                     <TouchableOpacity onPress={handleGoBack}>
                         <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
@@ -240,10 +232,11 @@ const UpdateUserInfoScreen = ({ navigation }) => {
 
                 {/* Date of Birth Picker */}
                 <TouchableOpacity style={styles.dateInput}
-                    onPress={() => setShowDatePicker(true)}//picker only work when setting up new account
+                    onPress={() => setShowDatePicker(true)}
                 >
                     <Text style={styles.dateInputText}>
-                        {formattedDate}
+                        {dateOfBirth instanceof Date ? dateOfBirth.toISOString().slice(0, 10) : dateOfBirth}
+
                     </Text>
                 </TouchableOpacity>
                 {showDatePicker && (
@@ -258,7 +251,7 @@ const UpdateUserInfoScreen = ({ navigation }) => {
                 )}
 
                 {/* Gender Selection */}
-                <Picker //picker only work when setting up new account
+                <Picker 
                     selectedValue={gender}
                     style={styles.picker}
                     onValueChange={setGender}>
@@ -302,8 +295,6 @@ const styles = StyleSheet.create({
     imageContainer: {
         alignItems: 'center',
         marginBottom: 20,
-        // width: 300, 
-        // height: 300, 
     },
 
     profileImage: {

@@ -118,17 +118,20 @@ const RegisterScreen = () => {
         body: JSON.stringify({ email, password, name }),
       });
       const data = await response.json();
-      console.log("msg: "+data.message);
-      alert(data.message);
-      setIsLoading(false);
+      console.log("msg: " + data.message);
+
       if (data.status === 200) {
         // Registration successful, handle the response accordingly
+        alert(data.message);
+        setIsLoading(false);
         navigation.navigate('Login');
         ToastAndroid.BOTTOM.show('Confirm in Email');
         console.log(data);
       } else {
         // Registration failed, handle the error
-        console.log(data.error);
+        console.log(data.message);
+        alert(data.message);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error('Error during registration:', error);
