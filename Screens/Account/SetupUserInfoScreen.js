@@ -128,12 +128,12 @@ const SetupUserInfoScreen = ({ navigation }) => {
                 type: `image/${imageType}`,
                 name: `avatar.${imageType}`,
             });
-            formData.append('name', name);
-            formData.append('phone', phone);
-            formData.append('address', address);
-            formData.append('city', city);
+            formData.append('name', name.toString());
+            formData.append('phone', phone.toString());
+            formData.append('address', address.toString());
+            formData.append('city', city.toString());
             formData.append('dob', dateOfBirth.toISOString().slice(0, 10));
-            formData.append('gender', gender);
+            formData.append('gender', gender.toString());
 
             try {
                 const response = await axios({
@@ -160,35 +160,6 @@ const SetupUserInfoScreen = ({ navigation }) => {
                 setIsLoading(false);
             } 
 
-
-            // try {
-            //     const response = await fetch(`${API_URL}/api/infoUser`, {
-            //         method: 'POST',
-            //         headers: {
-            //             'content-type': 'multipart/form-data',
-            //             Authorization: `Bearer ${token}`,
-            //         },
-            //         body: formData,
-            //     });
-
-            //     const responseJson = await response.json();
-            //     console.log(responseJson);
-            //     if (responseJson.status === 200) {
-            //         console.log(responseJson.message);
-            //         alert(responseJson.message);
-            //         setIsLoading(false);
-            //         navigation.goBack();
-            //     } else {
-            //         console.log(responseJson.message);
-            //         alert(responseJson.message);
-            //         setIsLoading(false);
-            //     }
-            // } catch (error) {
-            //     console.error("error during setup user info",error);
-            //     setIsLoading(false);
-            //     alert(error.message);
-
-            // }
         }
     };
 
