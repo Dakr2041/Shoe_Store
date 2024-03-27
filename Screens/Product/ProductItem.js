@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '../Api';
+
 
 const iconFavourite = require('../Product/favourite_icon.png');
 const addtocarticon = require('../Product/addtocart.png');
+const windowWidth = Dimensions.get('window').width;
 
 const ProductItem = ({ product, itemWidth }) => {
   const navigation = useNavigation();
@@ -18,23 +22,46 @@ const ProductItem = ({ product, itemWidth }) => {
     setIsFavourite(!isFavourite);
   };
 
-  const handleAddToCart = async () => {
-    if (!StoredToken) {
-      console.log('No token available. User needs to log in.');
-      alert("Failed to add item to cart");
-      return;
-    }
 
-    await addToCart(product.id, StoredToken);
+  const handleAddToCart = async () => {
+    try {
+      const storedToken = await AsyncStorage.getItem('authToken');
+      if (!storedToken) {
+        console.log('No token available. User needs to log in.');
+        alert("Failed to add item to cart");
+        return;
+      }
+      const response = await fetch(`${API_URL}/cart/addCart/${product.id}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId: product.id }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Item added to cart:', data);
+      alert(data.message);
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+      alert(error);
+    }
   };
 
+
+
   return (
-    <TouchableOpacity style={[styles.container]} onPress={() => navigateToProductDetail(product)} >
+    <TouchableOpacity style={[styles.container, { width: windowWidth / 2 - 15 }]} onPress={() => navigateToProductDetail(product)}>
       <View style={styles.imageContainer}>
         <Image source={{ uri: product.imageProduct }} style={styles.image} />
         {product.priceSale > 0 && (
           <View style={styles.priceSaleContainer}>
-            <Text style={styles.priceSaleText}>-{product.priceSale}%</Text>
+            <Text style={styles.priceSaleText}>-{product.priceSale}đ</Text>
           </View>
         )}
       </View>

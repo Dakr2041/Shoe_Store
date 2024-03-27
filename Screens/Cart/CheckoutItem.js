@@ -3,9 +3,10 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import { API_URL } from '../Api';
 import { formatVND } from '../Functions/FormatVND';
 import { ActivityIndicator } from 'react-native-paper';
+import ProductItem from '../Product/ProductItem';
 
 const CheckoutItem = ({ item }) => {
-  const defaultImage = 'https://via.placeholder.com/250'; // Placeholder image URL
+  const defaultImage = 'https://via.placeholder.com/250';
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ const CheckoutItem = ({ item }) => {
   };
 
   if (!product) {
-    return  <ActivityIndicator size="small" style={{ marginTop: 80 }} />
+    return <ActivityIndicator size="small" style={{ marginTop: 80 }} />
   }
 
   return (
@@ -44,9 +45,9 @@ const CheckoutItem = ({ item }) => {
       />
       <View style={styles.cartDetails}>
         <Text style={styles.cartTitle}>{product.name}</Text>
-        <Text style={styles.cartPrice}>{formatVND(product.price)}</Text>
-        <Text >Qty: {item.quantity}</Text>
-        <Text >Total: {formatVND(product.price * item.quantity)}</Text>
+
+        <Text >Quantity: {item.quantity}</Text>
+        <Text >Total: {formatVND((product.price - product.priceSale) * item.quantity)}</Text>
       </View>
     </View>
   );
