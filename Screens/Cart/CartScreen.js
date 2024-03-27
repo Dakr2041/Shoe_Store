@@ -160,6 +160,7 @@ const CartScreen = () => {
       });
       return newTotal < 0 ? 0 : newTotal;
     });
+
   };
 
   const onQuantityChange = (oldQuantity, newQuantity, itemPrice, isChecked, item) => {
@@ -185,8 +186,13 @@ const CartScreen = () => {
     } else {
       console.log('Selected items:', selectedItems, 'Total price:', totalPrice);
       navigation.navigate('Checkout', { cartItems: selectedItems, totalPrice });
+      setTotalPrice(0);
+      setSelectedItems([]);
+
     }
   };
+
+
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -206,6 +212,8 @@ const CartScreen = () => {
                 onRemoveItem={handleDeleteConfirmation}
                 onQuantityChange={onQuantityChange}
                 onItemChecked={handleItemChecked}
+
+
               />
             )}
             keyExtractor={item => item.id}
@@ -273,3 +281,4 @@ const styles = StyleSheet.create({
 });
 
 export default CartScreen;
+
