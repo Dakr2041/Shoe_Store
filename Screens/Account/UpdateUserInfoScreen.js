@@ -142,12 +142,12 @@ const UpdateUserInfoScreen = ({ navigation }) => {
             });
         }
 
-        formData.append('name', name);
-        formData.append('phone', phone);
-        formData.append('address', address);
-        formData.append('city', city);
+        formData.append('name', name.toString());
+        formData.append('phone', phone.toString());
+        formData.append('address', address.toString());
+        formData.append('city', city.toString());
         formData.append('dob', dateOfBirth.toISOString().slice(0, 10));
-        formData.append('gender', gender);
+        formData.append('gender', gender.toString());
         console.log(formData);
 
         try {
@@ -174,7 +174,7 @@ const UpdateUserInfoScreen = ({ navigation }) => {
             console.error('Error Updated request:', error);
             setIsLoading(false);
         } finally {
-            fetchUserInfo();
+            await fetchUserInfo();
         }
     };
 
