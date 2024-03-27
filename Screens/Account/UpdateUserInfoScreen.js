@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image,ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
+
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -86,7 +87,6 @@ const UpdateUserInfoScreen = ({ navigation }) => {
                 setIsLoading(false);
             }
         };
-
         fetchTOKEN();
     }, []);
 
@@ -95,7 +95,7 @@ const UpdateUserInfoScreen = ({ navigation }) => {
         if (extensionIndex !== -1) {
             return uri.substring(extensionIndex + 1);
         } else {
-            return ''; 
+            return '';
         }
     }
 
@@ -117,7 +117,7 @@ const UpdateUserInfoScreen = ({ navigation }) => {
             setImage(result.assets[0].uri);
             const fileType = getFileTypeFromUri(result.assets[0].uri)
             setImageType(fileType);
-            console.log("----+++++++------- image uri: " + result.assets[0].uri+ " Type: " +fileType);
+            console.log("----+++++++------- image uri: " + result.assets[0].uri + " Type: " + fileType);
 
         }
     };
@@ -131,26 +131,28 @@ const UpdateUserInfoScreen = ({ navigation }) => {
     };
 
     const handleSave = async () => {
-        const formData = new FormData();
-        setIsLoading(true);
-
-        if (image) {
-            formData.append('avatar', {
-                uri: image,
-                type: `image/${imageType}`,
-                name: `avatar.${imageType}`,
-            });
-        }
-
-        formData.append('name', name.toString());
-        formData.append('phone', phone.toString());
-        formData.append('address', address.toString());
-        formData.append('city', city.toString());
-        formData.append('dob', dateOfBirth.toISOString().slice(0, 10));
-        formData.append('gender', gender.toString());
-        console.log(formData);
-
         try {
+            const formData = new FormData();
+            setIsLoading(true);
+
+            if (image) {
+                formData.append('avatar', {
+                    uri: image,
+                    type: `image/${imageType}`,
+                    name: `avatar.${imageType}`,
+                });
+            }
+
+            formData.append('name', name.toString());
+            formData.append('phone', phone.toString());
+            formData.append('address', address.toString());
+            formData.append('city', city.toString());
+            formData.append('dob', dateOfBirth.toISOString().slice(0, 10));
+            formData.append('gender', gender.toString());
+
+
+            console.log(formData);
+
             const response = await axios({
                 method: 'post',
                 url: `${API_URL}/api/updateInfoUser`,
@@ -160,21 +162,18 @@ const UpdateUserInfoScreen = ({ navigation }) => {
                     Authorization: `Bearer ${StoredToken}`,
                 },
             });
-    
+
             if (response.status === 200) {
                 console.log(response.data.message);
-                alert(response.data.message);
                 setIsLoading(false);
+                await fetchUserInfo();
             } else {
                 console.error('Error Updated :', response.data.message);
-                alert(response.data.message);
                 setIsLoading(false);
             }
         } catch (error) {
             console.error('Error Updated request:', error);
             setIsLoading(false);
-        } finally {
-            await fetchUserInfo();
         }
     };
 
@@ -251,7 +250,7 @@ const UpdateUserInfoScreen = ({ navigation }) => {
                 )}
 
                 {/* Gender Selection */}
-                <Picker 
+                <Picker
                     selectedValue={gender}
                     style={styles.picker}
                     onValueChange={setGender}>

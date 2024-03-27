@@ -121,21 +121,22 @@ const SetupUserInfoScreen = ({ navigation }) => {
             return;
         }
         if (image) {
-            const formData = new FormData();
-
-            formData.append('avatar', {
-                uri: image,
-                type: `image/${imageType}`,
-                name: `avatar.${imageType}`,
-            });
-            formData.append('name', name.toString());
-            formData.append('phone', phone.toString());
-            formData.append('address', address.toString());
-            formData.append('city', city.toString());
-            formData.append('dob', dateOfBirth.toISOString().slice(0, 10));
-            formData.append('gender', gender.toString());
-
             try {
+                const formData = new FormData();
+
+                formData.append('avatar', {
+                    uri: image,
+                    type: `image/${imageType}`,
+                    name: `avatar.${imageType}`,
+                });
+                formData.append('name', name.toString());
+                formData.append('phone', phone.toString());
+                formData.append('address', address.toString());
+                formData.append('city', city.toString());
+                formData.append('dob', dateOfBirth.toISOString().slice(0, 10));
+                formData.append('gender', gender.toString());
+
+
                 const response = await axios({
                     method: 'post',
                     url: `${API_URL}/api/infoUser`,
@@ -145,7 +146,7 @@ const SetupUserInfoScreen = ({ navigation }) => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-        
+
                 if (response.status === 200) {
                     console.log(response.data.message);
                     alert(response.data.message);
@@ -158,7 +159,7 @@ const SetupUserInfoScreen = ({ navigation }) => {
             } catch (error) {
                 console.error('Error Updated request:', error);
                 setIsLoading(false);
-            } 
+            }
 
         }
     };
