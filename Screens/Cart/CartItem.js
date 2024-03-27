@@ -5,9 +5,16 @@ import { formatVND } from '../Functions/FormatVND';
 import QuantityPicker from '../Functions/QuantityPicker';
 import { Checkbox } from 'react-native-paper';
 
-const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked }) => {
+const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked, resetCheckboxes }) => {
   const defaultImage = 'https://via.placeholder.com/250';
   const [isChecked, setIsChecked] = useState(false);
+
+  useEffect(() => {
+    // Reset checkbox state when resetCheckboxes prop changes
+    if (resetCheckboxes) {
+      setIsChecked(false);
+    }
+  }, [resetCheckboxes]);
 
   const getImageSource = () => {
     if (item.imageProduct && item.imageProduct.length > 0) {
@@ -24,14 +31,11 @@ const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked }) => {
     onItemChecked(isChecked, item.price, selectedQuantity, item);
   }, [isChecked]);
 
-
-
   const handleQuantityChange = (newQuantity) => {
     const newPrice = (item.price - item.priceSale) * newQuantity;
     setItemPrice(newPrice);
     onQuantityChange(selectedQuantity, newQuantity, item.price, isChecked, item);
     setSelectedQuantity(newQuantity);
-
   };
 
   const handlePress = () => {
@@ -48,7 +52,6 @@ const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked }) => {
             color={isChecked ? '#f5ca0c' : '#ccc'}
             onPress={handlePress}
           />
-
         </View>
       </TouchableOpacity>
       <Image
@@ -58,7 +61,6 @@ const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked }) => {
       />
       <View style={styles.cartDetails}>
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.cartTitle}>{item.name}</Text>
-
         <QuantityPicker
           initialQuantity={selectedQuantity}
           onQuantityChange={handleQuantityChange}
