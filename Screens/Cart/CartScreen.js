@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Button, FlatList, StyleSheet, ActivityIndicator, Alert } from 'react-native';
-import CartItem from './CartItem'; // Import your CartItem component
+import CartItem from './CartItem';
 import { LinearGradient } from 'expo-linear-gradient';
 import { API_URL } from '../Api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 import { formatVND } from '../Functions/FormatVND';
-import { useNavigation } from '@react-navigation/native';
-
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 
 const CartScreen = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -18,7 +17,7 @@ const CartScreen = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [selectedItems, setSelectedItems] = useState([]);
 
-
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchTOKEN = async () => {
@@ -29,13 +28,12 @@ const CartScreen = () => {
       } catch (error) {
         console.error('Error fetching Token from storage:', error);
         setHasError(true);
-
         setIsLoading(false);
       }
     };
 
     fetchTOKEN();
-  }, []);
+  }, [isFocused]);
 
   const fetchData = async () => {
     if (!StoredToken) {
@@ -71,13 +69,13 @@ const CartScreen = () => {
 
   useEffect(() => {
     fetchData();
-  }, [StoredToken]);
+  }, [StoredToken, isFocused]);
 
   const onRemoveItem = async (productId) => {
     try {
       if (!StoredToken) {
         console.warn('No token available. User needs to log in.');
-        // Handle unauthorized case (e.g., display login prompt)
+
         return;
       }
 
@@ -85,9 +83,10 @@ const CartScreen = () => {
       console.log('Item deleted from cart');
     } catch (error) {
       console.error('Error deleting item:', error);
-      // Handle errors (e.g., display error message to user)
+
     }
   };
+
   const removeItemFromAPI = async (productId, token) => {
     try {
       const response = await fetch(`${API_URL}/cart/deleteItemCart/${productId}`, {
@@ -109,7 +108,7 @@ const CartScreen = () => {
   };
 
   const handleRefresh = async () => {
-    setItemsId([]); // Clear existing data before refetching
+    setItemsId([]);
     await fetchData();
   };
 
@@ -121,7 +120,7 @@ const CartScreen = () => {
         { text: 'Cancel', onPress: () => console.log('Cancel deletion') },
         { text: 'Delete', onPress: () => onRemoveItem(itemId), style: 'destructive' },
       ],
-      { cancelable: false }, // Disable background dismissal
+      { cancelable: false },
     );
   };
 
@@ -142,13 +141,9 @@ const CartScreen = () => {
       let newTotal = 0;
       if (isChecked) {
         newTotal = prevTotal + (itemPrice - item.priceSale) * quantity;
-        // console.log("Checked new total: " + newTotal + " = prevTotal(" + prevTotal + ")  + itemPrice(" + itemPrice + ") * quantity(" + quantity + ")");
-
       } else {
         if (totalPrice > 0) {
           newTotal = prevTotal - (itemPrice - item.priceSale) * quantity;
-          // console.log("Unchecked new total: " + newTotal + " = prevTotal(" + prevTotal + ")  - itemPrice(" + itemPrice + ") * quantity(" + quantity + ")");
-
         }
       }
       setSelectedItems(prevItems => {
@@ -160,7 +155,6 @@ const CartScreen = () => {
       });
       return newTotal < 0 ? 0 : newTotal;
     });
-
   };
 
   const onQuantityChange = (oldQuantity, newQuantity, itemPrice, isChecked, item) => {
@@ -169,7 +163,6 @@ const CartScreen = () => {
       setTotalPrice(prevTotal => {
         let quantityDifference = newQuantity - oldQuantity;
         let newTotal = prevTotal + itemPrice * quantityDifference;
-        // console.log("Quantity change new total: " + newTotal + " = prevTotal(" + prevTotal + ") + itemPrice(" + itemPrice + ") * quantityDifference(" + quantityDifference + ")");
         return newTotal < 0 ? 0 : newTotal;
       });
       setSelectedItems(prevItems =>
@@ -188,11 +181,8 @@ const CartScreen = () => {
       navigation.navigate('Checkout', { cartItems: selectedItems, totalPrice });
       setTotalPrice(0);
       setSelectedItems([]);
-
     }
   };
-
-
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -212,8 +202,6 @@ const CartScreen = () => {
                 onRemoveItem={handleDeleteConfirmation}
                 onQuantityChange={onQuantityChange}
                 onItemChecked={handleItemChecked}
-
-
               />
             )}
             keyExtractor={item => item.id}
@@ -246,7 +234,6 @@ const styles = StyleSheet.create({
     opacity: 0.35,
     height: '100%',
     padding: 50
-
   },
   checkoutContainer: {
     flexDirection: 'row',
