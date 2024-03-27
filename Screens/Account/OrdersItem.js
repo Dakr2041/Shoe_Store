@@ -33,15 +33,15 @@ const OrdersItem = ({ order }) => {
         fetchProduct();
     }, [order]);
     const date = new Date(order.createdAt);
-    // const formattedDate = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-    const formattedDate = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`;
+
+    const formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
     if (loading) {
         return <ActivityIndicator size="large" color="#0000ff" />;
     }
     return (
         <View style={styles.itemContainer}>
             <View style={styles.topContainer}>
-                <Text style={{fontSize:14}}>Orderdate: {formattedDate}</Text>
+                <Text style={{ fontSize: 14 }}>Orderdate: {formattedDate}</Text>
             </View>
             <FlatList
                 data={products}
@@ -51,20 +51,20 @@ const OrdersItem = ({ order }) => {
                         {item.data.imageProduct && <Image source={{ uri: item.data.imageProduct }} style={{ width: 100, height: 100 }} />}
 
                         <View style={styles}>
-                            <Text style={{fontSize:14, fontWeight:'bold'}}>Name: {item.data.name}</Text>
-                            <Text style={{fontSize:12}}>Price: {formatVND(item.data.price)}</Text>
-                            <Text style={{fontSize:12}}>Qty: {item.quantity}</Text>
-                            <Text style={{fontSize:14, fontWeight:'bold'}}>Total: {formatVND(item.quantity * item.data.price)}</Text>
+                            <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Name: {item.data.name}</Text>
+                            <Text style={{ fontSize: 12 }}>Price: {formatVND(item.data.price - item.data.priceSale)}</Text>
+                            <Text style={{ fontSize: 12 }}>Quantity: {item.quantity}</Text>
+                            <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Total: {formatVND(item.quantity * (item.data.price - item.data.priceSale))}</Text>
                         </View>
 
                     </View>
                 )}
             />
             <View style={styles.bottomContainer}>
-                <Text style={{fontSize:14, fontWeight:'bold'}}>Sub total: {formatVND(order.total)}</Text>
+                <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Sub total: {formatVND(order.total)}</Text>
 
                 <TouchableOpacity style={{ alignSelf: 'center' }} >
-                    {/* <MaterialCommunityIcons name="delete" size={25} color="#f00" /> */}
+
                 </TouchableOpacity>
             </View>
         </View>

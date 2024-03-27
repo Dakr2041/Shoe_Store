@@ -5,8 +5,8 @@ import { formatVND } from '../Functions/FormatVND';
 import QuantityPicker from '../Functions/QuantityPicker';
 import { Checkbox } from 'react-native-paper';
 
-const CartItem = ({ item, onRemoveItem, onQuantityChange ,onItemChecked}) => {
-  const defaultImage = 'https://via.placeholder.com/250'; // Placeholder image URL
+const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked }) => {
+  const defaultImage = 'https://via.placeholder.com/250';
   const [isChecked, setIsChecked] = useState(false);
 
   const getImageSource = () => {
@@ -18,18 +18,18 @@ const CartItem = ({ item, onRemoveItem, onQuantityChange ,onItemChecked}) => {
   };
 
   const [selectedQuantity, setSelectedQuantity] = useState(1);
-  const [itemPrice, setItemPrice] = useState(item.price);
+  const [itemPrice, setItemPrice] = useState(item.price - item.priceSale);
 
   useEffect(() => {
-    onItemChecked(isChecked, item.price, selectedQuantity,item);
+    onItemChecked(isChecked, item.price, selectedQuantity, item);
   }, [isChecked]);
 
-  
-  
+
+
   const handleQuantityChange = (newQuantity) => {
-    const newPrice = item.price * newQuantity;
+    const newPrice = (item.price - item.priceSale) * newQuantity;
     setItemPrice(newPrice);
-    onQuantityChange(selectedQuantity,newQuantity, item.price, isChecked,item);
+    onQuantityChange(selectedQuantity, newQuantity, item.price, isChecked, item);
     setSelectedQuantity(newQuantity);
 
   };
@@ -58,7 +58,7 @@ const CartItem = ({ item, onRemoveItem, onQuantityChange ,onItemChecked}) => {
       />
       <View style={styles.cartDetails}>
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.cartTitle}>{item.name}</Text>
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.cartPrice}>{formatVND(item.price)}</Text>
+
         <QuantityPicker
           initialQuantity={selectedQuantity}
           onQuantityChange={handleQuantityChange}

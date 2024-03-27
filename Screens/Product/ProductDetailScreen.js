@@ -1,13 +1,14 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/core';
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ActivityIndicator, Modal } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Button } from 'react-native-paper';
-import { API_URL } from '../Api';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '../Api';
 import { formatVND } from '../Functions/FormatVND';
+
+const iconFavourite = require('../Product/favourite_icon.png');
 
 const ProductDetailScreen = ({ route }) => {
   const [product, setProduct] = useState({});
@@ -16,7 +17,7 @@ const ProductDetailScreen = ({ route }) => {
   const [StoredToken, setStoredToken] = useState(null);
 
   useEffect(() => {
-    const { product } = route.params; // Get product data from navigation params
+    const { product } = route.params;
     setProduct(product);
     setIsLoading(false);
   }, [route.params]);
@@ -35,7 +36,6 @@ const ProductDetailScreen = ({ route }) => {
         setStoredToken(storedToken ? String(storedToken) : null);
       } catch (error) {
         console.error('Error fetching Token from storage:', error);
-        setHasError(true);
       } finally {
         setIsLoading(false);
       }
@@ -45,9 +45,7 @@ const ProductDetailScreen = ({ route }) => {
   }, []);
 
   async function addToCart(productId, token) {
-    console.log(StoredToken);
     setIsLoading(true);
-
     try {
       const response = await fetch(`${API_URL}/cart/addCart/${productId}`, {
         method: 'POST',
@@ -65,13 +63,11 @@ const ProductDetailScreen = ({ route }) => {
       const data = await response.json();
       console.log('Item added to cart:', data);
       alert(data.message);
-      setIsLoading(false);
-
     } catch (error) {
       console.error('Error adding item to cart:', error);
       alert(error);
+    } finally {
       setIsLoading(false);
-
     }
   }
 
@@ -104,42 +100,55 @@ const ProductDetailScreen = ({ route }) => {
 
           </View>
           <Image source={{ uri: product.imageProduct }} style={styles.productImage} />
+          {product.priceSale > 0 && (
+            <View style={styles.saleContainer}>
+              <Text style={styles.priceSaleText}>-{product.priceSale}đ</Text>
+            </View>
+          )}
+
           <ScrollView style={{ backgroundColor: '#fff', borderTopStartRadius: 22, borderTopEndRadius: 22 }}>
             <View style={styles.infoContainer}>
 
               <View style={styles.productInfo}>
-                <View style={{ flexDirection: 'row', marginBottom: 9, justifyContent: 'space-between', }}>
+                <View style={{ flexDirection: 'row', marginBottom: 9, justifyContent: 'space-between' }}>
                   <View>
                     <Text style={styles.productName}>{product.name}</Text>
-                    <Text style={styles.productPrice}>{formatVND(product.price)}</Text>
+                    {product.priceSale > 0 ? (
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={{ textDecorationLine: 'line-through', color: 'grey' }}>
+                          {formatVND(product.price)}
+
+                        </Text>
+                        <Text style={{ marginLeft: 5, color: 'red', fontFamily: 'bold' }}>
+
+                          {formatVND(product.price - product.priceSale)}
+                        </Text>
+                      </View>
+                    ) : (
+                      <Text style={styles.productPrice}>{formatVND(product.price)}</Text>
+                    )}
                   </View>
 
-                  <TouchableOpacity style={{ alignSelf: 'center' }} >
-                    <MaterialCommunityIcons name="bookmark-outline" size={40} color="#333" />
+                  <TouchableOpacity style={{ alignSelf: 'center' }}>
+                    <MaterialCommunityIcons name="heart-outline" size={40} color="#333" />
                   </TouchableOpacity>
                 </View>
+
 
                 <Text style={{ fontStyle: 'italic', fontSize: 15, marginBottom: 12 }}>Quantity: {product.quantity} </Text>
 
                 <Text >Description: {product.description}</Text>
-                {/* <Text >Comments:</Text> */}
+
               </View>
             </View>
+          </ScrollView>
+          <View style={styles.buttonWrapper}>
             <TouchableOpacity onPress={handleAddToCart} style={styles.buttonGR}>
               <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.addButton}>
                 <Text style={styles.addButtonText}>Add to cart</Text>
               </LinearGradient>
             </TouchableOpacity>
-          </ScrollView>
-
-          {/* //////////////////////////////////////////////////// */}
-          {/* <QuantityPicker
-            initialQuantity={selectedQuantity}
-            onQuantityChange={handleQuantityChange}
-            minValue={1}
-            maxValue={product.quantity}
-          /> */}
-          {/* //////////////////////////////////////////////////// */}
+          </View>
         </View>
       );
     }
@@ -169,7 +178,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   loadingIndicator: {
-    // Optional styles for the ActivityIndicator itself
+
   },
   infoContainer: {
     padding: 20,
@@ -178,10 +187,25 @@ const styles = StyleSheet.create({
     width: '100%',
     maxHeight: 300,
     overflow: 'hidden',
-    marginBottom: 10,
+    marginBottom: 5,
     aspectRatio: 1,
     alignSelf: 'center',
   },
+  saleContainer: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+
+    backgroundColor: 'red',
+    borderRadius: 5,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  priceSaleText: {
+    color: 'white',
+    fontSize: 12,
+  },
+
   productInfo: {
     margin: 9
   },
@@ -199,7 +223,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 15,
-    // backgroundColor: '#fff'
+
   },
   backButton: {
     padding: 5,
@@ -211,6 +235,12 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     padding: 5,
+  },
+  buttonWrapper: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   buttonGR: {
     shadowColor: 'rgba(0,0,0, .4)', // IOS
@@ -226,7 +256,7 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 22,
     alignItems: 'center',
-    // backgroundColor: ['#f7c458', '#fea239'],
+
     padding: 10,
     borderWidth: 1
   },
@@ -249,3 +279,4 @@ const styles = StyleSheet.create({
 });
 
 export default ProductDetailScreen;
+

@@ -110,7 +110,7 @@ const AccountScreen = () => {
             <View style={{ height: 2, backgroundColor: '#ccc', marginTop: 10 }} />
           </TouchableOpacity>
           <TouchableOpacity
-          // onPress={handleLogoutPress}
+          //onPress={handleLogoutPress}
           >
             <Text style={{ alignSelf: 'center', marginTop: 20 }}>LOGOUT</Text>
             <View style={{ height: 2, backgroundColor: '#ccc', marginTop: 10 }} />
