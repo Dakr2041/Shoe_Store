@@ -1,24 +1,89 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '../Api';
+
+
+const iconFavourite = require('../Product/favourite_icon.png');
+const addtocarticon = require('../Product/addtocart.png');
+const windowWidth = Dimensions.get('window').width;
 
 const ProductItem = ({ product, itemWidth }) => {
   const navigation = useNavigation();
   const navigateToProductDetail = (product) => {
-    navigation.navigate('ProductDetail', { product }); // Specify stack name and pass data
+    navigation.navigate('ProductDetail', { product });
   };
+
   const formattedPrice = formatVND(product.price);
+  const [isFavourite, setIsFavourite] = useState(false);
+
+  const handleFavouritePress = () => {
+    setIsFavourite(!isFavourite);
+  };
+
+
+  const handleAddToCart = async () => {
+    try {
+      const storedToken = await AsyncStorage.getItem('authToken');
+      if (!storedToken) {
+        console.log('No token available. User needs to log in.');
+        alert("Failed to add item to cart");
+        return;
+      }
+      const response = await fetch(`${API_URL}/cart/addCart/${product.id}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId: product.id }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Item added to cart:', data);
+      alert(data.message);
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+      alert(error);
+    }
+  };
+
+
+
   return (
-    <TouchableOpacity style={[styles.container, { width: itemWidth }]} onPress={() => navigateToProductDetail(product)} >
-      <Text numberOfLines={1} ellipsizeMode="tail" style={styles.price}>{formattedPrice}</Text>
-      <Image source={{ uri: product.imageProduct }} style={styles.image} />
-      <View style={styles.detailsContainer}>
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.productName}>{product.name}</Text>
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.quantity}>quantity: {product.quantity}</Text>
+    <TouchableOpacity style={[styles.container, { width: windowWidth / 2 - 15 }]} onPress={() => navigateToProductDetail(product)}>
+      <View style={styles.imageContainer}>
+        <Image source={{ uri: product.imageProduct }} style={styles.image} />
+        {product.priceSale > 0 && (
+          <View style={styles.priceSaleContainer}>
+            <Text style={styles.priceSaleText}>-{product.priceSale}đ</Text>
+          </View>
+        )}
       </View>
+      <View style={styles.detailsContainer}>
+        <View style={styles.rowicon}>
+          <View style={styles.contentContainer}>
+            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.productName}>{product.name}</Text>
+          </View>
+          <TouchableOpacity onPress={handleFavouritePress} style={styles.iconContainer}>
+            <Image source={isFavourite ? require('../Product/icon_favouritered.png') : iconFavourite} style={styles.iconfavourite} />
+          </TouchableOpacity>
+        </View>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.introduce}>{product.introduce}</Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.price}>{formattedPrice}</Text>
+      </View>
+      <TouchableOpacity onPress={handleAddToCart} style={styles.iconaddContainer}>
+        <Image source={addtocarticon} style={styles.iconaddtocart} />
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 };
+
 function formatVND(number) {
   if (isNaN(number)) {
     throw new Error('Invalid input: Please provide a valid number.');
@@ -36,36 +101,79 @@ function formatVND(number) {
 
 const styles = StyleSheet.create({
   container: {
+    width: 178,
+    borderRadius: 5,
     backgroundColor: '#fff',
-    borderRadius: 22,
-    marginTop: 9,
-    overflow: 'hidden', // Ensure image does not overflow container
+    padding: 5,
+    overflow: 'hidden',
+    flexDirection: 'column',
+    marginRight: 10,
+  },
+  imageContainer: {
+    width: '100%',
+    aspectRatio: 4 / 3,
+    overflow: 'hidden',
+    position: 'relative',
   },
   image: {
     width: '100%',
-    aspectRatio: 1, // Maintain aspect ratio
+    height: '100%',
   },
   detailsContainer: {
+    width: '100%',
+    height: 100,
+    justifyContent: 'space-between',
     padding: 10,
+  },
+  rowicon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  contentContainer: {
+    flex: 1,
+  },
+  iconContainer: {
+    marginLeft: 10,
+  },
+  iconfavourite: {
+    width: 22,
+    height: 22,
+  },
+  iconaddtocart: {
+    width: 30,
+    height: 30,
   },
   productName: {
     fontSize: 15,
     color: 'black',
     fontWeight: 'bold',
-    marginVertical: 9,
-    marginStart: 22
-  },
-  quantity: {
-    fontSize: 15,
-    color: 'grey',
-    marginStart: 22
   },
   price: {
-    fontSize: 20,
+    fontSize: 18,
     color: 'black',
     fontWeight: 'bold',
-    marginVertical: 9,
-    marginStart: 22
+  },
+  priceSaleContainer: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: 'red',
+    borderRadius: 5,
+    paddingHorizontal: 5,
+  },
+  introduce: {
+    fontSize: 12,
+    fontStyle: 'italic'
+  },
+  priceSaleText: {
+    color: 'white',
+    fontSize: 12,
+  },
+  iconaddContainer: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
   },
 });
 

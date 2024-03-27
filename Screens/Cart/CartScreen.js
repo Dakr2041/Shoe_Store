@@ -18,6 +18,8 @@ const CartScreen = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [selectedItems, setSelectedItems] = useState([]);
 
+
+
   useEffect(() => {
     const fetchTOKEN = async () => {
       setIsLoading(true);
@@ -130,7 +132,7 @@ const CartScreen = () => {
     </View>
   );
 
-  const handleItemChecked = (isChecked, itemPrice, quantity,item) => {
+  const handleItemChecked = (isChecked, itemPrice, quantity, item) => {
     if (typeof itemPrice !== 'number' || typeof quantity !== 'number') {
       console.error('Invalid input: Please provide a valid number.');
       return;
@@ -139,12 +141,12 @@ const CartScreen = () => {
     setTotalPrice(prevTotal => {
       let newTotal = 0;
       if (isChecked) {
-        newTotal = prevTotal + itemPrice * quantity;
+        newTotal = prevTotal + (itemPrice - item.priceSale) * quantity;
         // console.log("Checked new total: " + newTotal + " = prevTotal(" + prevTotal + ")  + itemPrice(" + itemPrice + ") * quantity(" + quantity + ")");
 
       } else {
         if (totalPrice > 0) {
-          newTotal = prevTotal - itemPrice * quantity;
+          newTotal = prevTotal - (itemPrice - item.priceSale) * quantity;
           // console.log("Unchecked new total: " + newTotal + " = prevTotal(" + prevTotal + ")  - itemPrice(" + itemPrice + ") * quantity(" + quantity + ")");
 
         }
@@ -158,9 +160,10 @@ const CartScreen = () => {
       });
       return newTotal < 0 ? 0 : newTotal;
     });
+
   };
 
-  const onQuantityChange = (oldQuantity, newQuantity, itemPrice, isChecked,item) => {
+  const onQuantityChange = (oldQuantity, newQuantity, itemPrice, isChecked, item) => {
     console.log("-------------------");
     if (isChecked) {
       setTotalPrice(prevTotal => {
@@ -183,8 +186,13 @@ const CartScreen = () => {
     } else {
       console.log('Selected items:', selectedItems, 'Total price:', totalPrice);
       navigation.navigate('Checkout', { cartItems: selectedItems, totalPrice });
+      setTotalPrice(0);
+      setSelectedItems([]);
+
     }
   };
+
+
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -197,13 +205,15 @@ const CartScreen = () => {
           <ActivityIndicator size="large" style={{ marginTop: 80 }} />
         ) : itemsId.length > 0 ? (
           <FlatList
-            style={{ height: '100%' }}
+            style={{ height: '88%' }}
             data={itemsId}
             renderItem={({ item }) => (
               <CartItem item={item}
                 onRemoveItem={handleDeleteConfirmation}
                 onQuantityChange={onQuantityChange}
                 onItemChecked={handleItemChecked}
+
+
               />
             )}
             keyExtractor={item => item.id}
@@ -242,9 +252,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    position: 'absolute', 
-    bottom: 0, 
-    width: '100%', 
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
   },
   cartTotal: {
     fontSize: 16,
@@ -271,3 +281,4 @@ const styles = StyleSheet.create({
 });
 
 export default CartScreen;
+

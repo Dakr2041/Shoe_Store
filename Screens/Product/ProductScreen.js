@@ -91,18 +91,23 @@ const ProductScreen = ({ navigation }) => {
     } else if (!products.length) {
       return <Text>No products found.</Text>;
     } else {
-      return (
-        <View style={styles.row}>
-          {products.map((product, index) => (
-            // <View key={product.id} style={[{ width: itemWidth }]}>
-            <View key={product.id}>
-              {console.log(product)}
-              <ProductItem product={product} onPress={() => handleProductPress(product)} />
+      const rows = [];
+      for (let i = 0; i < products.length; i += 2) {
+        const rowProducts = [];
+        for (let j = i; j < i + 2 && j < products.length; j++) {
+          rowProducts.push(
+            <View key={products[j].id} >
+              <ProductItem product={products[j]} onPress={() => handleProductPress(products[j])} />
             </View>
-          ))}
-          {products.length % 2 !== 0 && <View style={[styles, { width: itemWidth }]} />}
-        </View>
-      );
+          );
+        }
+        rows.push(
+          <View key={i} style={styles.row}>
+            {rowProducts}
+          </View>
+        );
+      }
+      return <View>{rows}</View>;
     }
   };
 
@@ -132,10 +137,6 @@ const ProductScreen = ({ navigation }) => {
           <FlatList
             data={searchResults}
             keyExtractor={(item) => item.id.toString()}
-            // renderItem={({ item }) => 
-            // <ProductItem product={item} onPress={() => handleProductPress(item)} 
-            // <Text>{item.name}</Text>
-            // }
           />
         )}
       </Modal>
@@ -153,30 +154,17 @@ const ProductScreen = ({ navigation }) => {
     </ScrollView>
   );
 };
-function formatVND(number) {
-  if (isNaN(number)) {
-    throw new Error('Invalid input: Please provide a valid number.');
-  }
-  const numberAsFloat = parseFloat(number);
-
-  const formatter = new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-    minimumFractionDigits: 0,
-  });
-
-  return formatter.format(numberAsFloat);
-}
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#f5f5f5',
+
   },
   row: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginHorizontal: 9
+
+    padding: 10,
+
   },
   searchView: {
     width: '100%',
@@ -188,34 +176,7 @@ const styles = StyleSheet.create({
     paddingStart: 38,
     marginBottom: 20
   },
-  itemContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    margin: 2.5,
-    maxWidth: '48.5%'
-  },
-  image: {
-    width: '100%',
-    aspectRatio: 1,
-    borderRadius: 10,
-  },
-  detailsContainer: {
-    padding: 10,
-  },
-  productName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 5,
-    overflow: 'hidden',
-  },
-  price: {
-    fontSize: 14,
-    color: 'green',
-    marginTop: 5,
-    alignSelf: 'flex-end',
-  },
 });
 
 export default ProductScreen;
+
