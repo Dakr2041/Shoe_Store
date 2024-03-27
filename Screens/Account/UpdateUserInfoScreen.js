@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image,ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -191,7 +191,7 @@ const UpdateUserInfoScreen = ({ navigation }) => {
     } else {
         return (
 
-            <View style={styles.container}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
                 <View style={styles.headerContainer}>
                     <TouchableOpacity onPress={handleGoBack}>
                         <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
@@ -266,7 +266,7 @@ const UpdateUserInfoScreen = ({ navigation }) => {
                         <Text style={styles.saveButtonText}>Save Updates</Text>
                     </LinearGradient>
                 </TouchableOpacity>
-            </View>
+            </ScrollView>
         );
     }
 };
