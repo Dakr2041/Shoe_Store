@@ -14,7 +14,8 @@ import SetupUserInfoScreen from './Account/SetupUserInfoScreen';
 import CheckoutScreen from './Cart/CheckoutScreen';
 import ResetPasswordScreen from './Account/ResetPassword';
 import OrdersScreen from './Account/OrdersScreen';
-
+import DiscountScreen from './Discounts/DiscountScreen';
+import SupportScreen from './Support/SupportScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -35,6 +36,8 @@ export default function App() {
         <Stack.Screen name="Checkout" component={CheckoutScreen} />
         <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
         <Stack.Screen name="Orders" component={OrdersScreen} />
+        <Stack.Screen name="Discounts" component={DiscountScreen} />
+        <Stack.Screen name="Supports" component={SupportScreen} />
       </Stack.Navigator>
 
     </NavigationContainer>

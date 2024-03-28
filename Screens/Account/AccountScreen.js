@@ -68,13 +68,20 @@ const AccountScreen = () => {
   const handleOrdersPress = () => {
     navigation.navigate('Orders')
   };
+  const handleDiscountScreen = () => {
+    navigation.navigate('Discounts')
+  };
+  const handleSupport = () => {
+    navigation.navigate('Supports')
+  };
+
 
   const menuItems = [
     { title: 'Orders', onPress: handleOrdersPress, icon: require('../../assets/order_icon.png') },
     { title: 'Oder Status', onPress: () => { }, icon: require('../../assets/order status.png') },
     { title: 'Favorites', onPress: () => { }, icon: require('../Product/favourite_icon.png') },
-    { title: 'Discount', onPress: () => { }, icon: require('../../assets/discount_icon.png') },
-    { title: 'Support', onPress: () => { }, icon: require('../../assets/support_icon.png') },
+    { title: 'Discount', onPress: handleDiscountScreen, icon: require('../../assets/discount_icon.png') },
+    { title: 'Support', onPress: handleSupport, icon: require('../../assets/support_icon.png') },
     { title: 'Setting', onPress: handleSettingsPress, icon: require('../../assets/setting_icon.png') },
 
     { title: 'Logout', onPress: handleLogoutPress, icon: require('../../assets/logout_icon.png') }
@@ -201,21 +208,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    padding: 20,
+    paddingTop: 20,
+    paddingHorizontal: 15,
+
   },
   menuItem: {
-    width: 90,
+    width: 95,
     height: 100,
     alignItems: 'center',
-    marginBottom: 20,
-    marginHorizontal: 5,
+    marginBottom: 10,
+    marginHorizontal: 11,
+
   },
   menuItemGradient: {
     width: '100%',
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 5,
+
   },
   menuItemIcon: {
     width: 50,
