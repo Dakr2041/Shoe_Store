@@ -21,9 +21,9 @@ const LoginScreen = () => {
 
   const EyeIcon = ({ visible }) => {
     return visible ? (
-      <IconPassWord name='eye' color={'black'} size={15}></IconPassWord>
+      <IconPassWord name='eye' color={'black'} size={20}></IconPassWord>
     ) : (
-      <IconPassWord name='eye-slash' color={'black'} size={15}></IconPassWord>
+      <IconPassWord name='eye-slash' color={'black'} size={20}></IconPassWord>
     );
   };
 

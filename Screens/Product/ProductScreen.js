@@ -42,7 +42,7 @@ const ProductScreen = ({ navigation }) => {
       if (response.status === 200) {
         const data = await response.json();
         setSearchResults(data.data);
-        console.log(searchResults);
+        console.log(data);
       } else {
         console.error('Error searching products:', response.statusText);
       }
@@ -56,11 +56,7 @@ const ProductScreen = ({ navigation }) => {
   const handleSearchTextChange = (text) => {
     setSearchText(text);
     searchProducts(text);
-    setIsSearchModalVisible(true);
-  };
-
-  const handleSearchIconPress = () => {
-    // navigation.navigate('SearchScreen', { searchResults });
+    // setIsSearchModalVisible(true);
   };
 
   useEffect(() => {

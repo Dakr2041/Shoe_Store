@@ -1,35 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import { API_URL } from '../Api'; // Assuming API_URL is defined elsewhere
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native'; // Import for navigation
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import IconPassWord from 'react-native-vector-icons/FontAwesome5';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const ResetPasswordScreen = () => {
     const navigation = useNavigation();
-    const [password, setPassword] = useState('');
+    const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [hasError, setHasError] = useState(false);
     const [userId, setUserId] = useState(null);
-    const [userEmail, setUserEmail] = useState(null);
-    const [token, setToken] = useState('');
+    const [token, setToken] = useState(null);
+    const [isOldPasswordVisible, setIsOldPasswordVisible] = useState(false);
+    const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
+    const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
-    useEffect(() => {
-        const fetchTOKEN = async () => {
-            try {
-                const storedToken = await AsyncStorage.getItem('authToken');
-                setToken(storedToken ? String(storedToken) : null);
-                console.log(storedToken);
-            } catch (error) {
-                console.error('Error fetching Token from storage:', error);
-
-            }
-        };
-
-        fetchTOKEN();
-    }, []);
+    const passwordInputRef = useRef(null);
+    const confirmPasswordInputRef = useRef(null);
 
     useEffect(() => {
         const fetchUserId = async () => {
@@ -45,60 +37,109 @@ const ResetPasswordScreen = () => {
 
         fetchUserId();
     }, []);
-    
+
+    const EyeIcon = ({ visible }) => {
+        return visible ? (
+            <IconPassWord name='eye' color={'black'} size={20}></IconPassWord>
+        ) : (
+            <IconPassWord name='eye-slash' color={'black'} size={20}></IconPassWord>
+        );
+    };
 
     useEffect(() => {
-        const fetchUserEmail = async () => {
+        const fetchTOKEN = async () => {
             try {
-                const storedUserEmail = await AsyncStorage.getItem('@userEmail');
-                setUserEmail(storedUserEmail ?storedUserEmail : null);
+                const storedToken = await AsyncStorage.getItem('authToken');
+                setToken(storedToken ? String(storedToken) : null);
             } catch (error) {
-                console.error('Error fetching user Email from storage:', error);
-            } finally {
-                setIsLoading(false);
+                console.error('Error fetching Token from storage:', error);
+
             }
         };
 
-        fetchUserEmail();
+        fetchTOKEN();
     }, []);
 
-    console.log("get email :", userEmail);
-    console.log("get token :", token);
-    console.log("get id :", userId);
+    const togglePasswordVisibility = (type) => {
+        if (type === 'oldPassword') {
+            setIsOldPasswordVisible(!isOldPasswordVisible);
+        } else if (type === 'newPassword') {
+            setIsNewPasswordVisible(!isNewPasswordVisible);
+        } else if (type === 'confirmPassword') {
+            setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
+        }
+    };
 
     const handleSubmit = async () => {
-        if (!password || !newPassword) {
-            Alert.alert('Please enter both current and new password');
+        setIsLoading(true);
+        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+
+
+        if (!oldPassword || !newPassword || !confirmPassword) {
+            alert('Please enter all current, new password and confirm new password !!!');
+            setIsLoading(false);
             return;
         }
 
-        setIsLoading(true);
-        setHasError(false); // Reset error state
+        if (!oldPassword) {
+            alert('Please enter current password !!!');
+            setIsLoading(false);
+            return;
+        }
+
+        if (!newPassword) {
+            alert('Please enter new password !!!');
+            setIsLoading(false);
+            return;
+        }
+        if (!passwordRegex.test(newPassword)) {
+            setIsLoading(false);
+            alert('New password must be at least 6 characters and include a number, lowercase letter, and uppercase letter.');
+            return;
+          }
+
+        if (!confirmPassword) {
+            alert('Please confirm new password !!!');
+            setIsLoading(false);
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            alert('The confirm password and new password is not the same !!!');
+            setIsLoading(false);
+            return;
+        }
 
         try {
-            const response = await fetch(`${API_URL}/api/changePassword/${userId}/${userEmail}/${token}`, {
+            const response = await fetch(`${API_URL}/api/changePassword/${userId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ password, newPassword }),
+                body: JSON.stringify({ password: oldPassword, newPassword }),
             });
 
-            if (!response.ok) {
-                throw new Error(`API request failed with status: ${response.status}`);
+            const data = await response.json();
+            console.log(data);
+            if (response.status === 200) {
+                setIsLoading(false);
+
+                alert(data.message)
+                if (data.status === 201) {
+                    setOldPassword('');
+                    setNewPassword('');
+                    setConfirmPassword('')
+                }
+            } else {
+                setIsLoading(false);
+                alert(response.message)
             }
 
-            const data = await response.json();
-            console.log('Password reset successful:', data); // Handle success message
 
-            // Clear input fields and navigate back
-            setPassword('');
-            setNewPassword('');
-            navigation.goBack();
         } catch (error) {
             console.error('Error resetting password:', error);
             setHasError(true);
-            Alert.alert('Error resetting password', 'An error occurred. Please try again.');
         } finally {
             setIsLoading(false);
         }
@@ -116,26 +157,57 @@ const ResetPasswordScreen = () => {
                 <View></View>
             </View>
 
-            <TextInput
-                style={styles.input}
-                value={password}
-                onChangeText={setPassword}
-                placeholder="Current Password"
-                secureTextEntry
-            />
-            <TextInput
-                style={styles.input}
-                value={newPassword}
-                onChangeText={setNewPassword}
-                placeholder="New Password"
-                secureTextEntry
-            />
+            <View style={styles.passwordInputContainer}>
+                <TextInput
+                    style={styles.textInput}
+                    placeholder="Current Password"
+                    onChangeText={setOldPassword}
+                    value={oldPassword}
+                    secureTextEntry={!isOldPasswordVisible}
+                    ref={passwordInputRef}
+                />
+                <TouchableOpacity style={styles.showPasswordButton} onPress={() => togglePasswordVisibility('oldPassword')}>
+                    <EyeIcon visible={isOldPasswordVisible} />
+                </TouchableOpacity>
+            </View>
+
+            <View style={styles.passwordInputContainer}>
+                <TextInput
+                    style={styles.textInput}
+                    placeholder="New Password"
+                    onChangeText={setNewPassword}
+                    value={newPassword}
+                    secureTextEntry={!isNewPasswordVisible}
+                    ref={passwordInputRef}
+                />
+                <TouchableOpacity style={styles.showPasswordButton} onPress={() => togglePasswordVisibility('newPassword')}>
+                    <EyeIcon visible={isNewPasswordVisible} />
+                </TouchableOpacity>
+            </View>
+
+            <View style={styles.passwordInputContainer}>
+                <TextInput
+                    style={styles.textInput}
+                    placeholder="Confirm Password"
+                    onChangeText={setConfirmPassword}
+                    value={confirmPassword}
+                    secureTextEntry={!isConfirmPasswordVisible}
+                    ref={confirmPasswordInputRef}
+                />
+                <TouchableOpacity style={styles.showPasswordButton} onPress={() => togglePasswordVisibility('confirmPassword')}>
+                    <EyeIcon visible={isConfirmPasswordVisible} />
+                </TouchableOpacity>
+            </View>
+
             {isLoading ? (
-                <ActivityIndicator style={styles.loading} />
+                <ActivityIndicator style={styles.loading} size="large" />
             ) : (
-                <Button title="Reset Password" style={styles.button} onPress={handleSubmit} />
+                <TouchableOpacity onPress={handleSubmit} >
+                    <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.button}>
+                        <Text style={styles.buttonText}>Register</Text>
+                    </LinearGradient>
+                </TouchableOpacity>
             )}
-            {hasError && <Text style={styles.error}>Error resetting password. Please try again.</Text>}
         </View>
     );
 };
@@ -157,19 +229,38 @@ const styles = StyleSheet.create({
     headerText: {
         fontSize: 20,
     },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        marginBottom: 10,
-        padding: 10,
-        fontSize: 16,
-        borderRadius:5
+    passwordInputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%',
+        position: 'relative'
+    },
+    textInput: {
+        width: "100%",
+        height: 60,
+        borderRadius: 9,
+        padding: 9,
+        marginTop: 9,
+        backgroundColor: '#ebecf0'
+    },
+    showPasswordButton: {
+        position: 'absolute',
+        right: 15,
+        top: 30
     },
     button: {
-        padding: 10,
+        padding: 15,
+        borderRadius: 22,
+        marginTop: 50
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: "bold",
+        alignSelf: 'center'
     },
     loading: {
-        marginVertical: 10,
+        marginVertical: 50,
     },
     error: {
         color: 'red',
