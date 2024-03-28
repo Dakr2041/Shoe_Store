@@ -3,7 +3,6 @@ import React, { useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ToastAndroid, Image, ActivityIndicator, TextInput } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import IconPassWord from 'react-native-vector-icons/FontAwesome5';
 import { API_URL } from './Api';
 
@@ -37,9 +36,9 @@ const RegisterScreen = () => {
 
   const EyeIcon = ({ visible }) => {
     return visible ? (
-      <IconPassWord name='eye' color={'black'} size={15}></IconPassWord>
+      <IconPassWord name='eye' color={'black'} size={20}></IconPassWord>
     ) : (
-      <IconPassWord name='eye-slash' color={'black'} size={15}></IconPassWord>
+      <IconPassWord name='eye-slash' color={'black'} size={20}></IconPassWord>
     );
   };
 
@@ -48,63 +47,48 @@ const RegisterScreen = () => {
   const handleRegister = async () => {
     setIsLoading(true);
 
-    const emailRegex = /^\w+@[a-zA-Z_\.]+\.[a-zA-Z]{2,}$/; // Email format
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/; // Password complexity
-
-
-    // Clear any previous error messages
-    // emailInputRef.current.setNativeProps({ borderColor: '#ccc' });
-    // nameInputRef.current.setNativeProps({ borderColor: '#ccc' });
-    // passwordInputRef.current.setNativeProps({ borderColor: '#ccc' });
-    // confirmPasswordInputRef.current.setNativeProps({ borderColor: '#ccc' });
+    const emailRegex = /^\w+@[a-zA-Z_\.]+\.[a-zA-Z]{2,}$/; 
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/; 
 
     if (email.length <= 0) {
       setIsLoading(false);
-      // emailInputRef.current.setNativeProps({ borderColor: 'red' });
       return alert('Type in email.');
     }
 
     if (!emailRegex.test(email)) {
       setIsLoading(false);
-      // emailInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
       alert('Invalid email format.');
       return;
     }
 
     if (name.length <= 0) {
       setIsLoading(false);
-      // nameInputRef.current.setNativeProps({ borderColor: 'red' });
       return alert('Type in name.');
     }
 
     if (password.length <= 0) {
       setIsLoading(false);
-      // passwordInputRef.current.setNativeProps({ borderColor: 'red' });
       return alert('Type in password.');
     }
     if (!password || !passwordRegex.test(password)) {
       setIsLoading(false);
-      // passwordInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
       alert('Password must be at least 6 characters and include a number, lowercase letter, and uppercase letter.');
       return;
     }
 
     if (!passwordRegex.test(password)) {
       setIsLoading(false);
-      // passwordInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
       alert('Password must be at least 6 characters and include a number, lowercase letter, and uppercase letter.');
       return;
     }
 
     if (confirmPassword.length <= 0) {
       setIsLoading(false);
-      // confirmPasswordInputRef.current.setNativeProps({ borderColor: 'red' });
       return alert('Type in confirm password.');
     }
 
     if (password !== confirmPassword) {
       setIsLoading(false);
-      // confirmPasswordInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
       alert('Passwords do not match.');
       return;
     }
@@ -121,21 +105,18 @@ const RegisterScreen = () => {
       console.log("msg: " + data.message);
 
       if (data.status === 200) {
-        // Registration successful, handle the response accordingly
         alert(data.message);
         setIsLoading(false);
         navigation.navigate('Login');
         ToastAndroid.BOTTOM.show('Confirm in Email');
         console.log(data);
       } else {
-        // Registration failed, handle the error
         console.log(data.message);
         alert(data.message);
         setIsLoading(false);
       }
     } catch (error) {
       console.error('Error during registration:', error);
-      // Handle the error
     }
   }
   const handleLoginPress = () => {
@@ -277,24 +258,20 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   showPasswordButton: {
-    position: 'absolute', // Make it absolute within the input
-    right: 15, // Adjust right padding and position as needed
+    position: 'absolute', 
+    right: 15, 
     top: 30
 
   },
-  eyeIcon: {
-    width: 25,
-    height: 25,
-  },
   loadingContainer: {
-    position: 'absolute', // Ensure animation sits on top of other elements
+    position: 'absolute', 
     alignItems: 'center',
     justifyContent: 'center',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.2)', // Semi-transparent background
+    backgroundColor: 'rgba(0, 0, 0, 0.2)', 
   },
   textInput: {
     width: "100%",
