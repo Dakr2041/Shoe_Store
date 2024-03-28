@@ -38,7 +38,7 @@ const AccountScreen = () => {
           if (response.ok) {
             const data = await response.json();
             console.log(data);
-            if(data.status === 400) {
+            if (data.status === 400) {
               setShouldRedirectToSetup(true);
             } else if (data.status === 200) {
               setUserInfo(data.data);
@@ -47,7 +47,7 @@ const AccountScreen = () => {
             console.error('Error fetching user info:', response.status);
           }
         } catch (error) {
-          console.error('Error fetching user info:-', error);
+          console.error('Error fetching user info:', error);
         } finally {
           setIsLoading(false);
         }
@@ -68,15 +68,39 @@ const AccountScreen = () => {
   const handleOrdersPress = () => {
     navigation.navigate('Orders')
   };
-  const renderContent = () => {
-    if (isLoading) {
-      return (
+
+  const menuItems = [
+    { title: 'Orders', onPress: handleOrdersPress, icon: require('../../assets/order_icon.png') },
+    { title: 'Oder Status', onPress: () => { }, icon: require('../../assets/order status.png') },
+    { title: 'Favorites', onPress: () => { }, icon: require('../Product/favourite_icon.png') },
+    { title: 'Discount', onPress: () => { }, icon: require('../../assets/discount_icon.png') },
+    { title: 'Support', onPress: () => { }, icon: require('../../assets/support_icon.png') },
+    { title: 'Setting', onPress: handleSettingsPress, icon: require('../../assets/setting_icon.png') },
+
+    { title: 'Logout', onPress: handleLogoutPress, icon: require('../../assets/logout_icon.png') }
+  ];
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity onPress={item.onPress} style={styles.menuItem}>
+      <LinearGradient
+        colors={['#ff5400', '#f09819']}
+        style={styles.menuItemGradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+      >
+        <Image source={item.icon} style={styles.menuItemIcon} />
+        <Text style={styles.menuItemText}>{item.title}</Text>
+      </LinearGradient>
+    </TouchableOpacity>
+  );
+
+  return (
+    <View style={styles.container}>
+      {isLoading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
-      );
-    } else if (shouldRedirectToSetup) {
-      return (
+      ) : shouldRedirectToSetup ? (
         <View style={styles.setupContainer}>
           <Text>Please complete your setup information first.</Text>
           <TouchableOpacity onPress={() => navigation.navigate('SetupUserInfo')}>
@@ -85,48 +109,38 @@ const AccountScreen = () => {
             </LinearGradient>
           </TouchableOpacity>
         </View>
-      );
-    } else {
-      return (
-        <View>
-          <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-            <View>
-              {userInfo.avatar && <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />}
-              {!userInfo.avatar && <ActivityIndicator size="small" />}
-            </View>
-          </LinearGradient>
-
-          <View style={styles.userInfo}>
-            <Text style={{ alignSelf: 'center', fontSize: 30 }}>{userInfo.name}</Text>
-            <Text>Phone: {userInfo.phone}</Text>
-            <Text>Address: {userInfo.address} - {userInfo.city}</Text>
+      ) : (
+        <View style={styles.container}>
+          <View style={styles.containeravatar}>
+            <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.linearGradient}>
+              <View style={styles.header}>
+                {userInfo.avatar && <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />}
+                {!userInfo.avatar && <ActivityIndicator size="small" />}
+                <View style={styles.userInfo}>
+                  <Text style={{ fontSize: 30 }}>{userInfo.name}</Text>
+                  <Text>Phone: {userInfo.phone}</Text>
+                  <Text>Address: {userInfo.address} - {userInfo.city}</Text>
+                </View>
+              </View>
+            </LinearGradient>
           </View>
-          <TouchableOpacity onPress={handleOrdersPress}>
-            <Text style={{ alignSelf: 'center', marginTop: 20 }}>ORDERS</Text>
-            <View style={{ height: 2, backgroundColor: '#ccc', marginTop: 10 }} />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={{ alignSelf: 'center', marginTop: 20 }}>FAVORITES</Text>
-            <View style={{ height: 2, backgroundColor: '#ccc', marginTop: 10 }} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleSettingsPress}>
-            <Text style={{ alignSelf: 'center', marginTop: 20 }}>SETTING</Text>
-            <View style={{ height: 2, backgroundColor: '#ccc', marginTop: 10 }} />
-          </TouchableOpacity>
-          <TouchableOpacity
-          >
-            <Text style={{ alignSelf: 'center', marginTop: 20 }}>LOGOUT</Text>
-            <View style={{ height: 2, backgroundColor: '#ccc', marginTop: 10 }} />
-          </TouchableOpacity>
-
+          <View style={styles.menuContainer}>
+            {menuItems.map((item, index) => (
+              <TouchableOpacity key={index} onPress={item.onPress} style={styles.menuItem}>
+                <LinearGradient
+                  colors={['#f7c458', '#fea239']}
+                  style={styles.menuItemGradient}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                >
+                  <Image source={item.icon} style={styles.menuItemIcon} />
+                  <Text style={styles.menuItemText}>{item.title}</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
-      );
-    }
-  };
-
-  return (
-    <View style={styles.container}>
-      {renderContent()}
+      )}
     </View>
   );
 };
@@ -136,31 +150,39 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
   },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  avatar: {
+  containeravatar: {
     width: '100%',
-    height: 200,
-    borderRadius: 125,
-    marginBottom: 20,
-    overflow: 'hidden',
-    aspectRatio: 1,
-    alignSelf: 'center',
-    alignContent: 'center',
-    marginTop: 60,
-
+    height: '30%'
+  },
+  linearGradient: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderRadius: 5
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 70,
+  },
+  avatar: {
+    width: 130,
+    height: 130,
+    borderRadius: 100,
   },
   userInfo: {
-    alignSelf: 'center'
+    marginLeft: 20,
+    flex: 1,
   },
-  setupContainer:{
+  setupContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -174,6 +196,36 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  menuContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    padding: 20,
+  },
+  menuItem: {
+    width: 90,
+    height: 100,
+    alignItems: 'center',
+    marginBottom: 20,
+    marginHorizontal: 5,
+  },
+  menuItemGradient: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+  },
+  menuItemIcon: {
+    width: 50,
+    height: 50,
+    marginBottom: 10,
+  },
+  menuItemText: {
+    fontSize: 14,
+
+    color: '#fff',
   },
 });
 
