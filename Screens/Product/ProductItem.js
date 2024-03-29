@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../Api';
 
-
 const iconFavourite = require('../Product/favourite_icon.png');
 const addtocarticon = require('../Product/addtocart.png');
 const windowWidth = Dimensions.get('window').width;
 
-const ProductItem = ({ product, itemWidth }) => {
+const ProductItem = ({ product, itemWidth, onFavoriteChanged }) => {
   const navigation = useNavigation();
   const navigateToProductDetail = (product) => {
     navigation.navigate('ProductDetail', { product });
@@ -18,9 +17,80 @@ const ProductItem = ({ product, itemWidth }) => {
   const formattedPrice = formatVND(product.price);
   const [isFavourite, setIsFavourite] = useState(false);
 
-  const handleFavouritePress = () => {
-    setIsFavourite(!isFavourite);
+  useEffect(() => {
+    loadFavoriteStatus();
+  }, []);
+
+  const loadFavoriteStatus = async () => {
+    try {
+      const storedFavorites = await AsyncStorage.getItem('favorites');
+      if (storedFavorites) {
+        const favorites = JSON.parse(storedFavorites);
+        setIsFavourite(favorites.includes(product.id));
+      }
+    } catch (error) {
+      console.error('Error loading favorite status:', error);
+    }
   };
+
+  const saveFavoriteStatus = async (favorites) => {
+    try {
+      await AsyncStorage.setItem('favorites', JSON.stringify(favorites));
+    } catch (error) {
+      console.error('Error saving favorite status:', error);
+    }
+  };
+
+  const handleFavouritePress = async () => {
+    try {
+      const storedToken = await AsyncStorage.getItem('authToken');
+      if (!storedToken) {
+        console.log('No token available. User needs to log in.');
+        alert("Failed to add item to favorites");
+        return;
+      }
+      const response = await fetch(`${API_URL}/api/favorite/${product.id}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Item added to favorites:', data);
+
+
+      setIsFavourite(!isFavourite);
+
+      const storedFavorites = await AsyncStorage.getItem('favorites');
+      let favorites = storedFavorites ? JSON.parse(storedFavorites) : [];
+      if (!isFavourite) {
+
+        favorites.push(product.id);
+      } else {
+
+        favorites = favorites.filter(id => id !== product.id);
+      }
+      saveFavoriteStatus(favorites);
+
+
+      if (onFavoriteChanged) {
+        onFavoriteChanged(product.id, !isFavourite);
+      }
+
+      alert(data.message);
+    } catch (error) {
+      console.error('Error adding item to favorites:', error);
+      alert(error);
+    }
+  };
+
+
 
 
   const handleAddToCart = async () => {
@@ -52,8 +122,6 @@ const ProductItem = ({ product, itemWidth }) => {
       alert(error);
     }
   };
-
-
 
   return (
     <TouchableOpacity style={[styles.container, { width: windowWidth / 2 - 15 }]} onPress={() => navigateToProductDetail(product)}>

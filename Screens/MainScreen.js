@@ -16,6 +16,8 @@ import ResetPasswordScreen from './Account/ResetPassword';
 import OrdersScreen from './Account/OrdersScreen';
 import DiscountScreen from './Discounts/DiscountScreen';
 import SupportScreen from './Support/SupportScreen';
+import Notification from './Notification/NotificationScreen';
+import Favourite from './Favourite/FavouriteScreen'
 
 const Tab = createBottomTabNavigator();
 
@@ -38,6 +40,7 @@ export default function App() {
         <Stack.Screen name="Orders" component={OrdersScreen} />
         <Stack.Screen name="Discounts" component={DiscountScreen} />
         <Stack.Screen name="Supports" component={SupportScreen} />
+        <Stack.Screen name="Favourites" component={Favourite} />
       </Stack.Navigator>
 
     </NavigationContainer>
@@ -80,7 +83,9 @@ const TabsScreen = () => {
     >
       <Tab.Screen name="Home" component={ProductScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Cart" component={CartScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Notifications" component={Notification} options={{ headerShown: false }} />
       <Tab.Screen name="Account" component={AccountScreen} options={{ headerShown: false }} />
+
     </Tab.Navigator>
   );
 };

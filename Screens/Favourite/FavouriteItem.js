@@ -4,7 +4,7 @@ import { formatVND } from '../Functions/FormatVND';
 import { API_URL } from '../Api';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const OrdersItem = ({ order }) => {
+const FAItem = ({ favourite }) => {
 
     const [product, setProduct] = useState(null);
     const [products, setProducts] = useState([]);
@@ -16,7 +16,7 @@ const OrdersItem = ({ order }) => {
             try {
                 setLoading(true);
                 const productsData = [];
-                for (let op of order.OrdersProducts) {
+                for (let op of favourite.OrdersProducts) {
                     const response = await fetch(`${API_URL}/api/getProduct/${op.productId}`);
                     const productData = await response.json();
                     productsData.push({ data: productData.data, quantity: op.quantity });
@@ -31,20 +31,14 @@ const OrdersItem = ({ order }) => {
         };
 
         fetchProduct();
-    }, [order]);
-    const date = new Date(order.createdAt);
+    }, [favourite]);
 
-    const formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-    const formattedIfdate = `${date.getHours()}:${date.getMinutes() + 1}:${date.getSeconds()}`;
     if (loading) {
         return <ActivityIndicator size="large" color="#0000ff" />;
     }
     return (
         <View style={styles.itemContainer}>
-            <View style={styles.topContainer}>
-                <Text style={{ fontSize: 14 }}>Orderdate: {formattedDate}</Text>
-                <Text style={{ fontSize: 12 }}>of: {formattedIfdate}</Text>
-            </View>
+
             <FlatList
                 data={products}
                 keyExtractor={(item, index) => index.toString()}
@@ -53,7 +47,7 @@ const OrdersItem = ({ order }) => {
                         {item.data.imageProduct && <Image source={{ uri: item.data.imageProduct }} style={{ width: 100, height: 100 }} />}
 
                         <View style={styles}>
-                            <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Name: {item.data.name}</Text>
+                            <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Name: {item.name}</Text>
                             <Text style={{ fontSize: 12 }}>Price: {formatVND(item.data.price - item.data.priceSale)}</Text>
                             <Text style={{ fontSize: 12 }}>Quantity: {item.quantity}</Text>
                             <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Total: {formatVND(item.quantity * (item.data.price - item.data.priceSale))}</Text>
@@ -62,35 +56,22 @@ const OrdersItem = ({ order }) => {
                     </View>
                 )}
             />
-            <View style={styles.bottomContainer}>
-                <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Sub total: {formatVND(order.total)}</Text>
-                <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Status: {order.status}</Text>
-                <TouchableOpacity style={{ alignSelf: 'center' }} >
 
-                </TouchableOpacity>
-            </View>
         </View>
     );
 };
 
-const OrdersList = ({ ordersData }) => {
+const FAList = ({ favouriteData }) => {
 
-    if (!ordersData || !ordersData.data) {
+    if (!favouriteData || !favouriteData.data) {
         return <Text>Đang tải dữ liệu</Text>;
     }
 
-
-    const sortedOrders = ordersData.data.sort((a, b) => {
-        const dateA = new Date(a.createdAt);
-        const dateB = new Date(b.createdAt);
-        return dateB - dateA;
-    });
-
     return (
         <FlatList
-            data={sortedOrders}
+            data={favouriteData}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <OrdersItem order={item} />}
+            renderItem={({ item }) => <Text>{item.data.name}</Text>}
         />
     );
 };
@@ -122,4 +103,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default OrdersList;
+export default FAList;

@@ -74,12 +74,15 @@ const AccountScreen = () => {
   const handleSupport = () => {
     navigation.navigate('Supports')
   };
+  const handleFavourite = () => {
+    navigation.navigate('Favourites')
+  };
 
 
   const menuItems = [
     { title: 'Orders', onPress: handleOrdersPress, icon: require('../../assets/order_icon.png') },
     { title: 'Oder Status', onPress: () => { }, icon: require('../../assets/order status.png') },
-    { title: 'Favorites', onPress: () => { }, icon: require('../Product/favourite_icon.png') },
+    { title: 'Favorites', onPress: handleFavourite, icon: require('../Product/favourite_icon.png') },
     { title: 'Discount', onPress: handleDiscountScreen, icon: require('../../assets/discount_icon.png') },
     { title: 'Support', onPress: handleSupport, icon: require('../../assets/support_icon.png') },
     { title: 'Setting', onPress: handleSettingsPress, icon: require('../../assets/setting_icon.png') },

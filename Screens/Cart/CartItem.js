@@ -10,7 +10,7 @@ const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked, resetCh
   const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
-    // Reset checkbox state when resetCheckboxes prop changes
+
     if (resetCheckboxes) {
       setIsChecked(false);
     }
