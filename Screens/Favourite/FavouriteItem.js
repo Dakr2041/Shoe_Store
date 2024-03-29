@@ -5,79 +5,38 @@ import { API_URL } from '../Api';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const FAItem = ({ favourite }) => {
-
-    const [product, setProduct] = useState(null);
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [quantity, setQuantity] = useState('');
-
-    useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                setLoading(true);
-                const productsData = [];
-                for (let op of favourite.OrdersProducts) {
-                    const response = await fetch(`${API_URL}/api/getProduct/${op.productId}`);
-                    const productData = await response.json();
-                    productsData.push({ data: productData.data, quantity: op.quantity });
-                }
-                setProducts(productsData);
-                setLoading(false);
-
-            } catch (error) {
-                console.error('Error fetching product:', error);
-                setLoading(false);
-            }
-        };
-
-        fetchProduct();
-    }, [favourite]);
-
-    if (loading) {
-        return <ActivityIndicator size="large" color="#0000ff" />;
-    }
+    
     return (
         <View style={styles.itemContainer}>
+            {favourite.imageProduct && <Image source={{ uri: favourite.imageProduct }} style={{ width: 100, height: 100 }} />}
 
-            <FlatList
-                data={products}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.productItem}>
-                        {item.data.imageProduct && <Image source={{ uri: item.data.imageProduct }} style={{ width: 100, height: 100 }} />}
-
-                        <View style={styles}>
-                            <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Name: {item.name}</Text>
-                            <Text style={{ fontSize: 12 }}>Price: {formatVND(item.data.price - item.data.priceSale)}</Text>
-                            <Text style={{ fontSize: 12 }}>Quantity: {item.quantity}</Text>
-                            <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Total: {formatVND(item.quantity * (item.data.price - item.data.priceSale))}</Text>
-                        </View>
-
-                    </View>
-                )}
-            />
-
+            <View style={styles}>
+                <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Name: {favourite.name}</Text>
+                <Text style={{ fontSize: 12 }}>Price: {formatVND(favourite.price - favourite.priceSale)}</Text>
+                <Text style={{ fontSize: 12 }}>Quantity: {favourite.quantity}</Text>
+            </View>
         </View>
     );
 };
 
 const FAList = ({ favouriteData }) => {
-
     if (!favouriteData || !favouriteData.data) {
         return <Text>Đang tải dữ liệu</Text>;
     }
 
     return (
         <FlatList
-            data={favouriteData}
+            data={favouriteData.data}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <Text>{item.data.name}</Text>}
+            renderItem={({ item }) => <FAItem favourite={item} />}
         />
     );
 };
 
 const styles = StyleSheet.create({
     itemContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
         margin: 10,
         padding: 10,
         borderWidth: 1,
