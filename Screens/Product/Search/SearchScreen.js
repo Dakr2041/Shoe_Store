@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View, Text } from "react-native";
+import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View, Text, Image } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { TextInput } from "react-native-gesture-handler";
@@ -10,7 +10,7 @@ const SearchScreen = ({ navigation }) => {
     const [searchText, setSearchText] = useState('');
     const [searchResults, setSearchResults] = useState([]);
 
-    const searchProducts = async (text) => {
+    const searchProducts = async (searchData) => {
         setIsSearchLoading(true);
         try {
             const response = await fetch(`${API_URL}/api/search`, {
@@ -18,20 +18,21 @@ const SearchScreen = ({ navigation }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ name: text }),
+                body: JSON.stringify({ searchData: searchData }),
             });
-            if (response.status === 200) {
-                const data = await response.json();
+            const data = await response.json();
+            if (data.status === 200) {
+
                 console.log(data);
 
                 if (data.data === null) {
-                    
+
                     // setSearchResults(products);
                     console.log('No products found');
                 } else {
                     setSearchResults(data.data);
                 }
-                
+
             } else {
                 console.error('Error searching products:', response.statusText);
             }
@@ -50,6 +51,7 @@ const SearchScreen = ({ navigation }) => {
     const handleSearchPress = () => {
         navigation.navigate('SearchResult');
     };
+    console.log(searchResults);
 
     return (
         <View>
@@ -75,7 +77,8 @@ const SearchScreen = ({ navigation }) => {
                     renderItem={({ item }) => (
                         <TouchableOpacity onPress={() => handleProductPress(item)}>
                             <View style={{ flexDirection: 'row', padding: 10 }}>
-                                <Image source={{ uri: item.image }} style={{ width: 50, height: 50 }} />
+                                <Image source={{ uri: item.imageProduct }} style={{ width: 50, height: 50 }} />
+
                                 <Text>{item.name}</Text>
                             </View>
                         </TouchableOpacity>
