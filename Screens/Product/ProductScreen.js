@@ -6,7 +6,6 @@ import { SliderBox } from "react-native-image-slider-box";
 const logo = require('../Product/logo.png');
 import { API_URL } from '../Api';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Modal } from 'react-native-paper';
 
 
 const img = [
@@ -24,40 +23,8 @@ const ProductScreen = ({ navigation }) => {
 
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchText, setSearchText] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [isSearchLoading, setIsSearchLoading] = useState(false);
-  const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
 
-  const searchProducts = async (text) => {
-    setIsSearchLoading(true);
-    try {
-      const response = await fetch(`${API_URL}/api/search`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name: text }),
-      });
-      if (response.status === 200) {
-        const data = await response.json();
-        setSearchResults(data.data);
-        console.log(data);
-      } else {
-        console.error('Error searching products:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error searching products:', error);
-    } finally {
-      setIsSearchLoading(false);
-    }
-  };
 
-  const handleSearchTextChange = (text) => {
-    setSearchText(text);
-    searchProducts(text);
-    // setIsSearchModalVisible(true);
-  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -107,35 +74,28 @@ const ProductScreen = ({ navigation }) => {
     }
   };
 
+  const handleSearchPress = () => {
+    navigation.navigate('Search');
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
 
-      <LinearGradient style={{ borderRadius: 22 }} colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+      <LinearGradient style={{ borderRadius: 15 }} colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
         <View style={{ marginTop: 20 }}>
           <Image source={logo} style={{ width: 120, height: 120, alignSelf: 'center' }}></Image>
         </View>
 
-        <View style={{ flexDirection: 'row', marginHorizontal: 10 }}>
-          <TextInput
-            placeholder='Search'
-            style={styles.searchView}
-            onChangeText={handleSearchTextChange}
-            value={searchText}
-          ></TextInput>
-          <Icon name='search' size={20} style={{ position: 'absolute', start: 9, top: 20 }}></Icon>
-        </View>
+        <TouchableOpacity onPress={handleSearchPress}>
+          <View style={styles.searchView}>
+            <Icon name='search' size={20} ></Icon>
+            <Text style={{ opacity: 0.5, marginStart:15 }}>Search</Text>
+          </View>
+        </TouchableOpacity>
+
       </LinearGradient>
 
-      <Modal visible={isSearchModalVisible} onRequestClose={() => setIsSearchModalVisible(false)}>
-        {isSearchLoading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
-        ) : (
-          <FlatList
-            data={searchResults}
-            keyExtractor={(item) => item.id.toString()}
-          />
-        )}
-      </Modal>
+
 
       <Text style={{ marginHorizontal: 9, fontSize: 18, fontWeight: 'bold', marginBottom: 10, marginTop: 50 }}>Some best-selling products</Text>
 
@@ -163,14 +123,16 @@ const styles = StyleSheet.create({
 
   },
   searchView: {
-    width: '100%',
-    height: 60,
+    height: 50,
     borderRadius: 22,
     backgroundColor: '#ebecf0',
     paddingVertical: 9,
     paddingEnd: 9,
-    paddingStart: 38,
-    marginBottom: 20
+    padding: 20,
+    margin: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    spaceBetween: 'center',
   },
 });
 
