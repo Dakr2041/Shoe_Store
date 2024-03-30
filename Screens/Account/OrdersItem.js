@@ -35,6 +35,7 @@ const OrdersItem = ({ order }) => {
     const date = new Date(order.createdAt);
 
     const formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+    const formattedIfdate = `${date.getHours()}:${date.getMinutes() + 1}:${date.getSeconds()}`;
     if (loading) {
         return <ActivityIndicator size="large" color="#0000ff" />;
     }
@@ -42,6 +43,7 @@ const OrdersItem = ({ order }) => {
         <View style={styles.itemContainer}>
             <View style={styles.topContainer}>
                 <Text style={{ fontSize: 14 }}>Orderdate: {formattedDate}</Text>
+                <Text style={{ fontSize: 12 }}>of: {formattedIfdate}</Text>
             </View>
             <FlatList
                 data={products}
@@ -62,7 +64,7 @@ const OrdersItem = ({ order }) => {
             />
             <View style={styles.bottomContainer}>
                 <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Sub total: {formatVND(order.total)}</Text>
-
+                <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Status: {order.status}</Text>
                 <TouchableOpacity style={{ alignSelf: 'center' }} >
 
                 </TouchableOpacity>
@@ -72,9 +74,21 @@ const OrdersItem = ({ order }) => {
 };
 
 const OrdersList = ({ ordersData }) => {
+
+    if (!ordersData || !ordersData.data) {
+        return <Text>Đang tải dữ liệu</Text>;
+    }
+
+
+    const sortedOrders = ordersData.data.sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return dateB - dateA;
+    });
+
     return (
         <FlatList
-            data={ordersData.data}
+            data={sortedOrders}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => <OrdersItem order={item} />}
         />
