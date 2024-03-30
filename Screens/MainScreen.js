@@ -14,6 +14,9 @@ import SetupUserInfoScreen from './Account/SetupUserInfoScreen';
 import CheckoutScreen from './Cart/CheckoutScreen';
 import ResetPasswordScreen from './Account/ResetPassword';
 import OrdersScreen from './Account/OrdersScreen';
+import SearchScreen from './Product/Search/SearchScreen';
+import SearchResultScreen from './Product/Search/SearchResultScreen';
+import OnlinePaymentScreen from './Cart/OnlinePaymentScreen';
 
 
 const Tab = createBottomTabNavigator();
@@ -33,8 +36,11 @@ export default function App() {
         <Stack.Screen name="UpdateUserInfo" component={UpdateUserInfoScreen} />
         <Stack.Screen name="SetupUserInfo" component={SetupUserInfoScreen} />
         <Stack.Screen name="Checkout" component={CheckoutScreen} />
+        <Stack.Screen name="OnlinePayment" component={OnlinePaymentScreen} />
         <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
         <Stack.Screen name="Orders" component={OrdersScreen} />
+        <Stack.Screen name="Search" component={SearchScreen} />
+        <Stack.Screen name="SearchResult" component={SearchResultScreen} />
       </Stack.Navigator>
 
     </NavigationContainer>
