@@ -180,7 +180,6 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
     paddingTop: 70,
   },
   avatar: {
@@ -221,7 +220,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
     marginHorizontal: 11,
-
   },
   menuItemGradient: {
     width: '100%',

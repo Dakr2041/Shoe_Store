@@ -4,10 +4,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { TextInput } from "react-native-gesture-handler";
 import { API_URL } from "../../Api";
+import ProductItem from "../ProductItem";
+import SearchProductItem from "./SearchProductItem";
 
 const SearchScreen = ({ navigation }) => {
     const [isSearchLoading, setIsSearchLoading] = useState(false);
-    const [searchText, setSearchText] = useState('');
     const [searchResults, setSearchResults] = useState([]);
 
     const searchProducts = async (searchData) => {
@@ -26,7 +27,6 @@ const SearchScreen = ({ navigation }) => {
                 console.log(data);
 
                 if (data.data === null) {
-
                     // setSearchResults(products);
                     console.log('No products found');
                 } else {
@@ -44,12 +44,11 @@ const SearchScreen = ({ navigation }) => {
     };
 
     const handleSearchTextChange = (text) => {
-        setSearchText(text);
         searchProducts(text);
     };
 
     const handleSearchPress = () => {
-        navigation.navigate('SearchResult');
+        navigation.navigate('SearchResult',{ results: searchResults });
     };
     console.log(searchResults);
 
@@ -63,6 +62,7 @@ const SearchScreen = ({ navigation }) => {
                         placeholder="Search for products"
                         style={{ marginLeft: 10, width: '100%' }}
                         onChangeText={handleSearchTextChange}
+                        // onSubmitEditing={handleSearchPress}
                     ></TextInput>
 
                 </View>
@@ -75,13 +75,7 @@ const SearchScreen = ({ navigation }) => {
                     data={searchResults}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => (
-                        <TouchableOpacity onPress={() => handleProductPress(item)}>
-                            <View style={{ flexDirection: 'row', padding: 10 }}>
-                                <Image source={{ uri: item.imageProduct }} style={{ width: 50, height: 50 }} />
-
-                                <Text>{item.name}</Text>
-                            </View>
-                        </TouchableOpacity>
+                        <SearchProductItem product={item} onPress={() => handleProductPress(item)} />
                     )}
                 />
             )}
@@ -94,7 +88,7 @@ const SearchScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     searchView: {
         height: 50,
-        borderRadius: 22,
+        borderRadius: 20,
         backgroundColor: '#ebecf0',
         paddingVertical: 9,
         paddingEnd: 9,
@@ -104,6 +98,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         spaceBetween: 'center',
     },
+    searchItem: {
+        flexDirection: 'row',
+        padding: 10,
+        alignItems: 'center',
+        borderBottomColor: '#ccc',
+        borderBottomWidth: 1
+    }
 })
 
 export default SearchScreen;
