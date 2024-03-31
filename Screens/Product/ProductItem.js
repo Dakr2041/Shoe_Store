@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'rea
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../Api';
+import Alertcustom from '../Alert/Alertcustom'
 
 const iconFavourite = require('../Product/favourite_icon.png');
 const addtocarticon = require('../Product/addtocart.png');
