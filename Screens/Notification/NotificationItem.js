@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { formatVND } from '../Functions/FormatVND';
 import { API_URL } from '../Api';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const NOItem = ({ notification, onPress }) => {
+const NOItem = ({ notification, onPress, onRemoveItem }) => {
     return (
         <TouchableOpacity style={styles.container} onPress={() => onPress(notification)}>
             <View style={styles.contentContainer}>
                 <Text numberOfLines={1} ellipsizeMode="tail" style={styles.contentText}>{notification.content}</Text>
             </View>
+            {/* <TouchableOpacity style={styles.removeButton} onPress={() => onRemoveItem(notification.id)}>
+                <MaterialCommunityIcons name="delete" size={24} color="#f00" />
+            </TouchableOpacity> */}
         </TouchableOpacity>
     );
 };
@@ -42,19 +45,22 @@ const NOList = ({ NotificationData }) => {
                     <NOItem notification={item} onPress={handleNotificationPress} />
                 )}
             />
-            {selectedNotification && (
+            <Modal
+                visible={selectedNotification !== null}
+                transparent={true}
+                animationType="slide"
+            >
                 <View style={styles.modal}>
                     <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
                         <Text style={styles.closeButtonText}>Đóng</Text>
                     </TouchableOpacity>
-                    <Text style={styles.modalText}>{selectedNotification.content}</Text>
-                    <Text style={styles.modalText}>{selectedNotification.title}</Text>
+                    <Text style={styles.modalText}>{selectedNotification ? selectedNotification.content : ''}</Text>
+                    <Text style={styles.modalText}>{selectedNotification ? selectedNotification.title : ''}</Text>
                 </View>
-            )}
+            </Modal>
         </View>
     );
 };
-
 
 const styles = StyleSheet.create({
     container: {
@@ -82,17 +88,26 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     modal: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#fff',
     },
     modalText: {
         fontSize: 20,
+        fontWeight: 'bold',
+        color: 'black',
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 20,
+        right: 20,
+        backgroundColor: 'red',
+        borderRadius: 20,
+        padding: 10,
+    },
+    closeButtonText: {
+        fontSize: 16,
         fontWeight: 'bold',
         color: '#fff',
     },

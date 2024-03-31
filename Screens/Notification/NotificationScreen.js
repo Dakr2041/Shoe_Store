@@ -51,6 +51,60 @@ const NotificationSceen = () => {
         }
     }, [token]);
 
+    // const onRemoveItem = async (notificationId) => {
+    //     try {
+    //         if (!StoredToken) {
+    //             console.warn('No token available. User needs to log in.');
+
+    //             return;
+    //         }
+
+    //         await removeItemFromAPI(notificationId, StoredToken);
+    //         console.log('Item deleted from cart');
+    //     } catch (error) {
+    //         console.error('Error deleting item:', error);
+
+    //     }
+    // };
+
+    // const removeItemFromAPI = async (notificationId, token) => {
+    //     try {
+    //         const response = await fetch(`${API_URL}/notification/deleteNotification${notificationId}`, {
+    //             method: 'DELETE',
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //         });
+
+    //         if (!response.ok) {
+    //             throw new Error(`API error: ${response.statusText}`);
+    //         }
+    //         fetchData();
+    //         return response.json();
+
+    //     } catch (error) {
+    //         throw new Error(`Failed to delete item: ${error.message}`);
+    //     }
+    // };
+
+    // const handleRefresh = async () => {
+    //     setItemsId([]);
+    //     await fetchData();
+    // };
+
+    // const handleDeleteConfirmation = (itemId) => {
+    //     Alert.alert(
+    //         'Confirm Delete',
+    //         `Are you sure you want to delete item from your cart?`,
+    //         [
+    //             { text: 'Cancel', onPress: () => console.log('Cancel deletion') },
+    //             { text: 'Delete', onPress: () => onRemoveItem(itemId), style: 'destructive' },
+    //         ],
+    //         { cancelable: false },
+    //     );
+    // };
+
+
     console.log(notification);
 
 

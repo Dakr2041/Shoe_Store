@@ -51,6 +51,8 @@ const FavouriteScreen = () => {
 
     console.log(favourites);
 
+
+
     const handleGoBack = () => {
         navigation.goBack();
     };
