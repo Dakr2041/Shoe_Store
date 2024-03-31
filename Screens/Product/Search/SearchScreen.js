@@ -53,6 +53,10 @@ const SearchScreen = ({ navigation }) => {
     };
     console.log(searchResults);
 
+
+    const handleProductPress = (product) => {
+        navigation.navigate('ProductDetail', { product });
+    };
     return (
         <View>
             <LinearGradient style={{ borderRadius: 15, paddingTop: 20 }} colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
@@ -77,7 +81,7 @@ const SearchScreen = ({ navigation }) => {
                     renderItem={({ item }) => (
                         <TouchableOpacity onPress={() => handleProductPress(item)}>
                             <View style={{ flexDirection: 'row', padding: 10 }}>
-                                <Image source={{ uri: item.imageProduct }} style={{ width: 50, height: 50 }} />
+                                <Image source={{ uri: item.imageProduct }} style={{ width: 80, height: 80 }} />
 
                                 <Text>{item.name}</Text>
                             </View>
