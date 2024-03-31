@@ -1,32 +1,65 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '../Api';
+import { LinearGradient } from 'expo-linear-gradient';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import Notification from '../Notification/NotificationItem'
 
-const NotificationPage = () => {
 
-    const [notifications, setNotifications] = useState([
-        { id: 1, message: "Notification 1" },
-        { id: 2, message: "Notification 2" },
-        { id: 3, message: "Notification 3" }
-    ]);
+const NotificationSceen = () => {
+    const [notification, setNotification] = useState([]);
+    const navigation = useNavigation();
+    const [token, setToken] = useState('');
 
+    useEffect(() => {
+        const fetchTOKEN = async () => {
+            try {
+                const storedToken = await AsyncStorage.getItem('authToken');
+                setToken(storedToken ? String(storedToken) : null);
+                console.log(storedToken);
+            } catch (error) {
+                console.error('Error fetching Token from storage:', error);
 
-    const handleNotificationClick = (id) => {
-        setNotifications(notifications.filter(notification => notification.id !== id));
-    };
+            }
+        };
+
+        fetchTOKEN();
+    }, []);
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            const response = await fetch(`${API_URL}/notification/getNotificationUser`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+
+                setNotification(data);
+            } else {
+                console.error('Error fetching orders');
+            }
+        };
+
+        if (token) {
+            fetchOrders();
+        }
+    }, [token]);
+
+    console.log(notification);
+
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Thông Báo</Text>
-            <View style={styles.notificationList}>
-                {notifications.map(notification => (
-                    <TouchableOpacity key={notification.id} style={styles.notification} onPress={() => handleNotificationClick(notification.id)}>
-                        <Text>{notification.message}</Text>
-                        <TouchableOpacity onPress={() => handleNotificationClick(notification.id)}>
-                            <Text style={styles.deleteButton}>Xóa</Text>
-                        </TouchableOpacity>
-                    </TouchableOpacity>
-                ))}
-            </View>
+            <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.header}>
+                <Text style={styles.headerText}>Thông báo</Text>
+            </LinearGradient>
+            <Notification NotificationData={notification} />
         </View>
     );
 };
@@ -34,31 +67,18 @@ const NotificationPage = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#fff',
     },
     header: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    notificationList: {
-        width: '80%',
-    },
-    notification: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
-        padding: 10,
-        marginBottom: 10,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
+        paddingVertical: 20,
+        marginTop: 20,
     },
-    deleteButton: {
-        color: 'red',
+    headerText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#fff',
     },
 });
 
-export default NotificationPage;
+export default NotificationSceen;
