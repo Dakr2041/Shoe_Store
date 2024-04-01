@@ -1,11 +1,28 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { formatVND } from '../Functions/FormatVND';
+import { API_URL } from '../Api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
-const NOItem = ({ notification, onPress, onRemoveItem }) => {
+const NOItem = ({ notification, onPress, onRemoveItem, showDot, fetchNotifications }) => {
+    const [isRead, setIsRead] = useState(false);
+    const [token, setToken] = useState('');
+
+    useEffect(() => {
+        const fetchToken = async () => {
+            try {
+                const storedToken = await AsyncStorage.getItem('authToken');
+                setToken(storedToken ? storedToken : null);
+            } catch (error) {
+                console.error('Error fetching Token from storage:', error);
+            }
+        };
+
+        fetchToken();
+    }, []);
+
     const renderRightActions = (progress, dragX) => {
         return (
             <TouchableOpacity onPress={() => onRemoveItem(notification.id)} style={styles.rightAction}>
@@ -14,9 +31,35 @@ const NOItem = ({ notification, onPress, onRemoveItem }) => {
         );
     };
 
+    const senNotification = async () => {
+        try {
+            console.log(notification.id);
+            console.log(token);
+            const response = await fetch(`${API_URL}/notification/senNotification/${notification.id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to mark notification as read');
+            }
+            console.log(response.status);
+
+            setIsRead(true);
+            fetchNotifications();
+        } catch (error) {
+            console.error('Error marking notification as read:', error);
+        }
+    };
+
+
     return (
         <Swipeable renderRightActions={renderRightActions}>
-            <TouchableOpacity style={styles.container} onPress={() => onPress(notification)}>
+            <TouchableOpacity style={styles.container} onPress={() => { onPress(notification); senNotification(); }}>
+                {showDot && notification.status === 1 && !isRead && <View style={styles.redDot} />}
                 <View style={styles.contentContainer}>
                     <Text numberOfLines={1} ellipsizeMode="tail" style={styles.contentText}>{notification.content}</Text>
                 </View>
@@ -25,7 +68,7 @@ const NOItem = ({ notification, onPress, onRemoveItem }) => {
     );
 };
 
-const NOList = ({ NotificationData, onRemoveItem, fetchNotifications }) => {
+const NOList = ({ NotificationData, onRemoveItem, fetchNotifications, token }) => {
     const [selectedNotification, setSelectedNotification] = useState(null);
 
     const handleNotificationPress = (notification) => {
@@ -35,6 +78,16 @@ const NOList = ({ NotificationData, onRemoveItem, fetchNotifications }) => {
     const handleCloseModal = () => {
         setSelectedNotification(null);
     };
+
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            fetchNotifications();
+        }, 5000);
+
+
+        return () => clearInterval(intervalId);
+    }, [fetchNotifications]);
 
     if (!NotificationData || !NotificationData.data) {
         return <Text>Đang tải dữ liệu....</Text>;
@@ -50,7 +103,14 @@ const NOList = ({ NotificationData, onRemoveItem, fetchNotifications }) => {
                 data={sortedNotifications}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <NOItem notification={item} onPress={handleNotificationPress} onRemoveItem={onRemoveItem} />
+                    <NOItem
+                        notification={item}
+                        onPress={handleNotificationPress}
+                        onRemoveItem={onRemoveItem}
+                        showDot={true}
+                        fetchNotifications={fetchNotifications}
+                        token={token}
+                    />
                 )}
             />
             <Modal
@@ -62,10 +122,15 @@ const NOList = ({ NotificationData, onRemoveItem, fetchNotifications }) => {
                     <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
                         <Text style={styles.closeButtonText}>Đóng</Text>
                     </TouchableOpacity>
-                    <Text style={styles.modalText}>{selectedNotification ? selectedNotification.content : ''}</Text>
-                    <Text style={styles.modalText}>{selectedNotification ? selectedNotification.title : ''}</Text>
+                    <Text style={styles.modalText}>
+                        {selectedNotification ? selectedNotification.content : ''}
+                    </Text>
+                    <Text style={styles.modalText}>
+                        {selectedNotification ? selectedNotification.title : ''}
+                    </Text>
                 </View>
             </Modal>
+
         </View>
     );
 };
@@ -126,6 +191,15 @@ const styles = StyleSheet.create({
         backgroundColor: 'red',
         borderRadius: 5,
         marginVertical: 10,
+    },
+    redDot: {
+        position: 'absolute',
+        top: 5,
+        left: 5,
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: 'red',
     },
 });
 
