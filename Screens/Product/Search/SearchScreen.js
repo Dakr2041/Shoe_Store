@@ -10,6 +10,7 @@ import SearchProductItem from "./SearchProductItem";
 const SearchScreen = ({ navigation }) => {
     const [isSearchLoading, setIsSearchLoading] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
+    const [searchInput, setSearchInput] = useState('');
 
     const searchProducts = async (searchData) => {
         setIsSearchLoading(true);
@@ -45,10 +46,11 @@ const SearchScreen = ({ navigation }) => {
 
     const handleSearchTextChange = (text) => {
         searchProducts(text);
+        setSearchInput(text);
     };
 
     const handleSearchPress = () => {
-        navigation.navigate('SearchResult',{ results: searchResults });
+        navigation.navigate('SearchResult',{ results: searchResults, searchInput: searchInput });
     };
     console.log(searchResults);
 
@@ -62,7 +64,8 @@ const SearchScreen = ({ navigation }) => {
                         placeholder="Search for products"
                         style={{ marginLeft: 10, width: '100%' }}
                         onChangeText={handleSearchTextChange}
-                        // onSubmitEditing={handleSearchPress}
+                        onSubmitEditing={handleSearchPress}
+                        autoFocus={true}
                     ></TextInput>
 
                 </View>

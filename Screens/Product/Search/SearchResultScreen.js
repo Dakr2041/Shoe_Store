@@ -1,5 +1,4 @@
-import { FlatList, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import SearchProductItem from "./SearchProductItem";
+import { FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ProductItem from "../ProductItem";
@@ -9,7 +8,7 @@ import { Picker } from "@react-native-picker/picker";
 
 
 const SearchResultScreen = ({ navigation, route }) => {
-    const { results } = route.params;
+    const { results, searchInput } = route.params;
     console.log("results", results);
     const [isLoading, setIsLoading] = useState(false);
     const [isSearchLoading, setIsSearchLoading] = useState(false);
@@ -58,15 +57,6 @@ const SearchResultScreen = ({ navigation, route }) => {
         }
     };
 
-    const handleSearchTextChange = (text) => {
-        searchProducts(text);
-    };
-
-    const handleSearchPress = () => {
-        navigation.navigate('SearchResult', { results: searchResults });
-    };
-
-
     const renderContent = () => {
         if (isLoading) {
             return <ActivityIndicator size="large" color="#0000ff" />;
@@ -93,20 +83,24 @@ const SearchResultScreen = ({ navigation, route }) => {
         }
     };
 
+    const handleSearchPress = () => {
+        navigation.navigate('Search');
+    };
+
     return (
-        <View>
-            <LinearGradient style={{ borderRadius: 15, paddingTop: 20 }} colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-                <View style={styles.searchView}>
-                    <Icon name='search' size={20} style={{ alignItems: 'flex-end' }}></Icon>
-
-                    <TextInput
-                        placeholder="Search for products"
-                        style={{ marginLeft: 10, width: '100%' }}
-                    // onChangeText={handleSearchTextChange}
-                    // onSubmitEditing={handleSearchPress}
-                    ></TextInput>
-
-                </View>
+        <View style={styles.container}>
+            <LinearGradient style={{
+                borderRadius: 15,
+                paddingTop: 20
+            }}
+                colors={['#f7c458', '#fea239']}
+                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+                <TouchableOpacity onPress={handleSearchPress}>
+                    <View style={styles.searchView}>
+                        <Icon name='search' size={20} ></Icon>
+                        <Text style={{ opacity: 0.5, marginStart: 15 }}>{searchInput}</Text>
+                    </View>
+                </TouchableOpacity>
             </LinearGradient>
 
             {/* <View style={styles.filterContainer}>
@@ -141,9 +135,9 @@ const SearchResultScreen = ({ navigation, route }) => {
                 </View>
             </View> */}
 
-            <View>
+            <ScrollView style={styles}>
                 {renderContent()}
-            </View>
+            </ScrollView>
         </View>
 
     );
@@ -161,6 +155,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         spaceBetween: 'center',
+
+
     },
     searchItem: {
         flexDirection: 'row',
@@ -169,8 +165,10 @@ const styles = StyleSheet.create({
         borderBottomColor: '#ccc',
         borderBottomWidth: 1
     },
+
     container: {
         backgroundColor: '#f5f5f5',
+        flex: 1,
     },
     row: {
         flexDirection: 'row',
