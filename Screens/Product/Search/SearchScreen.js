@@ -54,6 +54,10 @@ const SearchScreen = ({ navigation }) => {
     };
     console.log(searchResults);
 
+
+    const handleProductPress = (product) => {
+        navigation.navigate('ProductDetail', { product });
+    };
     return (
         <View>
             <LinearGradient style={{ borderRadius: 15, paddingTop: 20 }} colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
