@@ -1,36 +1,33 @@
+
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../Api';
 import { LinearGradient } from 'expo-linear-gradient';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import Notification from '../Notification/NotificationItem'
+import NotificationList from './NotificationItem';
 
-
-const NotificationSceen = () => {
-    const [notification, setNotification] = useState([]);
+const NotificationScreen = () => {
+    const [notifications, setNotifications] = useState([]);
     const navigation = useNavigation();
     const [token, setToken] = useState('');
 
     useEffect(() => {
-        const fetchTOKEN = async () => {
+        const fetchToken = async () => {
             try {
                 const storedToken = await AsyncStorage.getItem('authToken');
-                setToken(storedToken ? String(storedToken) : null);
-                console.log(storedToken);
+                setToken(storedToken ? storedToken : null);
             } catch (error) {
                 console.error('Error fetching Token from storage:', error);
-
             }
         };
 
-        fetchTOKEN();
+        fetchToken();
     }, []);
 
-    useEffect(() => {
-        const fetchOrders = async () => {
+    const fetchNotifications = async () => {
+        if (!token) return;
+        try {
             const response = await fetch(`${API_URL}/notification/getNotificationUser`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -39,81 +36,65 @@ const NotificationSceen = () => {
 
             if (response.ok) {
                 const data = await response.json();
-
-                setNotification(data);
+                setNotifications(data);
             } else {
-                console.error('Error fetching orders');
+                console.error('Error fetching notifications');
             }
-        };
-
-        if (token) {
-            fetchOrders();
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
         }
+    };
+
+    useEffect(() => {
+        fetchNotifications();
     }, [token]);
 
-    // const onRemoveItem = async (notificationId) => {
-    //     try {
-    //         if (!StoredToken) {
-    //             console.warn('No token available. User needs to log in.');
+    const onRemoveItem = async (notificationId) => {
+        try {
+            if (!token) {
+                console.warn('No token available. User needs to log in.');
+                return;
+            }
 
-    //             return;
-    //         }
+            const response = await fetch(`${API_URL}/notification/deleteNotification/${notificationId}`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
-    //         await removeItemFromAPI(notificationId, StoredToken);
-    //         console.log('Item deleted from cart');
-    //     } catch (error) {
-    //         console.error('Error deleting item:', error);
-
-    //     }
-    // };
-
-    // const removeItemFromAPI = async (notificationId, token) => {
-    //     try {
-    //         const response = await fetch(`${API_URL}/notification/deleteNotification${notificationId}`, {
-    //             method: 'DELETE',
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`,
-    //             },
-    //         });
-
-    //         if (!response.ok) {
-    //             throw new Error(`API error: ${response.statusText}`);
-    //         }
-    //         fetchData();
-    //         return response.json();
-
-    //     } catch (error) {
-    //         throw new Error(`Failed to delete item: ${error.message}`);
-    //     }
-    // };
-
-    // const handleRefresh = async () => {
-    //     setItemsId([]);
-    //     await fetchData();
-    // };
-
-    // const handleDeleteConfirmation = (itemId) => {
-    //     Alert.alert(
-    //         'Confirm Delete',
-    //         `Are you sure you want to delete item from your cart?`,
-    //         [
-    //             { text: 'Cancel', onPress: () => console.log('Cancel deletion') },
-    //             { text: 'Delete', onPress: () => onRemoveItem(itemId), style: 'destructive' },
-    //         ],
-    //         { cancelable: false },
-    //     );
-    // };
+            if (!response.ok) {
+                throw new Error(`Failed to delete notification: ${response.statusText}`);
+            }
+            console.log(notificationId);
 
 
-    console.log(notification);
+            fetchNotifications();
+        } catch (error) {
+            console.error('Error deleting notification:', error);
+        }
+    };
 
+    const handleDeleteConfirmation = (notificationId) => {
+        Alert.alert(
+            'Confirm Delete',
+            'Are you sure you want to delete this notification?',
+            [
+                { text: 'Cancel', onPress: () => console.log('Cancel deletion') },
+                { text: 'Delete', onPress: () => onRemoveItem(notificationId), style: 'destructive' },
+            ],
+            { cancelable: false }
+        );
+    };
+
+    console.log(notifications);
 
     return (
         <View style={styles.container}>
             <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.header}>
-                <Text style={styles.headerText}>Thông báo</Text>
+                <Text style={styles.headerText}>Notifications</Text>
             </LinearGradient>
-            <Notification NotificationData={notification} />
+            <NotificationList NotificationData={notifications} onRemoveItem={handleDeleteConfirmation} fetchNotifications={fetchNotifications} />
         </View>
     );
 };
@@ -135,4 +116,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default NotificationSceen;
+export default NotificationScreen;
