@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     flexDirection: 'column',
     marginRight: 10,
+    padding : 10,
   },
   imageContainer: {
     width: '100%',
@@ -219,7 +220,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   price: {
-    fontSize: 18,
+    fontSize: 16,
     color: 'black',
     fontWeight: 'bold',
   },

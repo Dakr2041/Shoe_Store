@@ -92,7 +92,7 @@ const NotificationScreen = () => {
     return (
         <View style={styles.container}>
             <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.header}>
-                <Text style={styles.headerText}>Notifications</Text>
+                <Text style={styles.headerText}>Notification</Text>
             </LinearGradient>
             <NotificationList NotificationData={notifications} onRemoveItem={handleDeleteConfirmation} fetchNotifications={fetchNotifications} />
         </View>
@@ -106,12 +106,13 @@ const styles = StyleSheet.create({
     header: {
         justifyContent: 'center',
         alignItems: 'center',
-        paddingVertical: 20,
-        marginTop: 20,
+        padding: 30,
     },
     headerText: {
-        fontSize: 18,
+        fontSize: 24,
         fontWeight: 'bold',
+        textAlign: 'center',
+        paddingTop: 25,
         color: '#fff',
     },
 });

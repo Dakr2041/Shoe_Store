@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation ,useIsFocused} from '@react-navigation/core';
 import { API_URL } from '../Api';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -12,6 +12,7 @@ const AccountScreen = () => {
   const [userInfo, setUserInfo] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [shouldRedirectToSetup, setShouldRedirectToSetup] = useState(false);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -55,11 +56,11 @@ const AccountScreen = () => {
     };
 
     fetchUserInfo();
-  }, [userId]);
+  }, [userId,isFocused]);
 
   const navigation = useNavigation();
   const handleLogoutPress = () => {
-    navigation.navigate('Login');
+    // navigation.navigate('Login');
     console.log('Logout!!!');
   };
   const handleSettingsPress = () => {
@@ -81,7 +82,7 @@ const AccountScreen = () => {
 
   const menuItems = [
     { title: 'Orders', onPress: handleOrdersPress, icon: require('../../assets/order_icon.png') },
-    { title: 'Oder Status', onPress: () => { }, icon: require('../../assets/order status.png') },
+    // { title: 'Oder Status', onPress: () => { }, icon: require('../../assets/order status.png') },
     { title: 'Favorites', onPress: handleFavourite, icon: require('../Product/favourite_icon.png') },
     { title: 'Discount', onPress: handleDiscountScreen, icon: require('../../assets/discount_icon.png') },
     { title: 'Support', onPress: handleSupport, icon: require('../../assets/support_icon.png') },
@@ -180,7 +181,6 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
     paddingTop: 70,
   },
   avatar: {
@@ -221,7 +221,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
     marginHorizontal: 11,
-
   },
   menuItemGradient: {
     width: '100%',
