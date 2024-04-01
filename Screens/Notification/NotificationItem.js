@@ -1,23 +1,31 @@
+
 import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { formatVND } from '../Functions/FormatVND';
-import { API_URL } from '../Api';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 const NOItem = ({ notification, onPress, onRemoveItem }) => {
+    const renderRightActions = (progress, dragX) => {
+        return (
+            <TouchableOpacity onPress={() => onRemoveItem(notification.id)} style={styles.rightAction}>
+                <MaterialCommunityIcons name="delete" size={24} color="#fff" />
+            </TouchableOpacity>
+        );
+    };
+
     return (
-        <TouchableOpacity style={styles.container} onPress={() => onPress(notification)}>
-            <View style={styles.contentContainer}>
-                <Text numberOfLines={1} ellipsizeMode="tail" style={styles.contentText}>{notification.content}</Text>
-            </View>
-            {/* <TouchableOpacity style={styles.removeButton} onPress={() => onRemoveItem(notification.id)}>
-                <MaterialCommunityIcons name="delete" size={24} color="#f00" />
-            </TouchableOpacity> */}
-        </TouchableOpacity>
+        <Swipeable renderRightActions={renderRightActions}>
+            <TouchableOpacity style={styles.container} onPress={() => onPress(notification)}>
+                <View style={styles.contentContainer}>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={styles.contentText}>{notification.content}</Text>
+                </View>
+            </TouchableOpacity>
+        </Swipeable>
     );
 };
 
-const NOList = ({ NotificationData }) => {
+const NOList = ({ NotificationData, onRemoveItem, fetchNotifications }) => {
     const [selectedNotification, setSelectedNotification] = useState(null);
 
     const handleNotificationPress = (notification) => {
@@ -42,7 +50,7 @@ const NOList = ({ NotificationData }) => {
                 data={sortedNotifications}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <NOItem notification={item} onPress={handleNotificationPress} />
+                    <NOItem notification={item} onPress={handleNotificationPress} onRemoveItem={onRemoveItem} />
                 )}
             />
             <Modal
@@ -110,6 +118,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         color: '#fff',
+    },
+    rightAction: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 75,
+        backgroundColor: 'red',
+        borderRadius: 5,
+        marginVertical: 10,
     },
 });
 
