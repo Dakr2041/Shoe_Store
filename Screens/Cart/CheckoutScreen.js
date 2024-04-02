@@ -74,8 +74,8 @@ const CheckoutScreen = ({ route }) => {
     }
   }
 
-  const onlinePayment = async (totalPrice,orderId) => {
-    const bankCode ="";
+  const onlinePayment = async (totalPrice, orderId) => {
+    const bankCode = "";
     const response = await fetch(`${API_URL}/pay/createPayment`, {
       method: 'POST',
       headers: {
@@ -120,8 +120,8 @@ const CheckoutScreen = ({ route }) => {
       setIsLoading(false);
       // alert(data.message);
 
-      console.log("id: ",data.data.id," total: ",data.data.total);
-      onlinePayment(data.data.total,data.data.id);
+      console.log("id: ", data.data.id, " total: ", data.data.total);
+      onlinePayment(data.data.total, data.data.id);
 
     } else {
       // Handle error
@@ -161,7 +161,7 @@ const CheckoutScreen = ({ route }) => {
     }
   };
   if (isLoading) {
-    return <ActivityIndicator size="large" color="#0000ff" style={{alignSelf:'center',height:'100%'}}/>;
+    return <ActivityIndicator size="large" color="#0000ff" style={{ alignSelf: 'center', height: '100%' }} />;
   } else {
     return (
       <View style={styles.container}>

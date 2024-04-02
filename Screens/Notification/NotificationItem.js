@@ -33,8 +33,7 @@ const NOItem = ({ notification, onPress, onRemoveItem, showDot, fetchNotificatio
 
     const senNotification = async () => {
         try {
-            console.log(notification.id);
-            console.log(token);
+
             const response = await fetch(`${API_URL}/notification/senNotification/${notification.id}`, {
                 method: 'GET',
                 headers: {
