@@ -87,7 +87,7 @@ const NotificationScreen = () => {
         );
     };
 
-    console.log(notifications);
+
 
     return (
         <View style={styles.container}>
