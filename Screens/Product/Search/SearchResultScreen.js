@@ -2,22 +2,41 @@ import { FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, Vi
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ProductItem from "../ProductItem";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Picker } from "@react-native-picker/picker";
+import DropDownPicker from "react-native-dropdown-picker";
 
 
 
 const SearchResultScreen = ({ navigation, route }) => {
     const { results, searchInput } = route.params;
-    console.log("results", results);
+    const [searchResults, setSearchResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [isSearchLoading, setIsSearchLoading] = useState(false);
     const [sortOrder, setSortOrder] = useState('lowToHigh');
     const [priceRange, setPriceRange] = useState({ min: '', max: '' });
+    const [items, setItems] = useState([
+        { label: 'Low to High', value: 'lowToHigh', icon: () => <Icon name="arrow-up" size={18} color="#f7c458" /> },
+        { label: 'High to Low', value: 'highToLow', icon: () => <Icon name="arrow-down" size={18} color="#f7c458" /> },
+
+    ]);
+    const [open, setOpen] = useState(false);
+
+    useEffect(() => {
+        setSearchResults(results);
+        handleSortOrderChange(sortOrder);
+    }, []);
 
     const handleSortOrderChange = (order) => {
         setSortOrder(order);
-        // TODO: Sort the results based on the selected order
+        let sortedResults = [...results]; // Create a copy of the results array
+
+        if (order === 'lowToHigh') {
+            sortedResults.sort((a, b) => a.price - b.price);
+        } else if (order === 'highToLow') {
+            sortedResults.sort((a, b) => b.price - a.price);
+        }
+
+        setSearchResults(sortedResults);
     };
 
     const handlePriceRangeChange = (field, value) => {
@@ -25,51 +44,19 @@ const SearchResultScreen = ({ navigation, route }) => {
         // TODO: Filter the results based on the selected price range
     };
 
-    const searchProducts = async (searchData) => {
-        setIsSearchLoading(true);
-        try {
-            const response = await fetch(`${API_URL}/api/search`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ searchData: searchData }),
-            });
-            const data = await response.json();
-            if (data.status === 200) {
-
-                console.log(data);
-
-                if (data.data === null) {
-                    // setSearchResults(products);
-                    console.log('No products found');
-                } else {
-                    setSearchResults(data.data);
-                }
-
-            } else {
-                console.error('Error searching products:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error searching products:', error);
-        } finally {
-            setIsSearchLoading(false);
-        }
-    };
-
     const renderContent = () => {
         if (isLoading) {
             return <ActivityIndicator size="large" color="#0000ff" />;
-        } else if (!results.length) {
+        } else if (!searchResults.length) {
             return <Text>No products found.</Text>;
         } else {
             const rows = [];
-            for (let i = 0; i < results.length; i += 2) {
+            for (let i = 0; i < searchResults.length; i += 2) {
                 const rowProducts = [];
-                for (let j = i; j < i + 2 && j < results.length; j++) {
+                for (let j = i; j < i + 2 && j < searchResults.length; j++) {
                     rowProducts.push(
-                        <View key={results[j].id} >
-                            <ProductItem product={results[j]} onPress={() => handleProductPress(results[j])} />
+                        <View key={searchResults[j].id} >
+                            <ProductItem product={searchResults[j]} onPress={() => handleProductPress(searchResults[j])} />
                         </View>
                     );
                 }
@@ -103,9 +90,9 @@ const SearchResultScreen = ({ navigation, route }) => {
                 </TouchableOpacity>
             </LinearGradient>
 
-            {/* <View style={styles.filterContainer}>
+            <View style={styles.filterContainer}>
 
-                <View style={styles.priceRange}>
+                {/* <View style={styles.priceRange}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <TextInput
                             placeholder="Min"
@@ -121,19 +108,32 @@ const SearchResultScreen = ({ navigation, route }) => {
                             style={{ width: 80, marginStart: 10 }}
                         />
                     </View>
-                </View>
+                </View> */}
 
-                <View style={styles.dropdownPicker}>
-                    <Picker
-                        selectedValue={sortOrder}
-                        onValueChange={handleSortOrderChange}
-                        style={{ width: 150 }}
-                    >
-                        <Picker.Item label="Low to High" value="lowToHigh" />
-                        <Picker.Item label="High to Low" value="highToLow" />
-                    </Picker>
-                </View>
-            </View> */}
+                <View/>
+                <View/>
+                <View/>
+                <View/>
+                <View/>
+                <View/>
+                <View/>
+                <View/>
+                <View/>
+                <View/>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', alignItems: 'flex-end' }}>Sort by price:</Text>
+                <DropDownPicker
+                    items={items}
+                    setItems={setItems}
+                    open={open}
+                    setOpen={setOpen}
+                    value={sortOrder}
+                    setValue={setSortOrder}
+                    containerStyle={{ height: 40, width: 150 }}
+                    style={styles.dropdownPicker}
+                    dropDownContainerStyle={{ backgroundColor: '#fafafa', borderWidth: 0 }}
+                    onSelectItem={(item) => handleSortOrderChange(item.value)}
+                />
+            </View>
 
             <ScrollView style={styles}>
                 {renderContent()}
@@ -175,16 +175,15 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     filterContainer: {
+        flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 20,
-        alignItems: 'center',
+        padding: 10,
+        alignItems: 'flex-end',
+        width: '100%',
     },
     dropdownPicker: {
-        flexDirection: 'row',
-        padding: 10,
-        borderWidth: 1,
-        borderRadius: 5,
-        borderColor: '#ccc',
+        width: '100%',
+        borderWidth: 0,
     },
     priceRange: {
         borderWidth: 1,
