@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View, Text, Image } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -11,6 +11,11 @@ const SearchScreen = ({ navigation }) => {
     const [isSearchLoading, setIsSearchLoading] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
     const [searchInput, setSearchInput] = useState('');
+
+
+    useEffect(() => {
+        searchProducts(searchInput);
+    }, []);
 
     const searchProducts = async (searchData) => {
         setIsSearchLoading(true);
@@ -50,7 +55,11 @@ const SearchScreen = ({ navigation }) => {
     };
 
     const handleSearchPress = () => {
-        navigation.navigate('SearchResult',{ results: searchResults, searchInput: searchInput });
+        if (searchInput.trim() !== '') {
+            navigation.navigate('SearchResult',{ results: searchResults, searchInput: searchInput });
+        } else {
+            alert('Please enter a search term');
+        }
     };
     console.log(searchResults);
 
