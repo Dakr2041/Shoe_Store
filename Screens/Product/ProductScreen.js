@@ -89,7 +89,7 @@ const ProductScreen = ({ navigation }) => {
         <TouchableOpacity onPress={handleSearchPress}>
           <View style={styles.searchView}>
             <Icon name='search' size={20} ></Icon>
-            <Text style={{ opacity: 0.5, marginStart:15 }}>Search</Text>
+            <Text style={{ opacity: 0.5, marginStart: 15 }}>Search</Text>
           </View>
         </TouchableOpacity>
 
@@ -99,7 +99,8 @@ const ProductScreen = ({ navigation }) => {
 
       <Text style={{ marginHorizontal: 9, fontSize: 18, fontWeight: 'bold', marginBottom: 10, marginTop: 50 }}>Some best-selling products</Text>
 
-      <SliderBox dotColor="tomato" autoPlay circleLoop autoplayInterval={1000} images={img} resizeMethod={'resize'} resizeMode={'cover'} />
+      <SliderBox dotColor="tomato" autoPlay={true} autoplayInterval={1000} images={img} resizeMethod={'resize'} resizeMode={'cover'} />
+
 
       <Text style={{ marginHorizontal: 9, marginTop: 20, fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Some outstanding products</Text>
 
@@ -122,6 +123,7 @@ const styles = StyleSheet.create({
     padding: 10,
 
   },
+
   searchView: {
     height: 50,
     borderRadius: 22,
