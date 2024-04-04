@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     flexDirection: 'column',
     marginRight: 10,
-    padding : 10,
+    padding: 10,
   },
   imageContainer: {
     width: '100%',
