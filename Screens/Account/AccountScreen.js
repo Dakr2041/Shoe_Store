@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useNavigation ,useIsFocused} from '@react-navigation/core';
+import { useNavigation, useIsFocused } from '@react-navigation/core';
 import { API_URL } from '../Api';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -56,7 +56,7 @@ const AccountScreen = () => {
     };
 
     fetchUserInfo();
-  }, [userId,isFocused]);
+  }, [userId, isFocused]);
 
   const navigation = useNavigation();
   const handleLogoutPress = () => {
@@ -216,6 +216,7 @@ const styles = StyleSheet.create({
 
   },
   menuItem: {
+
     width: 95,
     height: 100,
     alignItems: 'center',

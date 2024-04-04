@@ -244,14 +244,16 @@ const ProductDetailScreen = ({ route }) => {
                 slideDown();
                 setShowCommentList(false);
               }}>
-                <MaterialCommunityIcons name="close" size={24} color="#333" />
+                <MaterialCommunityIcons name="close" size={32} color="#fff" />
               </TouchableOpacity>
               <FlatList
                 data={comments}
                 renderItem={({ item }) => (
-                  <View style={styles.commentItem}>
-                    <Text style={styles.commentName}>{item.username}</Text>
-                    <Text style={styles.commentContent}>{item.content}</Text>
+                  <View style={styles.commentContainer1}>
+                    <View style={styles.commentItem}>
+                      <Text style={styles.commentName}>{item.username}</Text>
+                      <Text style={styles.commentContent}>{item.content}</Text>
+                    </View>
                   </View>
                 )}
                 keyExtractor={(item, index) => index.toString()}
@@ -414,13 +416,22 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 22,
     zIndex: 1,
   },
+  commentContainer1: {
+    backgroundColor: '#f0f0f0',
+    marginLeft: 10,
+    marginRight: 10,
+
+    marginTop: 10,
+    borderRadius: 8,
+  },
   commentItem: {
     padding: 10,
-    borderBottomWidth: 1,
+
     borderBottomColor: '#ccc',
   },
   commentName: {
     fontWeight: 'bold',
+    fontSize: 17,
     marginBottom: 5,
   },
   commentContent: {
@@ -428,9 +439,11 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: -22,
+    right: 3,
+    backgroundColor: 'red',
     zIndex: 2,
+    borderRadius: 16,
   },
 });
 

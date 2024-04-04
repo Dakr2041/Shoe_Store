@@ -37,7 +37,33 @@ const CheckoutScreen = ({ route }) => {
     fetchTOKEN();
   }, []);
 
+  const applyDiscount = async (userID) => {
+    if (discount !== '') {
+      try {
+        console.log(userID);
+        const response = await fetch(`${API_URL}/discount/useDiscount/${userID}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            total: totalPrice,
+            name: discount,
+          }),
+        });
+        const data = await response.json();
+        if (data.status === 400) {
 
+          alert(data.message);
+        } else {
+          setAppliedDiscount(true);
+
+        }
+      } catch (error) {
+        console.error('Error applying discount:', error);
+      }
+    }
+  };
 
 
   const handleOrder = () => {
@@ -195,6 +221,9 @@ const CheckoutScreen = ({ route }) => {
             placeholder="Enter discount code"
             style={styles.discountInput}
           />
+          <TouchableOpacity style={styles.applyButton} onPress={applyDiscount}>
+            <Text style={styles.applyButtonText}>Apply Now</Text>
+          </TouchableOpacity>
           <View style={styles.PickerMethod}>
             <Text>Select a payment method:</Text>
             <Picker
@@ -241,6 +270,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 10,
     marginBottom: 10,
+  },
+  applyButton: {
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 5,
+    margin: 10,
+    alignItems: 'center',
   },
   discountInput: {
     marginBottom: 10,
