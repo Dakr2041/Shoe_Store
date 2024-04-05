@@ -9,7 +9,7 @@ const iconFavourite = require('../Product/favourite_icon.png');
 const addtocarticon = require('../Product/addtocart.png');
 const windowWidth = Dimensions.get('window').width;
 
-const ProductItem = ({ product, itemWidth, onFavoriteChanged }) => {
+const ProductItem = ({ product, onFavoriteChanged }) => {
   const navigation = useNavigation();
   const navigateToProductDetail = (product) => {
     navigation.navigate('ProductDetail', { product });
@@ -17,28 +17,55 @@ const ProductItem = ({ product, itemWidth, onFavoriteChanged }) => {
 
   const formattedPrice = formatVND(product.price);
   const [isFavourite, setIsFavourite] = useState(false);
+  const [favouriteItems, setFavouriteItems] = useState([]);
+  const [token, setToken] = useState('');
 
-  useEffect(() => {
-    loadFavoriteStatus();
-  }, []);
-
-  const loadFavoriteStatus = async () => {
+  const fetchTOKEN = async () => {
     try {
-      const storedFavorites = await AsyncStorage.getItem('favorites');
-      if (storedFavorites) {
-        const favorites = JSON.parse(storedFavorites);
-        setIsFavourite(favorites.includes(product.id));
-      }
+      const storedToken = await AsyncStorage.getItem('authToken');
+      setToken(storedToken ? String(storedToken) : null);
     } catch (error) {
-      console.error('Error loading favorite status:', error);
+      console.error('Error fetching Token from storage:', error);
+
+    }
+  };
+  useEffect(() => {
+    fetchTOKEN();
+    if (token) {
+      fetchFavouriteItems();
+      if (favouriteItems) {
+        loadFavoriteStatus();
+      }
+    }
+
+  }, [token,favouriteItems]);
+
+  const fetchFavouriteItems = async () => {
+    const response = await fetch(`${API_URL}/api/getFavorite`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+
+      setFavouriteItems(data.data);
+    } else {
+      console.error('Error fetching orders');
     }
   };
 
-  const saveFavoriteStatus = async (favorites) => {
+  const loadFavoriteStatus = async () => {
     try {
-      await AsyncStorage.setItem('favorites', JSON.stringify(favorites));
+      if (favouriteItems) {
+        const favoriteIds = favouriteItems.map(item => item.id);
+        // console.log("favoriteIds: ", favoriteIds);
+
+        setIsFavourite(favoriteIds.includes(product.id));
+      }
     } catch (error) {
-      console.error('Error saving favorite status:', error);
+      console.error('Error loading favorite status:', error);
     }
   };
 
@@ -68,8 +95,7 @@ const ProductItem = ({ product, itemWidth, onFavoriteChanged }) => {
 
       setIsFavourite(!isFavourite);
 
-      const storedFavorites = await AsyncStorage.getItem('favorites');
-      let favorites = storedFavorites ? JSON.parse(storedFavorites) : [];
+      let favorites = favouriteItems ? JSON.parse(favouriteItems) : [];
       if (!isFavourite) {
 
         favorites.push(product.id);
@@ -77,8 +103,6 @@ const ProductItem = ({ product, itemWidth, onFavoriteChanged }) => {
 
         favorites = favorites.filter(id => id !== product.id);
       }
-      saveFavoriteStatus(favorites);
-
 
       if (onFavoriteChanged) {
         onFavoriteChanged(product.id, !isFavourite);
