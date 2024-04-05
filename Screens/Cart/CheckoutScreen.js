@@ -16,32 +16,48 @@ const CheckoutScreen = ({ route }) => {
   const [paymentMethod, setPaymentMethod] = useState('COD');
   const [discount, setDiscount] = useState('');
   const [StoredToken, setStoredToken] = useState(null);
-  const [orderItems, setOrderItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [userId, setUserId] = useState(null);
+  const [displayPrice, setDisplayPrice] = useState('');
 
   const navigation = useNavigation();
 
+  const fetchTOKEN = async () => {
+    try {
+      const storedToken = await AsyncStorage.getItem('authToken');
+      setStoredToken(storedToken ? String(storedToken) : null);
+      // console.log(storedToken);
+    } catch (error) {
+      console.error('Error fetching Token from storage:', error);
+
+    }
+  };
+
+  const fetchUserId = async () => {
+    try {
+      const storedUserId = await AsyncStorage.getItem('@userId');
+      setUserId(storedUserId ? Number(storedUserId) : null);
+    } catch (error) {
+      console.error('Error fetching user ID from storage:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchTOKEN = async () => {
-      try {
-        const storedToken = await AsyncStorage.getItem('authToken');
-        setStoredToken(storedToken ? String(storedToken) : null);
-        // console.log(storedToken);
-      } catch (error) {
-        console.error('Error fetching Token from storage:', error);
-
-      }
-    };
-
     fetchTOKEN();
-  }, []);
+    if (StoredToken) {
+      fetchUserId();
 
-  const applyDiscount = async (userID) => {
+    }
+    setDisplayPrice(formatVND(totalPrice));
+  }, [StoredToken]);
+
+  const applyDiscount = async () => {
     if (discount !== '') {
       try {
-        console.log(userID);
-        const response = await fetch(`${API_URL}/discount/useDiscount/${userID}`, {
+        console.log(`${API_URL}/discount/useDiscount/${userId}`);
+        const response = await fetch(`${API_URL}/discount/useDiscount/${userId}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -52,16 +68,21 @@ const CheckoutScreen = ({ route }) => {
           }),
         });
         const data = await response.json();
+        console.log(data);
         if (data.status === 400) {
 
           alert(data.message);
         } else {
-          setAppliedDiscount(true);
+          // setAppliedDiscount(true);
+          alert(data.message);
+          setDisplayPrice(formatVND(data.data));
 
         }
       } catch (error) {
         console.error('Error applying discount:', error);
       }
+    } else {
+      alert('Please enter a discount code');
     }
   };
 
@@ -186,6 +207,7 @@ const CheckoutScreen = ({ route }) => {
 
     }
   };
+
   if (isLoading) {
     return <ActivityIndicator size="large" color="#0000ff" style={{ alignSelf: 'center', height: '100%' }} />;
   } else {
@@ -221,9 +243,19 @@ const CheckoutScreen = ({ route }) => {
             placeholder="Enter discount code"
             style={styles.discountInput}
           />
-          <TouchableOpacity style={styles.applyButton} onPress={applyDiscount}>
-            <Text style={styles.applyButtonText}>Apply Now</Text>
+          <TouchableOpacity >
           </TouchableOpacity>
+
+          <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.applyButton} onPress={applyDiscount}>
+            <Text style={{
+              color: '#fff',
+              fontSize: 16,
+              fontWeight: 'bold',
+              alignSelf: 'center',
+              padding: 5
+            }}>Apply Now</Text>
+
+          </LinearGradient>
           <View style={styles.PickerMethod}>
             <Text>Select a payment method:</Text>
             <Picker
@@ -235,7 +267,7 @@ const CheckoutScreen = ({ route }) => {
             </Picker>
           </View>
           <View style={styles.checkoutContainer}>
-            <Text style={styles.cartTotal}>Total: {formatVND(totalPrice)}</Text>
+            <Text style={styles.cartTotal}>Total: {displayPrice}</Text>
             <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
               <Text style={styles.buttonText} onPress={handleOrder}> Order</Text>
             </LinearGradient>
