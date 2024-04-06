@@ -7,6 +7,7 @@ import IconPassWord from 'react-native-vector-icons/FontAwesome5';
 import { ScrollView } from 'react-native-gesture-handler';
 import { API_URL } from './Api';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+// import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 
 
 const LoginScreen = () => {
@@ -18,6 +19,8 @@ const LoginScreen = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // State to control loading animation
   const [isRememberMe, setIsRememberMe] = useState(false);
+  const [fcmToken, setFcmToken] = useState('');
+
 
   const EyeIcon = ({ visible }) => {
     return visible ? (
@@ -52,10 +55,31 @@ const LoginScreen = () => {
     fetchLoginInfo();
   }, []);
 
+
+
+  // const getTokenA = async () => {
+  //   console.log("Vào getToken")
+  //   try {
+  //     const token = await messaging().getToken();
+  //     setFcmToken(token);
+  //     console.log('Token FCM:', token);
+  //   } catch (error) {
+  //     console.log('Lỗi khi lấy token FCM:', error);
+  //   }
+  // };
+
+  // console.log('aaaaaaaaaaaaaaaaaaaaaa', fcmToken);
+
+  // useEffect(() => {
+  //   getTokenA();
+  // }, []);
+  // getTokenA();
+
   const handleLogin = async () => {
     setIsLoading(true);
     const emailRegex = /^\w+@[a-zA-Z_\.]+\.[a-zA-Z]{2,}$/;
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+
 
     console.log("validating");
     if (email.length <= 0) {
@@ -79,7 +103,7 @@ const LoginScreen = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, fcmToken }),
       });
       const data = await response.json();
       console.log(data.message);

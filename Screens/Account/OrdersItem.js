@@ -3,6 +3,7 @@ import { View, Text, FlatList, StyleSheet, Image, ActivityIndicator, TouchableOp
 import { formatVND } from '../Functions/FormatVND';
 import { API_URL } from '../Api';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OrdersItem = ({ order }) => {
 
@@ -10,6 +11,22 @@ const OrdersItem = ({ order }) => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [quantity, setQuantity] = useState('');
+    const [token, setToken] = useState('');
+
+    useEffect(() => {
+        const fetchTOKEN = async () => {
+            try {
+                const storedToken = await AsyncStorage.getItem('authToken');
+                setToken(storedToken ? String(storedToken) : null);
+                console.log(storedToken);
+            } catch (error) {
+                console.error('Error fetching Token from storage:', error);
+
+            }
+        };
+
+        fetchTOKEN();
+    }, []);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -32,6 +49,49 @@ const OrdersItem = ({ order }) => {
 
         fetchProduct();
     }, [order]);
+
+
+
+    const handleConfirmOrder = async (orderId) => {
+        try {
+            console.log(orderId);
+            console.log(token);
+            const response = await fetch(`${API_URL}/order/configOrder/${orderId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            const responseData = await response.json();
+            console.log(responseData);
+            alert(responseData.message);
+
+        } catch (error) {
+            console.error('Error confirming order:', error);
+            alert(responseData.message);
+        }
+    };
+    const handleCancelOrder = async (orderId) => {
+        try {
+            console.log(orderId);
+            console.log(token);
+            const response = await fetch(`${API_URL}/order/cancelOrder/${orderId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            const responseData = await response.json();
+            console.log(responseData);
+            alert(responseData.message);
+
+        } catch (error) {
+            console.error('Error canceling order:', error);
+            alert(responseData.message);
+        }
+    };
+
+
     const date = new Date(order.createdAt);
 
     const formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
@@ -39,6 +99,12 @@ const OrdersItem = ({ order }) => {
     if (loading) {
         return <ActivityIndicator size="large" color="#0000ff" />;
     }
+
+    const showConfirmButton = order.status === 'paidDelivering' || order.status === 'delivering';
+    const showCancelButton = order.status === 'PaidCreateOrder' || order.status === 'createOrder' || order.status === 'paidDelivering' || order.status === 'delivering';
+
+
+
     return (
         <View style={styles.itemContainer}>
             <View style={styles.topContainer}>
@@ -65,10 +131,27 @@ const OrdersItem = ({ order }) => {
             <View style={styles.bottomContainer}>
                 <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Sub total: {formatVND(order.total)}</Text>
                 <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Status: {order.status}</Text>
-                <TouchableOpacity style={{ alignSelf: 'center' }} >
 
-                </TouchableOpacity>
+
             </View>
+            <View style={styles.buttoncancleoder}>
+                {showCancelButton && (
+                    <TouchableOpacity onPress={() => handleCancelOrder(order.id)} style={[styles.button, { backgroundColor: '#EEEEEE' }]}>
+                        <Text style={[styles.buttonText, { color: 'red' }]}>Hủy đơn hàng</Text>
+                    </TouchableOpacity>
+                )}
+            </View>
+            <View style={styles.buttonConfigoder}>
+                {showConfirmButton && (
+                    <TouchableOpacity onPress={() => handleConfirmOrder(order.id)} style={styles.button}>
+                        <Text style={styles.buttonText}>Xác nhận đơn hàng</Text>
+                    </TouchableOpacity>
+                )}
+            </View>
+
+
+
+
         </View>
     );
 };
@@ -119,7 +202,22 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
-});
+    button: {
+        backgroundColor: '#FF9900',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        marginTop: 10,
+        borderWidth: 0.8,
+        borderRadius: 3,
+        borderColor: '#ccc',
+    },
+    buttonText: {
+        textAlign: 'center',
+        color: '#fff',
+    }
 
+
+
+});
 
 export default OrdersList;
