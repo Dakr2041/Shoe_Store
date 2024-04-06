@@ -49,7 +49,6 @@ const ProductItem = ({ product, onFavoriteChanged }) => {
 
     if (response.ok) {
       const data = await response.json();
-
       setFavouriteItems(data.data);
     } else {
       console.error('Error fetching orders');

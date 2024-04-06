@@ -126,8 +126,7 @@ const CartScreen = () => {
 
   const renderEmptyView = () => (
     <View style={styles.emptyCart}>
-      <Text style={{ fontSize: 20, textAlign: 'center', }} >Your list is empty !</Text>
-      <Text style={{ fontSize: 12, textAlign: 'center', }} >Swipe to reload</Text>
+      <Text style={{ fontSize: 20, textAlign: 'center', }} >Your cart is empty !!!</Text>
     </View>
   );
 

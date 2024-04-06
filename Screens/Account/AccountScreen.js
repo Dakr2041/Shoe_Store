@@ -42,6 +42,7 @@ const AccountScreen = () => {
             if (data.status === 400) {
               setShouldRedirectToSetup(true);
             } else if (data.status === 200) {
+              setShouldRedirectToSetup(false);
               setUserInfo(data.data);
             }
           } else {
