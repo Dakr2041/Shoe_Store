@@ -164,7 +164,9 @@ const FAItem = ({ favourite }) => {
 
 const FAList = ({ favouriteData }) => {
     if (!favouriteData || !favouriteData.data) {
-        return <Text>Đang tải dữ liệu</Text>;
+        return <View style={{height:'100%'}}>
+            <ActivityIndicator size="large" style={{ alignContent:'center' }} />
+        </View>
     }
 
     return (

@@ -1,12 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Linking, Button } from 'react-native';
 import WebView from 'react-native-webview';
+import { API_URL } from '../Api';
 
 const OnlinePaymentScreen = ({ route }) => {
     const { url } = route.params;
     console.log("url: " + url);
-
+    const navigation = useNavigation();
+    const [lastUrl, setLastUrl] = useState('');
     // useEffect(() => {
     //     const openLink = async () => {
     //         const supported = await Linking.canOpenURL(url);
@@ -27,7 +29,6 @@ const OnlinePaymentScreen = ({ route }) => {
     //     </View>
     // );
 
-    //cách 2 dùng webview
     const webViewRef = React.useRef(null);
     useEffect(() => {
         const checkUrl = async () => {
@@ -48,16 +49,34 @@ const OnlinePaymentScreen = ({ route }) => {
 
     const handleError = (syntheticEvent) => {
         const { nativeEvent } = syntheticEvent;
-        console.error('WebView error: ', nativeEvent);
-        const navigation = useNavigation();
-
-        return (
-            <View>
-                <Button title="Go back home screen" onPress={() => navigation.navigate('Tabs')
-                } />
-            </View>
-        )
+        console.error('WebView error: ', nativeEvent.url);
     };
+
+    const handlePaymentSuccess = async (url) => {
+
+        const cleanedUrl = url.replace('http://localhost:3001/thanks', '');
+        console.log('Cleaned URL: ' + cleanedUrl);
+        try {
+            const response = await fetch(`${API_URL}/pay/configPayment/${cleanedUrl}`);
+    
+            if (!response.ok) {
+              throw new Error('HTTP error ' + response.status);
+            }
+    
+            const data = await response.json();
+            console.log('Response from API:', data);
+            if(data.status === 200){
+                navigation.navigate('Tabs');
+                console.log('Payment success: '+ data);
+                alert(data.message);
+            } else {
+                console.error('Payment failed: '+ data);
+                alert(data.message);
+            }
+          } catch (error) {
+            console.error('Error sending last URL to API:', error);
+          }
+    }
 
     return (
         <WebView
@@ -65,6 +84,21 @@ const OnlinePaymentScreen = ({ route }) => {
             source={{ uri: url }}
             style={{ marginTop: 30, flex: 1 }}
             onError={handleError}
+            onNavigationStateChange={(navState) => {
+                setLastUrl(navState.url);
+                if (navState.url.includes(
+                    "http://localhost:3001/thanks"
+                    // `${API_URL}/thanks`
+                )) {
+                    console.log('Last URL before navigating back: ' + lastUrl);
+
+                    handlePaymentSuccess(navState.url);
+                    
+                    // setTimeout(() => {
+                    //     navigation.navigate('Tabs');
+                    // }, 2000);
+                }
+            }}
         />
     );
 };

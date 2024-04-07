@@ -243,19 +243,23 @@ const CheckoutScreen = ({ route }) => {
             placeholder="Enter discount code"
             style={styles.discountInput}
           />
-          <TouchableOpacity >
+          <TouchableOpacity
+            onPress={applyDiscount}
+          >
+            <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.applyButton} >
+              <Text style={{
+                color: '#fff',
+                fontSize: 16,
+                fontWeight: 'bold',
+                alignSelf: 'center',
+                padding: 5
+              }}
+              >Apply Now</Text>
+
+            </LinearGradient>
           </TouchableOpacity>
 
-          <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.applyButton} onPress={applyDiscount}>
-            <Text style={{
-              color: '#fff',
-              fontSize: 16,
-              fontWeight: 'bold',
-              alignSelf: 'center',
-              padding: 5
-            }}>Apply Now</Text>
 
-          </LinearGradient>
           <View style={styles.PickerMethod}>
             <Text>Select a payment method:</Text>
             <Picker
