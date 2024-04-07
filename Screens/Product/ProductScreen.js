@@ -6,6 +6,7 @@ import { SliderBox } from "react-native-image-slider-box";
 const logo = require('../Product/logo.png');
 import { API_URL } from '../Api';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useIsFocused } from '@react-navigation/native';
 
 
 const img = [
@@ -23,6 +24,7 @@ const ProductScreen = ({ navigation }) => {
 
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const isFocused = useIsFocused();
 
 
 
@@ -44,8 +46,11 @@ const ProductScreen = ({ navigation }) => {
       }
     };
 
-    fetchProducts();
-  }, []);
+    if (isFocused){
+      fetchProducts();
+
+    }
+  }, [isFocused]);
 
 
   const renderContent = () => {
