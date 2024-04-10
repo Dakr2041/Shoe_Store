@@ -6,6 +6,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import OrdersList from './OrdersItem';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 const OrdersScreen = () => {
     const [orders, setOrders] = useState([]);
@@ -17,7 +18,7 @@ const OrdersScreen = () => {
             try {
                 const storedToken = await AsyncStorage.getItem('authToken');
                 setToken(storedToken ? String(storedToken) : null);
-                console.log(storedToken);
+                // console.log(storedToken);
             } catch (error) {
                 console.error('Error fetching Token from storage:', error);
 
@@ -37,7 +38,7 @@ const OrdersScreen = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                setOrders(data);
+                setOrders(data.data);
             } else {
                 console.error('Error fetching orders');
             }
@@ -47,7 +48,39 @@ const OrdersScreen = () => {
             fetchOrders();
         }
     }, [token]);
-    console.log(orders);
+
+    const Tab = createMaterialTopTabNavigator();
+
+    orders.map(order => {
+        console.log(`Order ID: ${order.id}, Status: ${order.status}`);
+    });
+
+    const sortOrdersByStatus = (orders) => {
+        const sortedOrders = {};
+
+        orders.forEach(order => {
+            if (!sortedOrders[order.status]) {
+                sortedOrders[order.status] = [];
+            }
+
+            sortedOrders[order.status].push(order);
+        });
+
+        return sortedOrders;
+    };
+
+    // Usage:
+    const sortedOrders = sortOrdersByStatus(orders);
+    // console.log(sortedOrders);
+    const unConfirmOrders = sortedOrders['createOrder'] || [];
+    const confirmOrders = sortedOrders['PaidCreateOrder'] || [];
+    const deliveringOrders = sortedOrders['paidDelivering'] || [];
+    const successOrders = sortedOrders['configOrder'] || [];
+
+    console.log('-1-Unconfirm Orders:', unConfirmOrders);
+    console.log('--2-Confirm Orders:', confirmOrders);
+    console.log('---3-Delivering Orders:', deliveringOrders);
+    console.log('----4-Success Orders:', successOrders);
 
     const handleGoBack = () => {
         navigation.goBack();
@@ -67,7 +100,21 @@ const OrdersScreen = () => {
                 <View></View>
                 <View></View>
             </View>
-            <OrdersList ordersData={orders} />
+            {/* <OrdersList ordersData={orders} /> */}
+            <Tab.Navigator tabBarOptions={{ scrollEnabled: true }}>
+                <Tab.Screen name="Unconfirmed">
+                    {() => <OrdersList ordersData={unConfirmOrders} />}
+                </Tab.Screen>
+                <Tab.Screen name="Confirmed">
+                    {() => <OrdersList ordersData={confirmOrders} />}
+                </Tab.Screen>
+                <Tab.Screen name="Delivering">
+                    {() => <OrdersList ordersData={deliveringOrders} />}
+                </Tab.Screen>
+                <Tab.Screen name="Success">
+                    {() => <OrdersList ordersData={successOrders} />}
+                </Tab.Screen>
+            </Tab.Navigator>
         </View>
     );
 };
