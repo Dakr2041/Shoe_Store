@@ -18,7 +18,7 @@ const OrdersItem = ({ order }) => {
             try {
                 const storedToken = await AsyncStorage.getItem('authToken');
                 setToken(storedToken ? String(storedToken) : null);
-                console.log(storedToken);
+                // console.log(storedToken);
             } catch (error) {
                 console.error('Error fetching Token from storage:', error);
 
@@ -117,21 +117,18 @@ const OrdersItem = ({ order }) => {
                 renderItem={({ item }) => (
                     <View style={styles.productItem}>
                         {item.data.imageProduct && <Image source={{ uri: item.data.imageProduct }} style={{ width: 100, height: 100 }} />}
-
                         <View style={styles}>
                             <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Name: {item.data.name}</Text>
                             <Text style={{ fontSize: 12 }}>Price: {formatVND(item.data.price - item.data.priceSale)}</Text>
                             <Text style={{ fontSize: 12 }}>Quantity: {item.quantity}</Text>
                             <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Total: {formatVND(item.quantity * (item.data.price - item.data.priceSale))}</Text>
                         </View>
-
                     </View>
                 )}
             />
             <View style={styles.bottomContainer}>
                 <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Sub total: {formatVND(order.total)}</Text>
                 <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Status: {order.status}</Text>
-
 
             </View>
             <View style={styles.buttoncancleoder}>
@@ -148,22 +145,20 @@ const OrdersItem = ({ order }) => {
                     </TouchableOpacity>
                 )}
             </View>
-
-
-
-
         </View>
     );
 };
 
 const OrdersList = ({ ordersData }) => {
 
-    if (!ordersData || !ordersData.data) {
-        return <Text>Đang tải dữ liệu</Text>;
+    if (ordersData.length === 0) {
+        return <View style={styles.emptyList}>
+            <Text>Empty List</Text>
+        </View>
     }
 
 
-    const sortedOrders = ordersData.data.sort((a, b) => {
+    const sortedOrders = ordersData.sort((a, b) => {
         const dateA = new Date(a.createdAt);
         const dateB = new Date(b.createdAt);
         return dateB - dateA;
@@ -214,10 +209,12 @@ const styles = StyleSheet.create({
     buttonText: {
         textAlign: 'center',
         color: '#fff',
-    }
-
-
-
+    },
+    emptyList: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });
 
 export default OrdersList;

@@ -9,25 +9,6 @@ const OnlinePaymentScreen = ({ route }) => {
     console.log("url: " + url);
     const navigation = useNavigation();
     const [lastUrl, setLastUrl] = useState('');
-    // useEffect(() => {
-    //     const openLink = async () => {
-    //         const supported = await Linking.canOpenURL(url);
-
-    //         if (supported) {
-    //             await Linking.openURL(url);
-    //         } else {
-    //             Alert.alert(`Don't know how to open this URL: ${url}`);
-    //         }
-    //     };
-
-    //     openLink();
-    // }, [url]);
-
-    // return (
-    //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    //         <Text>Opening link...</Text>
-    //     </View>
-    // );
 
     const webViewRef = React.useRef(null);
     useEffect(() => {
@@ -66,12 +47,9 @@ const OnlinePaymentScreen = ({ route }) => {
             const data = await response.json();
             console.log('Response from API:', data);
             if(data.status === 200){
-                navigation.navigate('Tabs');
                 console.log('Payment success: '+ data);
-                alert(data.message);
             } else {
                 console.error('Payment failed: '+ data);
-                alert(data.message);
             }
           } catch (error) {
             console.error('Error sending last URL to API:', error);
@@ -86,17 +64,13 @@ const OnlinePaymentScreen = ({ route }) => {
             onError={handleError}
             onNavigationStateChange={(navState) => {
                 setLastUrl(navState.url);
-                if (navState.url.includes(
-                    "http://localhost:3001/thanks"
-                    // `${API_URL}/thanks`
-                )) {
+
+                if (navState.url.includes("http://localhost:3001/thanks")) {
                     console.log('Last URL before navigating back: ' + lastUrl);
+                    navigation.navigate('OrderSuccess');
 
                     handlePaymentSuccess(navState.url);
                     
-                    // setTimeout(() => {
-                    //     navigation.navigate('Tabs');
-                    // }, 2000);
                 }
             }}
         />

@@ -21,6 +21,7 @@ import DiscountScreen from './Discounts/DiscountScreen';
 import SupportScreen from './Support/SupportScreen';
 import Notification from './Notification/NotificationScreen';
 import Favourite from './Favourite/FavouriteScreen'
+import OrderSuccessScreen from './Cart/OrderSuccessScreen';
 
 
 const Tab = createBottomTabNavigator();
@@ -48,6 +49,7 @@ export default function App() {
         <Stack.Screen name="Discounts" component={DiscountScreen} />
         <Stack.Screen name="Supports" component={SupportScreen} />
         <Stack.Screen name="Favourites" component={Favourite} />
+        <Stack.Screen name="OrderSuccess" component={OrderSuccessScreen} />
       </Stack.Navigator>
 
     </NavigationContainer>
