@@ -193,13 +193,13 @@ const CheckoutScreen = ({ route }) => {
       }),
     });
     const data = await response.json();
-    console.log(data.message);
+    console.log(data);
     alert(data.message);
 
-    if (data.status == 200) {
+    if (data.message === "Thành công") {
       setIsLoading(false);
-      navigation.navigate('Tabs')
-      console.log(data.message);
+      navigation.navigate('OrderSuccess');
+      console.log(data);
 
     } else {
       console.error(data.message);
