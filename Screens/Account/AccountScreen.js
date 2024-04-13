@@ -63,6 +63,10 @@ const AccountScreen = () => {
   const handleLogoutPress = () => {
     // navigation.navigate('Login');
     console.log('Logout!!!');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Cart' }],
+    });
   };
   const handleSettingsPress = () => {
     navigation.navigate('Settings')
@@ -129,9 +133,13 @@ const AccountScreen = () => {
                 {userInfo.avatar && <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />}
                 {!userInfo.avatar && <ActivityIndicator size="small" />}
                 <View style={styles.userInfo}>
-                  <Text style={{ fontSize: 30 }}>{userInfo.name}</Text>
-                  <Text>Phone: {userInfo.phone}</Text>
-                  <Text>Address: {userInfo.address} - {userInfo.city}</Text>
+                  <Text style={{
+                    fontWeight: 'bold',
+                    color: 'white',
+                    fontSize: 30,
+                  }}>{userInfo.name}</Text>
+                  <Text style={styles.infoText}>Phone: {userInfo.phone}</Text>
+                  <Text style={styles.infoText}>Address: {userInfo.address} - {userInfo.city}</Text>
                 </View>
               </View>
             </LinearGradient>
@@ -169,7 +177,13 @@ const styles = StyleSheet.create({
   },
   containeravatar: {
     width: '100%',
-    height: '30%'
+    height: '30%',
+    borderRadius: 15,
+    elevation: 5, // Add shadow for Android
+    shadowColor: '#000', // Add shadow for iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
   },
   linearGradient: {
     flex: 1,
@@ -192,6 +206,10 @@ const styles = StyleSheet.create({
   userInfo: {
     marginLeft: 20,
     flex: 1,
+  },
+  infoText: {
+    fontWeight: 'bold',
+    color: 'white',
   },
   setupContainer: {
     flex: 1,
@@ -217,12 +235,18 @@ const styles = StyleSheet.create({
 
   },
   menuItem: {
-
     width: 95,
     height: 100,
     alignItems: 'center',
     marginBottom: 10,
     marginHorizontal: 11,
+    borderRadius: 15,
+    elevation: 5, // Add shadow for Android
+    shadowColor: '#000', // Add shadow for iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+
   },
   menuItemGradient: {
     width: '100%',
@@ -238,7 +262,7 @@ const styles = StyleSheet.create({
   },
   menuItemText: {
     fontSize: 14,
-
+    fontWeight: 'bold',
     color: '#fff',
   },
 });

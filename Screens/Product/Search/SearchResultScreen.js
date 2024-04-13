@@ -78,7 +78,12 @@ const SearchResultScreen = ({ navigation, route }) => {
         <View style={styles.container}>
             <LinearGradient style={{
                 borderRadius: 15,
-                paddingTop: 20
+                paddingTop: 20,
+                elevation: 5, // Add shadow for Android
+                shadowColor: '#000', // Add shadow for iOS
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.3,
+                shadowRadius: 2,
             }}
                 colors={['#f7c458', '#fea239']}
                 start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
@@ -89,37 +94,10 @@ const SearchResultScreen = ({ navigation, route }) => {
                     </View>
                 </TouchableOpacity>
             </LinearGradient>
+            
 
             <View style={styles.filterContainer}>
 
-                {/* <View style={styles.priceRange}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <TextInput
-                            placeholder="Min"
-                            value={priceRange.min}
-                            onChangeText={(text) => handlePriceRangeChange('min', text)}
-                            style={{ width: 80 }}
-                        />
-                        <Icon name='minus' size={10} />
-                        <TextInput
-                            placeholder="Max"
-                            value={priceRange.max}
-                            onChangeText={(text) => handlePriceRangeChange('max', text)}
-                            style={{ width: 80, marginStart: 10 }}
-                        />
-                    </View>
-                </View> */}
-
-                <View/>
-                <View/>
-                <View/>
-                <View/>
-                <View/>
-                <View/>
-                <View/>
-                <View/>
-                <View/>
-                <View/>
                 <Text style={{ fontSize: 16, fontWeight: 'bold', alignItems: 'flex-end' }}>Sort by price:</Text>
                 <DropDownPicker
                     items={items}
@@ -128,16 +106,19 @@ const SearchResultScreen = ({ navigation, route }) => {
                     setOpen={setOpen}
                     value={sortOrder}
                     setValue={setSortOrder}
-                    containerStyle={{ height: 40, width: 150 }}
+                    containerStyle={{ height: 40, width: 150, zIndex: 1000 }}
                     style={styles.dropdownPicker}
                     dropDownContainerStyle={{ backgroundColor: '#fafafa', borderWidth: 0 }}
                     onSelectItem={(item) => handleSortOrderChange(item.value)}
                 />
+
             </View>
 
-            <ScrollView style={styles}>
-                {renderContent()}
-            </ScrollView>
+            <View style={styles.list}>
+                <ScrollView >
+                    {renderContent()}
+                </ScrollView>
+            </View>
         </View>
 
     );
@@ -151,12 +132,17 @@ const styles = StyleSheet.create({
         paddingVertical: 9,
         paddingEnd: 9,
         padding: 20,
-        margin: 20,
+        marginTop: 45,
+        marginHorizontal: 20,
+        marginBottom: 20,
         flexDirection: 'row',
         alignItems: 'center',
         spaceBetween: 'center',
-
-
+        elevation: 5, // Add shadow for Android
+        shadowColor: '#000', // Add shadow for iOS
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 2,
     },
     searchItem: {
         flexDirection: 'row',
@@ -184,12 +170,21 @@ const styles = StyleSheet.create({
     dropdownPicker: {
         width: '100%',
         borderWidth: 0,
+        elevation: 5, // Add shadow for Android
+        shadowColor: '#000', // Add shadow for iOS
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 2,
     },
     priceRange: {
         borderWidth: 1,
         borderRadius: 5,
         borderColor: '#ccc',
         padding: 10,
+    },
+    list: {
+        flex: 1,
+        justifyContent: 'flex-end',
     },
 })
 

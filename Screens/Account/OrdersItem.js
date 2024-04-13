@@ -128,7 +128,7 @@ const OrdersItem = ({ order }) => {
             />
             <View style={styles.bottomContainer}>
                 <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Sub total: {formatVND(order.total)}</Text>
-                <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Status: {order.status}</Text>
+                {/* <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Status: {order.status}</Text> */}
 
             </View>
             <View style={styles.buttoncancleoder}>

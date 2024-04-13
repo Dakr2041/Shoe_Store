@@ -42,13 +42,15 @@ const RegisterScreen = () => {
     );
   };
 
-  const logo = require('../assets/logo.png');
+  // const logo = require('../assets/logo.png');
+  const logo = require('../assets/logo_shoe_store.png');
+
 
   const handleRegister = async () => {
     setIsLoading(true);
 
-    const emailRegex = /^\w+@[a-zA-Z_\.]+\.[a-zA-Z]{2,}$/; 
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/; 
+    const emailRegex = /^\w+@[a-zA-Z_\.]+\.[a-zA-Z]{2,}$/;
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
 
     if (email.length <= 0) {
       setIsLoading(false);
@@ -258,20 +260,20 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   showPasswordButton: {
-    position: 'absolute', 
-    right: 15, 
+    position: 'absolute',
+    right: 15,
     top: 30
 
   },
   loadingContainer: {
-    position: 'absolute', 
+    position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.2)', 
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
   textInput: {
     width: "100%",

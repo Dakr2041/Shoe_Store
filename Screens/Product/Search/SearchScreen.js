@@ -56,7 +56,7 @@ const SearchScreen = ({ navigation }) => {
 
     const handleSearchPress = () => {
         if (searchInput.trim() !== '') {
-            navigation.navigate('SearchResult',{ results: searchResults, searchInput: searchInput });
+            navigation.navigate('SearchResult', { results: searchResults, searchInput: searchInput });
         } else {
             alert('Please enter a search term');
         }
@@ -69,7 +69,15 @@ const SearchScreen = ({ navigation }) => {
     };
     return (
         <View>
-            <LinearGradient style={{ borderRadius: 15, paddingTop: 20 }} colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+            <LinearGradient style={{
+                borderRadius: 15, 
+                paddingTop: 20, 
+                elevation: 5, // Add shadow for Android
+                shadowColor: '#000', // Add shadow for iOS
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.3,
+                shadowRadius: 2,
+            }} colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
                 <View style={styles.searchView}>
                     <Icon name='search' size={20} style={{ alignItems: 'flex-end' }}></Icon>
 
@@ -109,10 +117,17 @@ const styles = StyleSheet.create({
         paddingVertical: 9,
         paddingEnd: 9,
         padding: 20,
-        margin: 20,
+        marginTop: 45,
+        marginHorizontal: 20,
+        marginBottom: 20,
         flexDirection: 'row',
         alignItems: 'center',
         spaceBetween: 'center',
+        elevation: 5, // Add shadow for Android
+        shadowColor: '#000', // Add shadow for iOS
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 2,
     },
     searchItem: {
         flexDirection: 'row',

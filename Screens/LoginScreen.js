@@ -8,12 +8,13 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { API_URL } from './Api';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 // import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
-
+import messaging from '@react-native-firebase/messaging';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const logo = require('../assets/logo.png');
+  // const logo = require('../assets/logo.png');
+  const logo = require('../assets/logo_shoe_store.png');
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -68,7 +69,7 @@ const LoginScreen = () => {
   //   }
   // };
 
-  // console.log('aaaaaaaaaaaaaaaaaaaaaa', fcmToken);
+  // // console.log('aaaaaaaaaaaaaaaaaaaaaa', fcmToken);
 
   // useEffect(() => {
   //   getTokenA();
