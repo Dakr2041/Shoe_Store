@@ -56,7 +56,6 @@ const CheckoutScreen = ({ route }) => {
   const applyDiscount = async () => {
     if (discount !== '') {
       try {
-        console.log(`${API_URL}/discount/useDiscount/${userId}`);
         const response = await fetch(`${API_URL}/discount/useDiscount/${userId}`, {
           method: 'POST',
           headers: {
@@ -72,10 +71,12 @@ const CheckoutScreen = ({ route }) => {
         if (data.status === 400) {
 
           alert(data.message);
+          console.log(data.data);
+          setDisplayPrice(formatVND(data.data));
         } else {
           // setAppliedDiscount(true);
           alert(data.message);
-          setDisplayPrice(formatVND(data.data));
+          
 
         }
       } catch (error) {
