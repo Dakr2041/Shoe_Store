@@ -3,7 +3,8 @@ import { View, StyleSheet, Dimensions, FlatList, ScrollView, TextInput, Image, T
 import ProductItem from './ProductItem';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { SliderBox } from "react-native-image-slider-box";
-const logo = require('../Product/logo.png');
+// const logo = require('../Product/logo.png');
+const logo = require('../../assets/logo_shoe_store.png');
 import { API_URL } from '../Api';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useIsFocused } from '@react-navigation/native';
@@ -46,7 +47,7 @@ const ProductScreen = ({ navigation }) => {
       }
     };
 
-    if (isFocused){
+    if (isFocused) {
       fetchProducts();
 
     }
@@ -86,26 +87,38 @@ const ProductScreen = ({ navigation }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
 
-      <LinearGradient style={{ borderRadius: 15 }} colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-        <View style={{ marginTop: 20 }}>
-          <Image source={logo} style={{ width: 120, height: 120, alignSelf: 'center' }}></Image>
+      <LinearGradient style={{
+        borderRadius: 15,
+        elevation: 5, // Add shadow for Android
+        shadowColor: '#000', // Add shadow for iOS
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 2,
+      }} colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+
+        <View style={styles.headerItems}>
+
+          <Image source={logo}
+            style={{
+              width: 100,
+              height: 100,
+              // alignSelf: 'center'
+            }}></Image>
+
+          <TouchableOpacity onPress={handleSearchPress}>
+            <View style={styles.searchView}>
+              <Icon name='search' size={20} ></Icon>
+              <Text style={{ opacity: 0.5, marginStart: 15 }}>Search</Text>
+            </View>
+          </TouchableOpacity>
+
         </View>
 
-        <TouchableOpacity onPress={handleSearchPress}>
-          <View style={styles.searchView}>
-            <Icon name='search' size={20} ></Icon>
-            <Text style={{ opacity: 0.5, marginStart: 15 }}>Search</Text>
-          </View>
-        </TouchableOpacity>
-
       </LinearGradient>
-
-
 
       <Text style={{ marginHorizontal: 9, fontSize: 18, fontWeight: 'bold', marginBottom: 10, marginTop: 50 }}>Some best-selling products</Text>
 
       <SliderBox dotColor="tomato" autoPlay={true} autoplayInterval={1000} images={img} resizeMethod={'resize'} resizeMode={'cover'} />
-
 
       <Text style={{ marginHorizontal: 9, marginTop: 20, fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Some outstanding products</Text>
 
@@ -128,9 +141,18 @@ const styles = StyleSheet.create({
     padding: 10,
 
   },
+  headerItems: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    marginTop: 20,
+    flex: 1,
+  },
 
   searchView: {
     height: 50,
+    width: 250,
     borderRadius: 22,
     backgroundColor: '#ebecf0',
     paddingVertical: 9,
@@ -140,6 +162,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     spaceBetween: 'center',
+    elevation: 5, // Add shadow for Android
+    shadowColor: '#000', // Add shadow for iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
   },
 });
 

@@ -7,6 +7,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import OrdersList from './OrdersItem';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const OrdersScreen = () => {
     const [orders, setOrders] = useState([]);
@@ -88,18 +89,28 @@ const OrdersScreen = () => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity onPress={handleGoBack}>
-                    <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
-                </TouchableOpacity>
-                <View></View>
-                <View></View>
-                <Text style={styles.headerText}>Orders</Text>
-                <View></View>
-                <View></View>
-                <View></View>
-                <View></View>
-            </View>
+            <LinearGradient
+                colors={['#f7c458', '#fea239']}
+                style={styles.menuItemGradient}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+            >
+                <View style={styles.header}>
+
+                    <TouchableOpacity onPress={handleGoBack}>
+                        <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
+                    </TouchableOpacity>
+                    <View></View>
+                    <View></View>
+                    <Text style={styles.headerText}>Orders</Text>
+                    <View></View>
+                    <View></View>
+                    <View></View>
+                    <View></View>
+
+                </View>
+            </LinearGradient>
+
             {/* <OrdersList ordersData={orders} /> */}
             <Tab.Navigator tabBarOptions={{ scrollEnabled: true }}>
                 <Tab.Screen name="Unconfirmed">
@@ -133,6 +144,7 @@ const styles = StyleSheet.create({
     headerText: {
         fontSize: 18,
         fontWeight: 'bold',
+        color:'white',
     },
 });
 
