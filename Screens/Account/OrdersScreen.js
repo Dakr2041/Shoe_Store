@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../Api';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import OrdersList from './OrdersItem';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -29,26 +29,49 @@ const OrdersScreen = () => {
         fetchTOKEN();
     }, []);
 
-    useEffect(() => {
-        const fetchOrders = async () => {
-            const response = await fetch(`${API_URL}/order/getOrderUser`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+    // useEffect(() => {
+    //     const fetchOrders = async () => {
+    //         const response = await fetch(`${API_URL}/order/getOrderUser`, {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //         });
 
-            if (response.ok) {
-                const data = await response.json();
-                setOrders(data.data);
-            } else {
-                console.error('Error fetching orders');
-            }
-        };
+    //         if (response.ok) {
+    //             const data = await response.json();
+    //             setOrders(data.data);
+    //         } else {
+    //             console.error('Error fetching orders');
+    //         }
+    //     };
 
-        if (token) {
-            fetchOrders();
+    //     if (token) {
+    //         fetchOrders();
+    //     }
+    // }, [token]);
+
+    const fetchOrders = useCallback(async () => {
+        const response = await fetch(`${API_URL}/order/getOrderUser`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            setOrders(data.data);
+        } else {
+            console.error('Error fetching orders');
         }
     }, [token]);
+
+    useFocusEffect(
+        useCallback(() => {
+            if (token) {
+                fetchOrders();
+            }
+        }, [token, fetchOrders])
+    );
 
     const Tab = createMaterialTopTabNavigator();
 
@@ -111,7 +134,6 @@ const OrdersScreen = () => {
                 </View>
             </LinearGradient>
 
-            {/* <OrdersList ordersData={orders} /> */}
             <Tab.Navigator tabBarOptions={{ scrollEnabled: true }}>
                 <Tab.Screen name="Unconfirmed">
                     {() => <OrdersList ordersData={unConfirmOrders} />}

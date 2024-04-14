@@ -151,6 +151,7 @@ const SetupUserInfoScreen = ({ navigation }) => {
                     console.log(response.data.message);
                     alert(response.data.message);
                     setIsLoading(false);
+                    navigation.navigate('Home');
                 } else {
                     console.error('Error Updated :', response.data.message);
                     alert(response.data.message);
@@ -178,16 +179,20 @@ const SetupUserInfoScreen = ({ navigation }) => {
         );
     }
     return (
-        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
+        <View>
             <View style={styles.headerContainer}>
-                <TouchableOpacity onPress={handleGoBack}>
+                {/* <TouchableOpacity onPress={handleGoBack}>
                     <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
-                </TouchableOpacity>
-                <View></View>
+                </TouchableOpacity> */}
+                {/* <View></View> */}
                 <Text style={styles.screenNameText}>Setup User Info</Text>
-                <View></View>
-                <View></View>
+                {/* <View></View> */}
+                {/* <View></View> */}
             </View>
+
+            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
+            
+
             {/* Profile Picture */}
             <View style={styles.imageContainer}>
                 {image ? (
@@ -260,6 +265,8 @@ const SetupUserInfoScreen = ({ navigation }) => {
                 </LinearGradient>
             </TouchableOpacity>
         </ScrollView>
+        </View>
+        
     );
 };
 
@@ -270,10 +277,12 @@ const styles = StyleSheet.create({
         marginTop: 30,
     },
     headerContainer: {
-        flexDirection: 'row',
+        // flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 20,
+        marginTop: 50,
+        marginStart: 20,
     },
     screenNameText: {
         fontSize: 20,

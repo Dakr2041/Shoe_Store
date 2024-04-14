@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, Image } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, ActivityIndicator, StyleSheet, Image, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation, useIsFocused } from '@react-navigation/core';
 import { API_URL } from '../Api';
 import { LinearGradient } from 'expo-linear-gradient';
-
+import NavigationContext from '../Functions/NavigationContext';
 
 const AccountScreen = () => {
   const [userId, setUserId] = useState(null);
@@ -60,13 +60,34 @@ const AccountScreen = () => {
   }, [userId, isFocused]);
 
   const navigation = useNavigation();
+
+  const navigationRef = useContext(NavigationContext);
   const handleLogoutPress = () => {
-    // navigation.navigate('Login');
-    console.log('Logout!!!');
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Cart' }],
-    });
+    Alert.alert(
+      "Logout", // title
+      "Are you sure you want to logout?", // message
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Logout Cancelled"),
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: async () => {
+            await AsyncStorage.removeItem('@userEmail');
+            await AsyncStorage.removeItem('@userPassword');
+            console.log('Logout!!!');
+            const rootNavigator = navigationRef.current;
+            rootNavigator.reset({
+              index: 0,
+              routes: [{ name: 'Login' }],
+            });
+          }
+        }
+      ],
+      { cancelable: false }
+    );
   };
   const handleSettingsPress = () => {
     navigation.navigate('Settings')
@@ -118,7 +139,12 @@ const AccountScreen = () => {
         </View>
       ) : shouldRedirectToSetup ? (
         <View style={styles.setupContainer}>
-          <Text>Please complete your setup information first.</Text>
+          <Text style={{
+            fontSize:20, 
+            fontWeight:'bold',
+            marginBottom:20, 
+            maxWidth:'70%',
+            }}>Please complete your setup information first.</Text>
           <TouchableOpacity onPress={() => navigation.navigate('SetupUserInfo')}>
             <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.setupButton} >
               <Text style={styles.setupButtonText}>Go to Setup</Text>
@@ -223,7 +249,7 @@ const styles = StyleSheet.create({
   },
   setupButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   menuContainer: {

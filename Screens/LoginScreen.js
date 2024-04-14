@@ -188,19 +188,22 @@ const LoginScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity onPress={handleForgotPasswordPress}>
-          <Text style={styles.higlightText}>Forgot Password?</Text>
-        </TouchableOpacity>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+            {/* <Checkbox value={isRememberMe} onValueChange={(newValue) => setIsRememberMe(newValue)} /> */}
+            <MaterialCommunityIcons
+              name={isRememberMe ? 'checkbox-outline' : 'checkbox-blank-outline'}
+              size={30}
+              color={isRememberMe ? '#f5ca0c' : '#ccc'}
+              onPress={handlePressRemmember}
+            />
+            <Text style={{fontSize: 14}}>Remember me</Text>
+          </View>
 
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-          {/* <Checkbox value={isRememberMe} onValueChange={(newValue) => setIsRememberMe(newValue)} /> */}
-          <MaterialCommunityIcons
-            name={isRememberMe ? 'checkbox-outline' : 'checkbox-blank-outline'}
-            size={30}
-            color={isRememberMe ? '#f5ca0c' : '#ccc'}
-            onPress={handlePressRemmember}
-          />
-          <Text>Remember me</Text>
+          <TouchableOpacity onPress={handleForgotPasswordPress}>
+            <Text style={styles.higlightText}>Forgot Password?</Text>
+          </TouchableOpacity>
+
         </View>
 
         <TouchableOpacity onPress={handleLogin} style={styles.buttonGR}>
@@ -257,13 +260,13 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
     alignSelf: 'center'
   },
   higlightText: {
-    color: '#007bff',
-    fontSize: 12,
+    color: '#fea239',
+    fontSize: 14,
     marginTop: 9
   },
   passwordInputContainer: {
