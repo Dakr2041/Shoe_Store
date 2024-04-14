@@ -7,8 +7,9 @@ import RegisterScreen from './Screens/RegisterScreen.js';
 import MainScreen from './Screens/MainScreen.js';
 import ProductDetailScreen from './Screens/Product/ProductDetailScreen.js';
 import ForgotPasswordScreen from './Screens/ForgotPasswordScreen.js';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import messaging from '@react-native-firebase/messaging';
+import NavigationContext from './Screens/Functions/NavigationContext.js';
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -34,17 +35,21 @@ export default function App() {
   //   }
   // }, []);
 
+  const navigationRef = useRef();
+
+
   return (
-    <NavigationContainer style={styles.container} >
-      <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-        <Stack.Screen name="Home" component={MainScreen} />
+    <NavigationContext.Provider value={navigationRef}>
+      <NavigationContainer style={styles.container} ref={navigationRef}>
+        <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+          <Stack.Screen name="Home" component={MainScreen} />
 
-      </Stack.Navigator>
-    </NavigationContainer>
-
+        </Stack.Navigator>
+      </NavigationContainer>
+    </NavigationContext.Provider>
   );
 }
 

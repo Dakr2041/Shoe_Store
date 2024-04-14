@@ -5,6 +5,7 @@ import ProductItem from "../ProductItem";
 import { useEffect, useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import DropDownPicker from "react-native-dropdown-picker";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 
@@ -84,17 +85,31 @@ const SearchResultScreen = ({ navigation, route }) => {
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.3,
                 shadowRadius: 2,
-            }}
-                colors={['#f7c458', '#fea239']}
-                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-                <TouchableOpacity onPress={handleSearchPress}>
+            }} colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: 20,
+                    marginTop: 40,
+                    paddingStart: 5,
+                }}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={{ margin: 10 }}>
+                        <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
+                    </TouchableOpacity>
                     <View style={styles.searchView}>
                         <Icon name='search' size={20} ></Icon>
-                        <Text style={{ opacity: 0.5, marginStart: 15 }}>{searchInput}</Text>
+                        <TouchableOpacity onPress={handleSearchPress}>
+                            <TextInput style={{ marginStart: 15, width: '100%' }}
+                                placeholder={searchInput+'                                                                                                                                          '}
+                                editable={false}
+                            ></TextInput>
+                        </TouchableOpacity>
                     </View>
-                </TouchableOpacity>
+                </View>
+
             </LinearGradient>
-            
+
 
             <View style={styles.filterContainer}>
 
@@ -126,15 +141,15 @@ const SearchResultScreen = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
     searchView: {
+        flex: 1,
+        width: '100%',
         height: 50,
         borderRadius: 20,
         backgroundColor: '#ebecf0',
         paddingVertical: 9,
         paddingEnd: 9,
         padding: 20,
-        marginTop: 45,
-        marginHorizontal: 20,
-        marginBottom: 20,
+        marginEnd: 20,
         flexDirection: 'row',
         alignItems: 'center',
         spaceBetween: 'center',

@@ -47,6 +47,8 @@ const RegisterScreen = () => {
 
 
   const handleRegister = async () => {
+    setName('abc');
+
     setIsLoading(true);
 
     const emailRegex = /^\w+@[a-zA-Z_\.]+\.[a-zA-Z]{2,}$/;
@@ -63,10 +65,10 @@ const RegisterScreen = () => {
       return;
     }
 
-    if (name.length <= 0) {
-      setIsLoading(false);
-      return alert('Type in name.');
-    }
+    // if (name.length <= 0) {
+    //   setIsLoading(false);
+    //   return alert('Type in name.');
+    // }
 
     if (password.length <= 0) {
       setIsLoading(false);
@@ -154,14 +156,14 @@ const RegisterScreen = () => {
           autoCapitalize="none"
           ref={emailInputRef}
         />
-        <TextInput
+        {/* <TextInput
           style={styles.textInput}
           placeholder="Name"
           value={name}
           onChangeText={handleNameChange}
           autoCapitalize="words"
           ref={nameInputRef}
-        />
+        /> */}
 
         <View style={styles.passwordInputContainer}>
           <TextInput
@@ -229,7 +231,7 @@ const styles = StyleSheet.create({
     color: "#4f4f4d"
   },
   higlightText: {
-    color: '#007bff',
+    color: '#fea239',
     margin: 9,
     textAlign: 'center',
     marginTop: 100

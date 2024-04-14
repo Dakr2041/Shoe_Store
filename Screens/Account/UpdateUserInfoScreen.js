@@ -189,8 +189,7 @@ const UpdateUserInfoScreen = ({ navigation }) => {
         );
     } else {
         return (
-
-            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
+            <View>
                 <View style={styles.headerContainer}>
                     <TouchableOpacity onPress={handleGoBack}>
                         <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
@@ -200,72 +199,76 @@ const UpdateUserInfoScreen = ({ navigation }) => {
                     <View></View>
                     <View></View>
                 </View>
-                {/* Profile Picture */}
-                <View style={styles.imageContainer}>
-                    <TouchableOpacity onPress={pickImage} >
-                        <Image source={{ uri: image }} style={styles.profileImage} />
-                    </TouchableOpacity>
-                </View>
+                <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
 
-                {/* User Information Inputs */}
-                <TextInput
-                    style={styles.textInput}
-                    placeholder={userInfo.name}
-                    value={name}
-                    onChangeText={setName}
-                />
-                <TextInput
-                    style={styles.textInput}
-                    placeholder={userInfo.phone}
-                    keyboardType="phone-pad"
-                    value={phone}
-                    onChangeText={setPhone}
-                />
-                <TextInput
-                    style={styles.textInput}
-                    placeholder={userInfo.address}
-                    value={address}
-                    onChangeText={setAddress}
-                />
-                <TextInput style={styles.textInput} placeholder={userInfo.city} value={city} onChangeText={setCity} />
+                    {/* Profile Picture */}
+                    <View style={styles.imageContainer}>
+                        <TouchableOpacity onPress={pickImage} >
+                            <Image source={{ uri: image }} style={styles.profileImage} />
+                        </TouchableOpacity>
+                    </View>
 
-                {/* Date of Birth Picker */}
-                <TouchableOpacity style={styles.dateInput}
-                    onPress={() => setShowDatePicker(true)}
-                >
-                    <Text style={styles.dateInputText}>
-                        {dateOfBirth instanceof Date ? dateOfBirth.toISOString().slice(0, 10) : dateOfBirth}
-
-                    </Text>
-                </TouchableOpacity>
-                {showDatePicker && (
-                    <DateTimePicker
-                        testID="dateTimePicker"
-                        value={dateOfBirth}
-                        mode="date"
-                        is24Hour={true}
-                        display="default"
-                        onChange={onChangeDate}
+                    {/* User Information Inputs */}
+                    <TextInput
+                        style={styles.textInput}
+                        placeholder={userInfo.name}
+                        value={name}
+                        onChangeText={setName}
                     />
-                )}
+                    <TextInput
+                        style={styles.textInput}
+                        placeholder={userInfo.phone}
+                        keyboardType="phone-pad"
+                        value={phone}
+                        onChangeText={setPhone}
+                    />
+                    <TextInput
+                        style={styles.textInput}
+                        placeholder={userInfo.address}
+                        value={address}
+                        onChangeText={setAddress}
+                    />
+                    <TextInput style={styles.textInput} placeholder={userInfo.city} value={city} onChangeText={setCity} />
 
-                {/* Gender Selection */}
-                <Picker
-                    selectedValue={gender}
-                    style={styles.picker}
-                    onValueChange={setGender}>
-                    <Picker.Item label="Select Gender" value="" />
-                    <Picker.Item label="Male" value="male" />
-                    <Picker.Item label="Female" value="female" />
-                </Picker>
+                    {/* Date of Birth Picker */}
+                    <TouchableOpacity style={styles.dateInput}
+                        onPress={() => setShowDatePicker(true)}
+                    >
+                        <Text style={styles.dateInputText}>
+                            {dateOfBirth instanceof Date ? dateOfBirth.toISOString().slice(0, 10) : dateOfBirth}
 
-                {/* Save Button */}
-                <TouchableOpacity onPress={handleSave} style={styles.buttonBG} >
-                    <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.saveButton} >
-                        <Text style={styles.saveButtonText}>Save Updates</Text>
-                    </LinearGradient>
-                </TouchableOpacity>
-            </ScrollView>
+                        </Text>
+                    </TouchableOpacity>
+                    {showDatePicker && (
+                        <DateTimePicker
+                            testID="dateTimePicker"
+                            value={dateOfBirth}
+                            mode="date"
+                            is24Hour={true}
+                            display="default"
+                            onChange={onChangeDate}
+                        />
+                    )}
+
+                    {/* Gender Selection */}
+                    <Picker
+                        selectedValue={gender}
+                        style={styles.picker}
+                        onValueChange={setGender}>
+                        <Picker.Item label="Select Gender" value="" />
+                        <Picker.Item label="Male" value="male" />
+                        <Picker.Item label="Female" value="female" />
+                    </Picker>
+
+                    {/* Save Button */}
+                    <TouchableOpacity onPress={handleSave} style={styles.buttonBG} >
+                        <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.saveButton} >
+                            <Text style={styles.saveButtonText}>Save Updates</Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
+                </ScrollView>
+            </View>
+
         );
     }
 };
@@ -286,6 +289,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 20,
+        marginTop: 40,
+        marginStart: 20,
     },
     screenNameText: {
         fontSize: 20,

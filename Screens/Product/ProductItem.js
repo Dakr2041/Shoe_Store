@@ -194,7 +194,7 @@ function formatVND(number) {
 const styles = StyleSheet.create({
   container: {
     width: 178,
-    borderRadius: 5,
+    borderRadius: 10,
     backgroundColor: '#fff',
     padding: 5,
     overflow: 'hidden',

@@ -8,7 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 const ForgotPasswordScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const emailInputRef = useRef(null);
-    const logo = require('../assets/logo.png');
+    const logo = require('../assets/logo_shoe_store.png');
     const handleLoginPress = () => {
         navigation.navigate('Login');
         console.log('Already have an account!!!');
@@ -121,11 +121,12 @@ const styles = StyleSheet.create({
         alignSelf :'center'
     },
     higlightText: {
-        color: '#007bff',
+        color: '#fea239',
         fontSize: 12,
         margin: 9,
         textAlign : 'center',
-        marginTop :100
+        marginTop :100,
+        fontWeight : 'bold'
       },
       textInput: {
         width : "100%",

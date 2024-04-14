@@ -204,7 +204,7 @@ const ResetPasswordScreen = () => {
             ) : (
                 <TouchableOpacity onPress={handleSubmit} >
                     <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.button}>
-                        <Text style={styles.buttonText}>Register</Text>
+                        <Text style={styles.buttonText}>Reset Password</Text>
                     </LinearGradient>
                 </TouchableOpacity>
             )}
@@ -222,12 +222,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 50,
+        marginTop: 10,
     },
     backButton: {
         marginRight: 10,
     },
     headerText: {
         fontSize: 20,
+        fontWeight: 'bold',
     },
     passwordInputContainer: {
         flexDirection: 'row',

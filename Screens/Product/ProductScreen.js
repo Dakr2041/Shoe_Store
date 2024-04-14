@@ -9,16 +9,6 @@ import { API_URL } from '../Api';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useIsFocused } from '@react-navigation/native';
 
-
-const img = [
-  "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png",
-  "https://contents.mediadecathlon.com/p2606919/k$a531927e5c71c12f4d3edac227199f78/jogflow-5001-men-s-running-shoes-white-blue-red.jpg?format=auto&quality=40&f=452x452",
-  "https://contents.mediadecathlon.com/p2153179/e958b22d2eccd9c7db0fea1da358fd8f/p2153179.jpg?format=auto&quality=70&f=650x0",
-  "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png",
-  "https://kizik.com/cdn/shop/files/kizik-social-image.png?v=1693341281",
-  "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5acc983c-9da0-499c-8d80-09e59b909fdf/air-jordan-1-elevate-low-shoes-XlkVrM.png",
-]
-
 const ProductScreen = ({ navigation }) => {
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = Math.floor(screenWidth / 2);
@@ -26,8 +16,9 @@ const ProductScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
-
-
+  const [sliderProducts, setSliderProducts] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const { width: windowWidth } = Dimensions.get('window');
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -37,6 +28,7 @@ const ProductScreen = ({ navigation }) => {
         if (response.ok) {
           const data = await response.json();
           setProducts(data.data);
+          setSliderProducts(data.data.slice(0, 5));
         } else {
           console.error('Error fetching products:', response.statusText);
         }
@@ -53,6 +45,21 @@ const ProductScreen = ({ navigation }) => {
     }
   }, [isFocused]);
 
+
+  const navigateToProductDetail = (product) => {
+    navigation.navigate('ProductDetail', { product });
+    console.log(product);
+  };
+
+  const renderItem = ({ item }) => (
+    <View
+    // style={styles.imageContainer}
+    >
+      <Image source={{ uri: item }}
+      // style={styles.image} 
+      />
+    </View>
+  );
 
   const renderContent = () => {
     if (isLoading) {
@@ -76,7 +83,26 @@ const ProductScreen = ({ navigation }) => {
           </View>
         );
       }
-      return <View>{rows}</View>;
+      return <View>
+        <Text style={{ marginHorizontal: 9, fontSize: 18, fontWeight: 'bold', marginBottom: 10, marginTop: 20 }}>Some best-selling products</Text>
+
+        <View style={styles.slider}>
+          <SliderBox
+            images={sliderProducts.map(product => product.imageProduct)}
+            autoplay
+            circleLoop
+            onCurrentImagePressed={index => navigateToProductDetail(sliderProducts[index])}
+            style={styles.slider}
+            sliderBoxHeight={350}
+            parentWidth={350}
+          />
+        </View>
+
+        <Text style={{ marginHorizontal: 9, marginTop: 20, fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Some outstanding products</Text>
+
+        {rows}
+
+      </View>;
     }
   };
 
@@ -116,11 +142,6 @@ const ProductScreen = ({ navigation }) => {
 
       </LinearGradient>
 
-      <Text style={{ marginHorizontal: 9, fontSize: 18, fontWeight: 'bold', marginBottom: 10, marginTop: 50 }}>Some best-selling products</Text>
-
-      <SliderBox dotColor="tomato" autoPlay={true} autoplayInterval={1000} images={img} resizeMethod={'resize'} resizeMode={'cover'} />
-
-      <Text style={{ marginHorizontal: 9, marginTop: 20, fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Some outstanding products</Text>
 
       <View style={styles.container}>
         {renderContent()}
@@ -133,20 +154,33 @@ const ProductScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#f5f5f5',
-
   },
   row: {
     flexDirection: 'row',
-
     padding: 10,
-
   },
+  slider: {
+    height: 300,
+    width: '95%',
+    marginBottom: 10,
+    alignItems: 'center',
+    borderRadius: 15,
+    elevation: 5, // Add shadow for Android
+    shadowColor: '#000', // Add shadow for iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    backgroundColor: 'white',
+    paddingVertical: 5,
+    alignSelf: 'center',
+  },
+  
   headerItems: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
-    marginTop: 20,
+    marginTop: 30,
     flex: 1,
   },
 
