@@ -22,7 +22,6 @@ const LoginScreen = () => {
   const [isRememberMe, setIsRememberMe] = useState(false);
   const [fcmToken, setFcmToken] = useState('');
 
-
   const EyeIcon = ({ visible }) => {
     return visible ? (
       <IconPassWord name='eye' color={'black'} size={20}></IconPassWord>
@@ -162,7 +161,7 @@ const LoginScreen = () => {
 
         <Text style={styles.title}>Login</Text>
 
-        <Text style={styles.messenger}>Please sign to continue</Text>
+        <Text style={styles.messenger}>Please sign in to continue</Text>
 
         <TextInput
           style={styles.textInput}

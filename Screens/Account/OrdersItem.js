@@ -4,8 +4,9 @@ import { formatVND } from '../Functions/FormatVND';
 import { API_URL } from '../Api';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import OrdersScreen from './OrdersScreen';
 
-const OrdersItem = ({ order }) => {
+const OrdersItem = ({ order, fetchOrders  }) => {
 
     const [product, setProduct] = useState(null);
     const [products, setProducts] = useState([]);
@@ -65,6 +66,7 @@ const OrdersItem = ({ order }) => {
             const responseData = await response.json();
             console.log(responseData);
             alert(responseData.message);
+            fetchOrders();
 
         } catch (error) {
             console.error('Error confirming order:', error);
@@ -84,6 +86,7 @@ const OrdersItem = ({ order }) => {
             const responseData = await response.json();
             console.log(responseData);
             alert(responseData.message);
+            fetchOrders();
 
         } catch (error) {
             console.error('Error canceling order:', error);
@@ -117,7 +120,7 @@ const OrdersItem = ({ order }) => {
                 renderItem={({ item }) => (
                     <View style={styles.productItem}>
                         {item.data.imageProduct && <Image source={{ uri: item.data.imageProduct }} style={{ width: 100, height: 100 }} />}
-                        <View style={styles}>
+                        <View style={styles.infoContainer}>
                             <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Name: {item.data.name}</Text>
                             <Text style={{ fontSize: 12 }}>Price: {formatVND(item.data.price - item.data.priceSale)}</Text>
                             <Text style={{ fontSize: 12 }}>Quantity: {item.quantity}</Text>
@@ -149,7 +152,7 @@ const OrdersItem = ({ order }) => {
     );
 };
 
-const OrdersList = ({ ordersData }) => {
+const OrdersList = ({ ordersData, fetchOrders  }) => {
 
     if (ordersData.length === 0) {
         return <View style={styles.emptyList}>
@@ -168,7 +171,7 @@ const OrdersList = ({ ordersData }) => {
         <FlatList
             data={sortedOrders}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <OrdersItem order={item} />}
+            renderItem={({ item }) => <OrdersItem order={item} fetchOrders={fetchOrders}/>}
         />
     );
 };
@@ -214,6 +217,10 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    infoContainer: {
+        alignSelf: 'center',
+        marginLeft: 10,
     },
 });
 

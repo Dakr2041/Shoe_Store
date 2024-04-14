@@ -74,7 +74,7 @@ const CartScreen = () => {
   const onRemoveItem = async (productId) => {
     try {
       if (!StoredToken) {
-        console.warn('No token available. User needs to log in.');
+        console.warn('No token available');
 
         return;
       }
