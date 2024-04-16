@@ -1,16 +1,16 @@
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../Api';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import NotificationList from './NotificationItem';
 
 const NotificationScreen = () => {
     const [notifications, setNotifications] = useState([]);
     const navigation = useNavigation();
     const [token, setToken] = useState('');
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         const fetchToken = async () => {
@@ -24,6 +24,65 @@ const NotificationScreen = () => {
 
         fetchToken();
     }, []);
+
+    const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const storedUserId = await AsyncStorage.getItem('@userId');
+        setUserId(storedUserId ? Number(storedUserId) : null);
+      } catch (error) {
+        console.error('Error fetching user ID from storage:', error);
+      } finally {
+        // setIsLoading(false);
+      }
+    };
+
+    fetchUserId();
+
+  }, [isFocused]);
+
+  const [shouldRedirectToSetup, setShouldRedirectToSetup] = useState(false);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (userId) {
+        // setIsLoading(true);
+        try {
+          const response = await fetch(`${API_URL}/api/getInfoUser/${userId}`);
+          if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            if (data.status === 400) {
+              setShouldRedirectToSetup(true);
+            } else if (data.status === 200) {
+              setShouldRedirectToSetup(false);
+            }
+          } else {
+            console.error('Error fetching user info:', response.status);
+          }
+        } catch (error) {
+          console.error('Error fetching user info:', error);
+        } finally {
+        //   setIsLoading(false);
+        }
+      }
+    };
+
+    fetchUserInfo();
+  }, [userId,isFocused]);
+
+
+  useEffect(() => {
+    console.log('shouldRedirectToSetup:', shouldRedirectToSetup);
+
+    if (shouldRedirectToSetup) {
+      navigation.navigate('Tabs', { screen: 'Account' }); // navigate to Account screen in Tabs
+    }
+  }, [shouldRedirectToSetup,isFocused]);
+
+
 
     const fetchNotifications = async () => {
         if (!token) return;
@@ -47,7 +106,7 @@ const NotificationScreen = () => {
 
     useEffect(() => {
         fetchNotifications();
-    }, [token]);
+    }, [token,isFocused]);
 
     const onRemoveItem = async (notificationId) => {
         try {

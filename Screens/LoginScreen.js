@@ -107,7 +107,6 @@ const LoginScreen = () => {
       });
       const data = await response.json();
       console.log(data.message);
-      alert(data.message);
       if (data.status === 200) {
         const authToken = data.data.token;
         const userID = data.data.id;

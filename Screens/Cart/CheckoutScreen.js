@@ -19,6 +19,7 @@ const CheckoutScreen = ({ route }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState(null);
   const [displayPrice, setDisplayPrice] = useState('');
+  const [total, setTotal] = useState(0);
 
   const navigation = useNavigation();
 
@@ -50,6 +51,7 @@ const CheckoutScreen = ({ route }) => {
       fetchUserId();
 
     }
+    setTotal(totalPrice);
     setDisplayPrice(formatVND(totalPrice));
   }, [StoredToken]);
 
@@ -72,6 +74,7 @@ const CheckoutScreen = ({ route }) => {
 
           alert(data.message);
           console.log(data.data);
+          setTotal(data.data);
           setDisplayPrice(formatVND(data.data));
         } else {
           // setAppliedDiscount(true);
@@ -158,7 +161,7 @@ const CheckoutScreen = ({ route }) => {
       },
       body: JSON.stringify({
         discount,
-        total: totalPrice,
+        total: total,
         product: orderItems,
       }),
     });
@@ -189,7 +192,7 @@ const CheckoutScreen = ({ route }) => {
       },
       body: JSON.stringify({
         discount,
-        total: totalPrice,
+        total: total,
         product: orderItems,
       }),
     });

@@ -144,7 +144,7 @@ const OrdersScreen = () => {
                 <Tab.Screen name="Delivering">
                     {() => <OrdersList ordersData={deliveringOrders} fetchOrders={fetchOrders}/>}
                 </Tab.Screen>
-                <Tab.Screen name="Success">
+                <Tab.Screen name="Successed">
                     {() => <OrdersList ordersData={successOrders} fetchOrders={fetchOrders}/>}
                 </Tab.Screen>
             </Tab.Navigator>

@@ -51,7 +51,9 @@ const OrdersItem = ({ order, fetchOrders  }) => {
         fetchProduct();
     }, [order]);
 
+    const handleBuyAgain = async (pro) => {
 
+    }
 
     const handleConfirmOrder = async (orderId) => {
         try {
@@ -105,6 +107,7 @@ const OrdersItem = ({ order, fetchOrders  }) => {
 
     const showConfirmButton = order.status === 'paidDelivering' || order.status === 'delivering';
     const showCancelButton = order.status === 'PaidCreateOrder' || order.status === 'createOrder' || order.status === 'paidDelivering' || order.status === 'delivering';
+    const showBuyAgainButton = order.status === 'configOrder';
 
 
 
@@ -145,6 +148,13 @@ const OrdersItem = ({ order, fetchOrders  }) => {
                 {showConfirmButton && (
                     <TouchableOpacity onPress={() => handleConfirmOrder(order.id)} style={styles.button}>
                         <Text style={styles.buttonText}>Xác nhận đơn hàng</Text>
+                    </TouchableOpacity>
+                )}
+            </View>
+            <View style={styles.buttonConfigoder}>
+                {showBuyAgainButton && (
+                    <TouchableOpacity style={styles.button}>
+                        <Text style={styles.buttonText}>Mua lại</Text>
                     </TouchableOpacity>
                 )}
             </View>
@@ -212,6 +222,7 @@ const styles = StyleSheet.create({
     buttonText: {
         textAlign: 'center',
         color: '#fff',
+        fontWeight: 'bold',
     },
     emptyList: {
         flex: 1,

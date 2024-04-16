@@ -149,12 +149,12 @@ const SetupUserInfoScreen = ({ navigation }) => {
 
                 if (response.status === 200) {
                     console.log(response.data.message);
-                    alert(response.data.message);
+                    // alert(response.data.message);
                     setIsLoading(false);
                     navigation.navigate('Home');
                 } else {
                     console.error('Error Updated :', response.data.message);
-                    alert(response.data.message);
+                    // alert(response.data.message);
                     setIsLoading(false);
                 }
             } catch (error) {

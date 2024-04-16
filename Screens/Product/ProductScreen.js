@@ -8,6 +8,7 @@ const logo = require('../../assets/logo_shoe_store.png');
 import { API_URL } from '../Api';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useIsFocused } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProductScreen = ({ navigation }) => {
   const screenWidth = Dimensions.get('window').width;
@@ -17,8 +18,64 @@ const ProductScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
   const [sliderProducts, setSliderProducts] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const { width: windowWidth } = Dimensions.get('window');
+
+
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const storedUserId = await AsyncStorage.getItem('@userId');
+        setUserId(storedUserId ? Number(storedUserId) : null);
+      } catch (error) {
+        console.error('Error fetching user ID from storage:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserId();
+
+  }, [isFocused]);
+
+  const [shouldRedirectToSetup, setShouldRedirectToSetup] = useState(false);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (userId) {
+        setIsLoading(true);
+        try {
+          const response = await fetch(`${API_URL}/api/getInfoUser/${userId}`);
+          if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            if (data.status === 400) {
+              setShouldRedirectToSetup(true);
+            } else if (data.status === 200) {
+              setShouldRedirectToSetup(false);
+            }
+          } else {
+            console.error('Error fetching user info:', response.status);
+          }
+        } catch (error) {
+          console.error('Error fetching user info:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchUserInfo();
+  }, [userId,isFocused]);
+
+
+  useEffect(() => {
+    console.log('shouldRedirectToSetup:', shouldRedirectToSetup);
+    if (shouldRedirectToSetup) {
+      navigation.navigate('Tabs', { screen: 'Account' }); // navigate to Account screen in Tabs
+    }
+  }, [shouldRedirectToSetup,isFocused]);
+
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -50,16 +107,6 @@ const ProductScreen = ({ navigation }) => {
     navigation.navigate('ProductDetail', { product });
     console.log(product);
   };
-
-  const renderItem = ({ item }) => (
-    <View
-    // style={styles.imageContainer}
-    >
-      <Image source={{ uri: item }}
-      // style={styles.image} 
-      />
-    </View>
-  );
 
   const renderContent = () => {
     if (isLoading) {
@@ -174,7 +221,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     alignSelf: 'center',
   },
-  
+
   headerItems: {
     flexDirection: 'row',
     justifyContent: 'space-between',
