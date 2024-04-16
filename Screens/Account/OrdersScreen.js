@@ -136,16 +136,16 @@ const OrdersScreen = () => {
 
             <Tab.Navigator tabBarOptions={{ scrollEnabled: true }}>
                 <Tab.Screen name="Unconfirmed">
-                    {() => <OrdersList ordersData={unConfirmOrders} />}
+                    {() => <OrdersList ordersData={unConfirmOrders} fetchOrders={fetchOrders}/>}
                 </Tab.Screen>
                 <Tab.Screen name="Confirmed">
-                    {() => <OrdersList ordersData={confirmOrders} />}
+                    {() => <OrdersList ordersData={confirmOrders} fetchOrders={fetchOrders}/>}
                 </Tab.Screen>
                 <Tab.Screen name="Delivering">
-                    {() => <OrdersList ordersData={deliveringOrders} />}
+                    {() => <OrdersList ordersData={deliveringOrders} fetchOrders={fetchOrders}/>}
                 </Tab.Screen>
-                <Tab.Screen name="Success">
-                    {() => <OrdersList ordersData={successOrders} />}
+                <Tab.Screen name="Successed">
+                    {() => <OrdersList ordersData={successOrders} fetchOrders={fetchOrders}/>}
                 </Tab.Screen>
             </Tab.Navigator>
         </View>

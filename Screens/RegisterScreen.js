@@ -21,6 +21,8 @@ const RegisterScreen = () => {
 
   const handleEmailChange = (text) => {
     setEmail(text);
+    // setName("abc");
+
   }
   const handleNameChange = (text) => {
     setName(text);
@@ -47,7 +49,6 @@ const RegisterScreen = () => {
 
 
   const handleRegister = async () => {
-    setName('abc');
 
     setIsLoading(true);
 
@@ -65,10 +66,10 @@ const RegisterScreen = () => {
       return;
     }
 
-    // if (name.length <= 0) {
-    //   setIsLoading(false);
-    //   return alert('Type in name.');
-    // }
+    if (name.length <= 0) {
+      setIsLoading(false);
+      return alert('Type in name.');
+    }
 
     if (password.length <= 0) {
       setIsLoading(false);
@@ -106,13 +107,12 @@ const RegisterScreen = () => {
         body: JSON.stringify({ email, password, name }),
       });
       const data = await response.json();
-      console.log("msg: " + data.message);
+      console.log("msg: " , data);
 
-      if (data.status === 200) {
+      if (data.status === 200 || data.status === 201) {
         alert(data.message);
         setIsLoading(false);
         navigation.navigate('Login');
-        ToastAndroid.BOTTOM.show('Confirm in Email');
         console.log(data);
       } else {
         console.log(data.message);
@@ -156,14 +156,14 @@ const RegisterScreen = () => {
           autoCapitalize="none"
           ref={emailInputRef}
         />
-        {/* <TextInput
+        <TextInput
           style={styles.textInput}
           placeholder="Name"
           value={name}
           onChangeText={handleNameChange}
           autoCapitalize="words"
           ref={nameInputRef}
-        /> */}
+        />
 
         <View style={styles.passwordInputContainer}>
           <TextInput
