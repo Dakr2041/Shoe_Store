@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
 import { formatVND } from '../Functions/FormatVND';
 import { API_URL } from '../Api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -89,7 +89,9 @@ const NOList = ({ NotificationData, onRemoveItem, fetchNotifications, token }) =
     }, [fetchNotifications]);
 
     if (!NotificationData || !NotificationData.data) {
-        return <Text>Đang tải dữ liệu....</Text>;
+        return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color="#0000ff" />
+        </View>
     }
 
     const sortedNotifications = NotificationData.data.sort((a, b) => {

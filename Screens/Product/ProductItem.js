@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../Api';
@@ -73,7 +73,7 @@ const ProductItem = ({ product, onFavoriteChanged }) => {
       const storedToken = await AsyncStorage.getItem('authToken');
       if (!storedToken) {
         console.log('No token available. User needs to log in.');
-        alert("Failed to add item to favorites");
+        // alert("Failed to add item to favorites");
         return;
       }
       const response = await fetch(`${API_URL}/api/favorite/${product.id}`, {
@@ -107,10 +107,10 @@ const ProductItem = ({ product, onFavoriteChanged }) => {
         onFavoriteChanged(product.id, !isFavourite);
       }
 
-      alert(data.message);
+      // alert(data.message);
     } catch (error) {
       console.error('Error adding item to favorites:', error);
-      alert(error);
+      // alert(error);
     }
   };
 

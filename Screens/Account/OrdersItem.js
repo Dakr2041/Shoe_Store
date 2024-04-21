@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import { formatVND } from '../Functions/FormatVND';
 import { API_URL } from '../Api';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import OrdersScreen from './OrdersScreen';
+import { useNavigation } from '@react-navigation/native';
 
-const OrdersItem = ({ order, fetchOrders  }) => {
+const OrdersItem = ({ order, fetchOrders }) => {
 
     const [product, setProduct] = useState(null);
     const [products, setProducts] = useState([]);
@@ -51,49 +52,86 @@ const OrdersItem = ({ order, fetchOrders  }) => {
         fetchProduct();
     }, [order]);
 
-    const handleBuyAgain = async (pro) => {
+    const handleRepurchase = async (pro) => {
 
     }
 
     const handleConfirmOrder = async (orderId) => {
-        try {
-            console.log(orderId);
-            console.log(token);
-            const response = await fetch(`${API_URL}/order/configOrder/${orderId}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
+        Alert.alert(
+            "Confirm Order",
+            "Are you sure you want to confirm this order?",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
                 },
-            });
-            const responseData = await response.json();
-            console.log(responseData);
-            alert(responseData.message);
-            fetchOrders();
-
-        } catch (error) {
-            console.error('Error confirming order:', error);
-            alert(responseData.message);
-        }
+                { 
+                    text: "Yes", 
+                    onPress: async () => {
+                        try {
+                            console.log(orderId);
+                            console.log(token);
+                            const response = await fetch(`${API_URL}/order/configOrder/${orderId}`, {
+                                method: 'GET',
+                                headers: {
+                                    'Authorization': `Bearer ${token}`,
+                                },
+                            });
+                            const responseData = await response.json();
+                            console.log(responseData);
+                            alert(responseData.message);
+                            fetchProduct();
+    
+                        } catch (error) {
+                            console.error('Error confirming order:', error);
+                            alert(responseData.message);
+                        }
+                    }
+                }
+            ]
+        );
     };
     const handleCancelOrder = async (orderId) => {
-        try {
-            console.log(orderId);
-            console.log(token);
-            const response = await fetch(`${API_URL}/order/cancelOrder/${orderId}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
+        Alert.alert(
+            "Cancel Order",
+            "Are you sure you want to cancel this order?",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
                 },
-            });
-            const responseData = await response.json();
-            console.log(responseData);
-            alert(responseData.message);
-            fetchOrders();
-
-        } catch (error) {
-            console.error('Error canceling order:', error);
-            alert(responseData.message);
-        }
+                { 
+                    text: "Yes", 
+                    onPress: async () => {
+                        try {
+                            console.log(orderId);
+                            console.log(token);
+                            const response = await fetch(`${API_URL}/order/cancelOrder/${orderId}`, {
+                                method: 'GET',
+                                headers: {
+                                    'Authorization': `Bearer ${token}`,
+                                },
+                            });
+                            const responseData = await response.json();
+                            console.log(responseData);
+                            if (responseData.status === 200) {
+                                navigation.navigate('Orders');
+                                alert(responseData.message);
+    
+                            } else {
+                                alert(responseData.message);
+                            }
+    
+                        } catch (error) {
+                            console.error('Error canceling order:', error);
+                            alert(responseData.message);
+                        }
+                    }
+                }
+            ]
+        );
     };
 
 
@@ -106,17 +144,22 @@ const OrdersItem = ({ order, fetchOrders  }) => {
     }
 
     const showConfirmButton = order.status === 'paidDelivering' || order.status === 'delivering';
-    const showCancelButton = order.status === 'PaidCreateOrder' || order.status === 'createOrder' || order.status === 'paidDelivering' || order.status === 'delivering';
+    const showCancelButton = order.status === 'PaidCreateOrder' || order.status === 'createOrder';
     const showBuyAgainButton = order.status === 'configOrder';
 
-
+    const navigation = useNavigation();
+    const goToOrderDetail = (order) => {
+        console.log("order detail: ", order);
+        navigation.navigate('OrderDetail', { order });
+        // try {
+        //     navigation.navigate('OrderDetail', { order });
+        // } catch (error) {
+        //     console.error('Error navigating to OrderDetail:', error);
+        // }
+    };
 
     return (
         <View style={styles.itemContainer}>
-            <View style={styles.topContainer}>
-                <Text style={{ fontSize: 14 }}>Orderdate: {formattedDate}</Text>
-                <Text style={{ fontSize: 12 }}>of: {formattedIfdate}</Text>
-            </View>
             <FlatList
                 data={products}
                 keyExtractor={(item, index) => index.toString()}
@@ -124,45 +167,53 @@ const OrdersItem = ({ order, fetchOrders  }) => {
                     <View style={styles.productItem}>
                         {item.data.imageProduct && <Image source={{ uri: item.data.imageProduct }} style={{ width: 100, height: 100 }} />}
                         <View style={styles.infoContainer}>
-                            <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Name: {item.data.name}</Text>
-                            <Text style={{ fontSize: 12 }}>Price: {formatVND(item.data.price - item.data.priceSale)}</Text>
-                            <Text style={{ fontSize: 12 }}>Quantity: {item.quantity}</Text>
+                            <Text style={{ fontSize: 14, fontWeight: 'bold' }}>{item.data.name}</Text>
+                            <View style={{
+                                flexDirection: 'row',
+                                justifyContent: "space-between",
+                            }}>
+                                <Text style={{ fontSize: 12 }}>Price: {formatVND(item.data.price - item.data.priceSale)}</Text>
+                                <Text style={{ fontSize: 12 }}>X{item.quantity}</Text>
+                            </View>
                             <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Total: {formatVND(item.quantity * (item.data.price - item.data.priceSale))}</Text>
                         </View>
                     </View>
                 )}
             />
             <View style={styles.bottomContainer}>
-                <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Sub total: {formatVND(order.total)}</Text>
+                <Text style={{ fontSize: 14, fontWeight: 'bold', alignSelf: 'flex-end', marginTop: 10 }}>Sub total: {formatVND(order.total)}</Text>
                 {/* <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Status: {order.status}</Text> */}
 
             </View>
+            <TouchableOpacity onPress={() => goToOrderDetail(order)} style={[styles.button, { backgroundColor: 'white' }]}>
+                <Text style={[styles.buttonText, { color: 'black' }]}>Detail</Text>
+            </TouchableOpacity>
             <View style={styles.buttoncancleoder}>
                 {showCancelButton && (
-                    <TouchableOpacity onPress={() => handleCancelOrder(order.id)} style={[styles.button, { backgroundColor: '#EEEEEE' }]}>
-                        <Text style={[styles.buttonText, { color: 'red' }]}>Hủy đơn hàng</Text>
+                    <TouchableOpacity onPress={() => handleCancelOrder(order.id)} style={[styles.button, { backgroundColor: 'white' }]}>
+                        <Text style={[styles.buttonText, { color: 'red' }]}>Cancel Order</Text>
                     </TouchableOpacity>
                 )}
             </View>
             <View style={styles.buttonConfigoder}>
                 {showConfirmButton && (
                     <TouchableOpacity onPress={() => handleConfirmOrder(order.id)} style={styles.button}>
-                        <Text style={styles.buttonText}>Xác nhận đơn hàng</Text>
+                        <Text style={styles.buttonText}>Confirm Order</Text>
                     </TouchableOpacity>
                 )}
             </View>
-            <View style={styles.buttonConfigoder}>
+            {/* <View style={styles.buttonConfigoder}>
                 {showBuyAgainButton && (
                     <TouchableOpacity style={styles.button}>
-                        <Text style={styles.buttonText}>Mua lại</Text>
+                        <Text style={styles.buttonText}>Repurchase Order</Text>
                     </TouchableOpacity>
                 )}
-            </View>
+            </View> */}
         </View>
     );
 };
 
-const OrdersList = ({ ordersData, fetchOrders  }) => {
+const OrdersList = ({ ordersData, fetchOrders }) => {
 
     if (ordersData.length === 0) {
         return <View style={styles.emptyList}>
@@ -181,7 +232,7 @@ const OrdersList = ({ ordersData, fetchOrders  }) => {
         <FlatList
             data={sortedOrders}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <OrdersItem order={item} fetchOrders={fetchOrders}/>}
+            renderItem={({ item }) => <OrdersItem order={item} fetchOrders={fetchOrders} />}
         />
     );
 };
@@ -190,21 +241,17 @@ const styles = StyleSheet.create({
     itemContainer: {
         margin: 10,
         padding: 10,
-        borderWidth: 1,
-        borderColor: '#ccc',
+        backgroundColor: '#fff',
         borderRadius: 5,
     },
     productItem: {
-        margin: 10,
-        padding: 10,
+        marginTop: 10,
         flexDirection: 'row',
-        borderWidth: 1,
-        borderColor: '#ccc',
         borderRadius: 5,
+        borderWidth: 0.8,
+        borderColor: '#ccc',
     },
     bottomContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
     },
     topContainer: {
         flexDirection: 'row',
@@ -232,6 +279,8 @@ const styles = StyleSheet.create({
     infoContainer: {
         alignSelf: 'center',
         marginLeft: 10,
+        flex: 1,
+        paddingEnd: 10,
     },
 });
 

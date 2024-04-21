@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../Api';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -13,6 +13,7 @@ const OrdersScreen = () => {
     const [orders, setOrders] = useState([]);
     const navigation = useNavigation();
     const [token, setToken] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchTOKEN = async () => {
@@ -29,28 +30,8 @@ const OrdersScreen = () => {
         fetchTOKEN();
     }, []);
 
-    // useEffect(() => {
-    //     const fetchOrders = async () => {
-    //         const response = await fetch(`${API_URL}/order/getOrderUser`, {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`,
-    //             },
-    //         });
-
-    //         if (response.ok) {
-    //             const data = await response.json();
-    //             setOrders(data.data);
-    //         } else {
-    //             console.error('Error fetching orders');
-    //         }
-    //     };
-
-    //     if (token) {
-    //         fetchOrders();
-    //     }
-    // }, [token]);
-
     const fetchOrders = useCallback(async () => {
+        setLoading(true);
         const response = await fetch(`${API_URL}/order/getOrderUser`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -63,6 +44,7 @@ const OrdersScreen = () => {
         } else {
             console.error('Error fetching orders');
         }
+        setLoading(false);
     }, [token]);
 
     useFocusEffect(
@@ -75,9 +57,9 @@ const OrdersScreen = () => {
 
     const Tab = createMaterialTopTabNavigator();
 
-    orders.map(order => {
-        console.log(`Order ID: ${order.id}, Status: ${order.status}`);
-    });
+    // orders.map(order => {
+    //     console.log(`Order ID: ${order.id}, Status: ${order.status}`);
+    // });
 
     const sortOrdersByStatus = (orders) => {
         const sortedOrders = {};
@@ -93,7 +75,6 @@ const OrdersScreen = () => {
         return sortedOrders;
     };
 
-    // Usage:
     const sortedOrders = sortOrdersByStatus(orders);
     // console.log(sortedOrders);
     const unConfirmOrders = sortedOrders['createOrder'] || [];
@@ -101,10 +82,10 @@ const OrdersScreen = () => {
     const deliveringOrders = sortedOrders['paidDelivering'] || [];
     const successOrders = sortedOrders['configOrder'] || [];
 
-    console.log('-1-Unconfirm Orders:', unConfirmOrders);
-    console.log('--2-Confirm Orders:', confirmOrders);
-    console.log('---3-Delivering Orders:', deliveringOrders);
-    console.log('----4-Success Orders:', successOrders);
+    // console.log('-1-Unconfirm Orders:', unConfirmOrders);
+    // console.log('--2-Confirm Orders:', confirmOrders);
+    // console.log('---3-Delivering Orders:', deliveringOrders);
+    // console.log('----4-Success Orders:', successOrders);
 
     const handleGoBack = () => {
         navigation.goBack();
@@ -112,42 +93,50 @@ const OrdersScreen = () => {
 
     return (
         <View style={styles.container}>
-            <LinearGradient
-                colors={['#f7c458', '#fea239']}
-                style={styles.menuItemGradient}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-            >
-                <View style={styles.header}>
-
-                    <TouchableOpacity onPress={handleGoBack}>
-                        <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
-                    </TouchableOpacity>
-                    <View></View>
-                    <View></View>
-                    <Text style={styles.headerText}>Orders</Text>
-                    <View></View>
-                    <View></View>
-                    <View></View>
-                    <View></View>
-
+            {loading ? (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size="large" color="#0000ff" />
                 </View>
-            </LinearGradient>
+            ) : (
+                <>
+                    <LinearGradient
+                        colors={['#f7c458', '#fea239']}
+                        style={styles.menuItemGradient}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                    >
+                        <View style={styles.header}>
 
-            <Tab.Navigator tabBarOptions={{ scrollEnabled: true }}>
-                <Tab.Screen name="Unconfirmed">
-                    {() => <OrdersList ordersData={unConfirmOrders} fetchOrders={fetchOrders}/>}
-                </Tab.Screen>
-                <Tab.Screen name="Confirmed">
-                    {() => <OrdersList ordersData={confirmOrders} fetchOrders={fetchOrders}/>}
-                </Tab.Screen>
-                <Tab.Screen name="Delivering">
-                    {() => <OrdersList ordersData={deliveringOrders} fetchOrders={fetchOrders}/>}
-                </Tab.Screen>
-                <Tab.Screen name="Successed">
-                    {() => <OrdersList ordersData={successOrders} fetchOrders={fetchOrders}/>}
-                </Tab.Screen>
-            </Tab.Navigator>
+                            <TouchableOpacity onPress={handleGoBack}>
+                                <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
+                            </TouchableOpacity>
+                            <View></View>
+                            <View></View>
+                            <Text style={styles.headerText}>Orders</Text>
+                            <View></View>
+                            <View></View>
+                            <View></View>
+                            <View></View>
+
+                        </View>
+                    </LinearGradient>
+
+                    <Tab.Navigator tabBarOptions={{ scrollEnabled: true }}>
+                        <Tab.Screen name="Unconfirm">
+                            {() => <OrdersList ordersData={unConfirmOrders} fetchOrders={fetchOrders} />}
+                        </Tab.Screen>
+                        <Tab.Screen name="Confirmed">
+                            {() => <OrdersList ordersData={confirmOrders} fetchOrders={fetchOrders} />}
+                        </Tab.Screen>
+                        <Tab.Screen name="Delivering">
+                            {() => <OrdersList ordersData={deliveringOrders} fetchOrders={fetchOrders} />}
+                        </Tab.Screen>
+                        <Tab.Screen name="Successed">
+                            {() => <OrdersList ordersData={successOrders} fetchOrders={fetchOrders} />}
+                        </Tab.Screen>
+                    </Tab.Navigator>
+                </>
+            )}
         </View>
     );
 };
@@ -166,7 +155,7 @@ const styles = StyleSheet.create({
     headerText: {
         fontSize: 18,
         fontWeight: 'bold',
-        color:'white',
+        color: 'white',
     },
 });
 
