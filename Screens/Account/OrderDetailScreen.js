@@ -218,7 +218,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
                                 <View style={styles.productItem}>
                                     {item.data.imageProduct && <Image source={{ uri: item.data.imageProduct }} style={{ width: 100, height: 100 }} />}
                                     <View style={styles.infoContainer}>
-                                        <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Name: {item.data.name}</Text>
+                                        <Text style={{ fontSize: 14, fontWeight: 'bold' }}>{item.data.name}</Text>
                                         <View style={{
                                             flexDirection: 'row',
                                             justifyContent: "space-between",

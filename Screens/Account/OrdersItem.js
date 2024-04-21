@@ -175,7 +175,7 @@ const OrdersItem = ({ order, fetchOrders }) => {
                                 <Text style={{ fontSize: 12 }}>Price: {formatVND(item.data.price - item.data.priceSale)}</Text>
                                 <Text style={{ fontSize: 12 }}>X{item.quantity}</Text>
                             </View>
-                            <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Total: {formatVND(item.quantity * (item.data.price - item.data.priceSale))}</Text>
+                            <Text style={{ fontSize: 14, fontWeight: 'bold',alignSelf: 'flex-end'}}>Total: {formatVND(item.quantity * (item.data.price - item.data.priceSale))}</Text>
                         </View>
                     </View>
                 )}
