@@ -66,7 +66,7 @@ const ProductScreen = ({ navigation }) => {
     };
 
     fetchUserInfo();
-  }, [userId,isFocused]);
+  }, [userId, isFocused]);
 
 
   useEffect(() => {
@@ -74,7 +74,7 @@ const ProductScreen = ({ navigation }) => {
     if (shouldRedirectToSetup) {
       navigation.navigate('Tabs', { screen: 'Account' }); // navigate to Account screen in Tabs
     }
-  }, [shouldRedirectToSetup,isFocused]);
+  }, [shouldRedirectToSetup, isFocused]);
 
 
   useEffect(() => {
@@ -131,7 +131,8 @@ const ProductScreen = ({ navigation }) => {
         );
       }
       return <View>
-        <Text style={{ marginHorizontal: 9, fontSize: 18, fontWeight: 'bold', marginBottom: 10, marginTop: 20 }}>Some best-selling products</Text>
+        <Text style={{ marginHorizontal: 9, marginTop: 20, fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Some outstanding products</Text>
+
 
         <View style={styles.slider}>
           <SliderBox
@@ -145,7 +146,6 @@ const ProductScreen = ({ navigation }) => {
           />
         </View>
 
-        <Text style={{ marginHorizontal: 9, marginTop: 20, fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Some outstanding products</Text>
 
         {rows}
 

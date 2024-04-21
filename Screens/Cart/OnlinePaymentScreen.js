@@ -79,8 +79,10 @@ const OnlinePaymentScreen = ({ route }) => {
                         console.log('Payment success');
                         handlePaymentSuccess(navState.url);
 
+
                     } else {
                         console.error('Payment failed');
+                        navigation.navigate('OrderFailed');
                     }
 
                 }

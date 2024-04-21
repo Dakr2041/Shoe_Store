@@ -22,6 +22,8 @@ import SupportScreen from './Support/SupportScreen';
 import Notification from './Notification/NotificationScreen';
 import Favourite from './Favourite/FavouriteScreen'
 import OrderSuccessScreen from './Cart/OrderSuccessScreen';
+import OrderDetailScreen from './Account/OrderDetailScreen';
+import OrderFailScreen from './Cart/OrderFailedScreen';
 
 
 const Tab = createBottomTabNavigator();
@@ -44,12 +46,14 @@ export default function App() {
         <Stack.Screen name="OnlinePayment" component={OnlinePaymentScreen} />
         <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
         <Stack.Screen name="Orders" component={OrdersScreen} />
+        <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
         <Stack.Screen name="Search" component={SearchScreen} />
         <Stack.Screen name="SearchResult" component={SearchResultScreen} />
         <Stack.Screen name="Discounts" component={DiscountScreen} />
         <Stack.Screen name="Supports" component={SupportScreen} />
         <Stack.Screen name="Favourites" component={Favourite} />
         <Stack.Screen name="OrderSuccess" component={OrderSuccessScreen} />
+        <Stack.Screen name="OrderFailed" component={OrderFailScreen} />
       </Stack.Navigator>
 
     </NavigationContainer>

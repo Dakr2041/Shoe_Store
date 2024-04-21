@@ -173,6 +173,7 @@ const CheckoutScreen = ({ route }) => {
 
       console.log("id: ", data.data.id, " total: ", data.data.total);
       onlinePayment(data.data.total, data.data.id);
+      await removeItemsFromCart(orderItems);
 
     } else {
       // Handle error
@@ -180,6 +181,32 @@ const CheckoutScreen = ({ route }) => {
       alert(data.message);
       console.error(data.message);
 
+    }
+  };
+
+  const removeItemFromAPI = async (productId, token) => {
+    try {
+      const response = await fetch(`${API_URL}/cart/deleteItemCart/${productId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.statusText}`);
+      }
+      fetchData();
+      return response.json();
+
+    } catch (error) {
+      throw new Error(`Failed to delete item: ${error.message}`);
+    }
+  };
+
+  const removeItemsFromCart = async (orderItems) => {
+    for (let item of orderItems) {
+      await removeItemFromAPI(item.productId, StoredToken);
     }
   };
 
@@ -204,6 +231,7 @@ const CheckoutScreen = ({ route }) => {
       setIsLoading(false);
       navigation.navigate('OrderSuccess');
       console.log(data);
+      await removeItemsFromCart(orderItems);
 
     } else {
       console.error(data.message);
