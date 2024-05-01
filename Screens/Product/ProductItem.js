@@ -153,7 +153,7 @@ const ProductItem = ({ product, onFavoriteChanged }) => {
         <Image source={{ uri: product.imageProduct }} style={styles.image} />
         {product.priceSale > 0 && (
           <View style={styles.priceSaleContainer}>
-            <Text style={styles.priceSaleText}>-{product.priceSale}đ</Text>
+            <Text style={styles.priceSaleText}>-{formatVND(product.priceSale)}</Text>
           </View>
         )}
       </View>
