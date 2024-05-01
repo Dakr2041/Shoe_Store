@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const CheckoutScreen = ({ route }) => {
+
   const { cartItems, totalPrice } = route.params;
   const [paymentMethod, setPaymentMethod] = useState('COD');
   const [discount, setDiscount] = useState('');
@@ -79,7 +80,7 @@ const CheckoutScreen = ({ route }) => {
         } else {
           // setAppliedDiscount(true);
           alert(data.message);
-          
+
 
         }
       } catch (error) {
@@ -152,7 +153,7 @@ const CheckoutScreen = ({ route }) => {
     }
   }
 
-  const onlineOrder = async (orderItems) => {
+  const onlineOrder = async (orderItems) => { // thanh toan online
     const response = await fetch(`${API_URL}/pay/createOrderPayment`, {
       method: 'POST',
       headers: {
@@ -185,6 +186,8 @@ const CheckoutScreen = ({ route }) => {
   };
 
   const removeItemFromAPI = async (productId, token) => {
+    console.log('adaddadadada')
+    console.log(productId)
     try {
       const response = await fetch(`${API_URL}/cart/deleteItemCart/${productId}`, {
         method: 'DELETE',
@@ -205,12 +208,15 @@ const CheckoutScreen = ({ route }) => {
   };
 
   const removeItemsFromCart = async (orderItems) => {
-    for (let item of orderItems) {
+    const promises = orderItems.map(async item => {
       await removeItemFromAPI(item.productId, StoredToken);
-    }
+    });
+
+    await Promise.all(promises);
   };
 
-  const order = async (orderItems) => {
+
+  const order = async (orderItems) => { // thanh toan offline
     const response = await fetch(`${API_URL}/order/createOrder`, {
       method: 'POST',
       headers: {

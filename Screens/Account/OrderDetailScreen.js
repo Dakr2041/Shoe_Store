@@ -29,8 +29,8 @@ const OrderDetailScreen = ({ route, navigation }) => {
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
-                { 
-                    text: "Yes", 
+                {
+                    text: "Yes",
                     onPress: async () => {
                         try {
                             console.log(orderId);
@@ -45,7 +45,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
                             console.log(responseData);
                             alert(responseData.message);
                             fetchProduct();
-    
+
                         } catch (error) {
                             console.error('Error confirming order:', error);
                             alert(responseData.message);
@@ -65,8 +65,8 @@ const OrderDetailScreen = ({ route, navigation }) => {
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
-                { 
-                    text: "Yes", 
+                {
+                    text: "Yes",
                     onPress: async () => {
                         try {
                             console.log(orderId);
@@ -82,11 +82,11 @@ const OrderDetailScreen = ({ route, navigation }) => {
                             if (responseData.status === 200) {
                                 navigation.navigate('Orders');
                                 alert(responseData.message);
-    
+
                             } else {
                                 alert(responseData.message);
                             }
-    
+
                         } catch (error) {
                             console.error('Error canceling order:', error);
                             alert(responseData.message);
@@ -109,6 +109,15 @@ const OrderDetailScreen = ({ route, navigation }) => {
                 return 'Waiting for confirmation';
             case 'configOrder':
                 return 'Completed';
+            case 'PaidCancelOrder':
+                return 'Online payment order has been canceled';
+            case 'cancelOrder':
+                return 'Cancleoder';
+
+            case 'payment':
+                return 'The order has been created but not yet';
+            case 'PaymentAndCancel':
+                return 'Order was paid but canceled';
             default:
                 return 'Unknown status';
         }

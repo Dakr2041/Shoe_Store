@@ -76,10 +76,13 @@ const OrdersScreen = () => {
     };
 
     const sortedOrders = sortOrdersByStatus(orders);
-    // console.log(sortedOrders);
-    const unConfirmOrders = sortedOrders['createOrder'] || [];
-    const confirmOrders = sortedOrders['PaidCreateOrder'] || [];
-    const deliveringOrders = sortedOrders['paidDelivering'] || [];
+    console.log(sortedOrders);
+    const unConfirmOrders = sortedOrders['cancelOrder'] || sortedOrders['PaidCancelOrder'] || sortedOrders['PaymentAndCancel'] || sortedOrders['payment'] || [];
+
+
+    const confirmOrders = sortedOrders['createOrder'] || sortedOrders['PaidCreateOrder'] || [];
+
+    const deliveringOrders = sortedOrders['delivering'] || sortedOrders['paidDelivering'] || [];
     const successOrders = sortedOrders['configOrder'] || [];
 
     // console.log('-1-Unconfirm Orders:', unConfirmOrders);

@@ -33,7 +33,7 @@ const CartScreen = () => {
     };
 
     fetchTOKEN();
-    console.log("token:"+StoredToken);
+    console.log("token:" + StoredToken);
   }, [isFocused]);
 
   const [userId, setUserId] = useState(null);
@@ -82,14 +82,14 @@ const CartScreen = () => {
     };
 
     fetchUserInfo();
-  }, [userId,isFocused]);
+  }, [userId, isFocused]);
 
 
   useEffect(() => {
     if (shouldRedirectToSetup) {
       navigation.navigate('Tabs', { screen: 'Account' }); // navigate to Account screen in Tabs
     }
-  }, [shouldRedirectToSetup,isFocused]);
+  }, [shouldRedirectToSetup, isFocused]);
 
   const fetchData = async () => {
     if (!StoredToken) {
@@ -144,6 +144,7 @@ const CartScreen = () => {
   };
 
   const removeItemFromAPI = async (productId, token) => {
+
     try {
       const response = await fetch(`${API_URL}/cart/deleteItemCart/${productId}`, {
         method: 'DELETE',
@@ -151,6 +152,7 @@ const CartScreen = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+
 
       if (!response.ok) {
         throw new Error(`API error: ${response.statusText}`);
