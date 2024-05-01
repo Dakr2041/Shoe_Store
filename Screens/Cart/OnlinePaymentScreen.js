@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { View, Text, Linking, Button } from 'react-native';
+import { View, Text, Linking, Button, Alert } from 'react-native';
 import WebView from 'react-native-webview';
 import { API_URL } from '../Api';
 
@@ -67,8 +67,8 @@ const OnlinePaymentScreen = ({ route }) => {
             ref={webViewRef}
             source={{ uri: url }}
             style={{ marginTop: 30, flex: 1 }}
-            // onError={handleError}
-            // renderError={() => {<View><Text>Loading failed! But we're not showing this to the user.</Text></View>}}
+            onError={handleError}
+            renderError={() => { <View><Text>Loading failed! But we're not showing this to the user.</Text></View> }}
             onNavigationStateChange={(navState) => {
                 setLastUrl(navState.url);
                 if (navState.url.includes("http://localhost:3001/thanks")) {
@@ -78,11 +78,33 @@ const OnlinePaymentScreen = ({ route }) => {
                     if (responseCode === '00') {
                         console.log('Payment success');
                         handlePaymentSuccess(navState.url);
+                        Alert.alert(
+                            'Order Succesfully',
+                            'Your order has been created successfully.',
+                            [
+                                {
+                                    text: 'OK',
+                                    onPress: () => { },
+                                },
+                            ],
+                            { cancelable: false }
+                        );
 
 
                     } else {
                         console.error('Payment failed');
                         navigation.navigate('OrderFailed');
+                        Alert.alert(
+                            'Order Cancelled',
+                            'Your order has been successfully cancelled.',
+                            [
+                                {
+                                    text: 'OK',
+                                    onPress: () => { },
+                                },
+                            ],
+                            { cancelable: false }
+                        );
                     }
 
                 }
