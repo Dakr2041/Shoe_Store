@@ -108,12 +108,11 @@ const AccountScreen = () => {
 
   const menuItems = [
     { title: 'Orders', onPress: handleOrdersPress, icon: require('../../assets/order_icon.png') },
-    // { title: 'Oder Status', onPress: () => { }, icon: require('../../assets/order status.png') },
+
     { title: 'Favorites', onPress: handleFavourite, icon: require('../Product/favourite_icon.png') },
-    // { title: 'Discount', onPress: handleDiscountScreen, icon: require('../../assets/discount_icon.png') },
+
     { title: 'Support', onPress: handleSupport, icon: require('../../assets/support_icon.png') },
     { title: 'Setting', onPress: handleSettingsPress, icon: require('../../assets/setting_icon.png') },
-
     { title: 'Logout', onPress: handleLogoutPress, icon: require('../../assets/logout_icon.png') }
   ];
 
@@ -140,11 +139,11 @@ const AccountScreen = () => {
       ) : shouldRedirectToSetup ? (
         <View style={styles.setupContainer}>
           <Text style={{
-            fontSize:20, 
-            fontWeight:'bold',
-            marginBottom:20, 
-            maxWidth:'70%',
-            }}>Please complete your setup information first.</Text>
+            fontSize: 20,
+            fontWeight: 'bold',
+            marginBottom: 20,
+            maxWidth: '70%',
+          }}>Please complete your setup information first.</Text>
           <TouchableOpacity onPress={() => navigation.navigate('SetupUserInfo')}>
             <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.setupButton} >
               <Text style={styles.setupButtonText}>Go to Setup</Text>

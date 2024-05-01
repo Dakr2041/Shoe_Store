@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
 import { formatVND } from '../Functions/FormatVND';
 import { API_URL } from '../Api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -60,7 +60,7 @@ const NOItem = ({ notification, onPress, onRemoveItem, showDot, fetchNotificatio
             <TouchableOpacity style={styles.container} onPress={() => { onPress(notification); senNotification(); }}>
                 {showDot && notification.status === 1 && !isRead && <View style={styles.redDot} />}
                 <View style={styles.contentContainer}>
-                    <Text numberOfLines={1} ellipsizeMode="tail" style={styles.contentText}>{notification.content}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={styles.contentText}>{notification.title}</Text>
                 </View>
             </TouchableOpacity>
         </Swipeable>
@@ -99,7 +99,7 @@ const NOList = ({ NotificationData, onRemoveItem, fetchNotifications, token }) =
     });
 
     return (
-        <View>
+        <ScrollView>
             <FlatList
                 data={sortedNotifications}
                 keyExtractor={(item) => item.id.toString()}
@@ -121,18 +121,18 @@ const NOList = ({ NotificationData, onRemoveItem, fetchNotifications, token }) =
             >
                 <View style={styles.modal}>
                     <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
-                        <Text style={styles.closeButtonText}>Đóng</Text>
+                        <MaterialCommunityIcons name="close" size={24} color="#fff" />
                     </TouchableOpacity>
                     <Text style={styles.modalText}>
-                        {selectedNotification ? selectedNotification.content : ''}
+                        {selectedNotification ? selectedNotification.title : ''}
                     </Text>
                     <Text style={styles.modalText}>
-                        {selectedNotification ? selectedNotification.title : ''}
+                        {selectedNotification ? selectedNotification.content : ''}
                     </Text>
                 </View>
             </Modal>
 
-        </View>
+        </ScrollView>
     );
 };
 
