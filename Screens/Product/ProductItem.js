@@ -3,7 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, Alert } fr
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../Api';
-import Alertcustom from '../Alert/Alertcustom'
+import moment from 'moment';
+import 'moment/locale/vi';
 
 const iconFavourite = require('../Product/favourite_icon.png');
 const addtocarticon = require('../Product/addtocart.png');
@@ -11,6 +12,8 @@ const windowWidth = Dimensions.get('window').width;
 
 const ProductItem = ({ product, onFavoriteChanged }) => {
   const navigation = useNavigation();
+  const today = moment();
+
   const navigateToProductDetail = (product) => {
     navigation.navigate('ProductDetail', { product });
   };
@@ -26,9 +29,9 @@ const ProductItem = ({ product, onFavoriteChanged }) => {
       setToken(storedToken ? String(storedToken) : null);
     } catch (error) {
       console.error('Error fetching Token from storage:', error);
-
     }
   };
+
   useEffect(() => {
     fetchTOKEN();
     if (token) {
@@ -37,8 +40,7 @@ const ProductItem = ({ product, onFavoriteChanged }) => {
         loadFavoriteStatus();
       }
     }
-
-  }, [token,favouriteItems]);
+  }, [token, favouriteItems]);
 
   const fetchFavouriteItems = async () => {
     const response = await fetch(`${API_URL}/api/getFavorite`, {
@@ -59,8 +61,6 @@ const ProductItem = ({ product, onFavoriteChanged }) => {
     try {
       if (favouriteItems) {
         const favoriteIds = favouriteItems.map(item => item.id);
-        // console.log("favoriteIds: ", favoriteIds);
-
         setIsFavourite(favoriteIds.includes(product.id));
       }
     } catch (error) {
@@ -68,12 +68,19 @@ const ProductItem = ({ product, onFavoriteChanged }) => {
     }
   };
 
+  const isSaleActive = () => {
+    const saleStartDate = moment(product.timeSaleStart);
+    const saleEndDate = moment(product.timeSaleEnd);
+    const today = moment();
+    return saleStartDate.isSameOrBefore(today) && saleEndDate.isSameOrAfter(today);
+  };
+
+
   const handleFavouritePress = async () => {
     try {
       const storedToken = await AsyncStorage.getItem('authToken');
       if (!storedToken) {
         console.log('No token available. User needs to log in.');
-        // alert("Failed to add item to favorites");
         return;
       }
       const response = await fetch(`${API_URL}/api/favorite/${product.id}`, {
@@ -91,31 +98,22 @@ const ProductItem = ({ product, onFavoriteChanged }) => {
       const data = await response.json();
       console.log('Item added to favorites:', data);
 
-
       setIsFavourite(!isFavourite);
 
       let favorites = favouriteItems ? JSON.parse(favouriteItems) : [];
       if (!isFavourite) {
-
         favorites.push(product.id);
       } else {
-
         favorites = favorites.filter(id => id !== product.id);
       }
 
       if (onFavoriteChanged) {
         onFavoriteChanged(product.id, !isFavourite);
       }
-
-      // alert(data.message);
     } catch (error) {
       console.error('Error adding item to favorites:', error);
-      // alert(error);
     }
   };
-
-
-
 
   const handleAddToCart = async () => {
     try {
@@ -151,7 +149,7 @@ const ProductItem = ({ product, onFavoriteChanged }) => {
     <TouchableOpacity style={[styles.container, { width: windowWidth / 2 - 15 }]} onPress={() => navigateToProductDetail(product)}>
       <View style={styles.imageContainer}>
         <Image source={{ uri: product.imageProduct }} style={styles.image} />
-        {product.priceSale > 0 && (
+        {product.priceSale > 0 && isSaleActive() && (
           <View style={styles.priceSaleContainer}>
             <Text style={styles.priceSaleText}>-{formatVND(product.priceSale)}</Text>
           </View>
@@ -201,9 +199,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     marginRight: 10,
     padding: 10,
-    //
-    elevation: 5, // Add shadow for Android
-    shadowColor: '#000', // Add shadow for iOS
+    elevation: 5,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 2,

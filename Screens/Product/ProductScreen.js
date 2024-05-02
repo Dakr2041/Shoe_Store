@@ -232,8 +232,9 @@ const styles = StyleSheet.create({
   },
 
   searchView: {
+
     height: 50,
-    width: 250,
+    width: 235,
     borderRadius: 22,
     backgroundColor: '#ebecf0',
     paddingVertical: 9,

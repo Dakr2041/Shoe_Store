@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../Api';
 import { formatVND } from '../Functions/FormatVND';
+import moment from 'moment';
+import 'moment/locale/vi';
 
 const iconFavourite = require('../Product/favourite_icon.png');
 
@@ -21,6 +23,9 @@ const ProductDetailScreen = ({ route }) => {
   const [comments, setComments] = useState([]);
 
   const [listTranslateY, setListTranslateY] = useState(new Animated.Value(0));
+
+
+  const today = moment();
 
 
   useEffect(() => {
@@ -68,6 +73,12 @@ const ProductDetailScreen = ({ route }) => {
     }
   };
 
+  const isSaleActive = () => {
+    const saleStartDate = moment(product.timeSaleStart);
+    const saleEndDate = moment(product.timeSaleEnd);
+    const today = moment();
+    return saleStartDate.isSameOrBefore(today) && saleEndDate.isSameOrAfter(today);
+  };
   const sendComment = async () => {
     try {
       console.log(product.id);
@@ -175,7 +186,7 @@ const ProductDetailScreen = ({ route }) => {
             </TouchableOpacity>
           </View>
           <Image source={{ uri: product.imageProduct }} style={styles.productImage} />
-          {product.priceSale > 0 && (
+          {product.priceSale > 0 && isSaleActive(
             <View style={styles.saleContainer}>
               <Text style={styles.priceSaleText}>-{product.priceSale}đ</Text>
             </View>
@@ -186,7 +197,7 @@ const ProductDetailScreen = ({ route }) => {
                 <View style={{ flexDirection: 'row', marginBottom: 9, justifyContent: 'space-between' }}>
                   <View>
                     <Text style={styles.productName}>{product.name}</Text>
-                    {product.priceSale > 0 ? (
+                    {product.priceSale > 0 && isSaleActive() ? (
                       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text style={{ textDecorationLine: 'line-through', color: 'grey' }}>
                           {formatVND(product.price)}
