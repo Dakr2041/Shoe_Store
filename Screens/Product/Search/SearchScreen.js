@@ -31,11 +31,11 @@ const SearchScreen = ({ navigation }) => {
             const data = await response.json();
             if (data.status === 200) {
 
-                console.log(data);
+
 
                 if (data.data === null) {
                     // setSearchResults(products);
-                    console.log('No products found');
+
                 } else {
                     setSearchResults(data.data);
                 }
@@ -62,7 +62,7 @@ const SearchScreen = ({ navigation }) => {
             alert('Please enter a search term');
         }
     };
-    console.log(searchResults);
+
 
 
     const handleProductPress = (product) => {

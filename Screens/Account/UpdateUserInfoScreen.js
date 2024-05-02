@@ -50,7 +50,7 @@ const UpdateUserInfoScreen = ({ navigation }) => {
                 const response = await fetch(`${API_URL}/api/getInfoUser/${userId}`);
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(data.data);
+
                     setUserInfo(data.data);
                     setImage(data.data.avatar);
                     setGender(data.data.gender);
@@ -127,7 +127,7 @@ const UpdateUserInfoScreen = ({ navigation }) => {
         setShowDatePicker(false);
         setDateOfBirth(currentDate);
         setDisplayDate(currentDate.toISOString().slice(0, 10));
-        console.log(dateOfBirth);
+
     };
 
     const handleSave = async () => {
@@ -151,8 +151,6 @@ const UpdateUserInfoScreen = ({ navigation }) => {
             formData.append('gender', gender.toString());
 
 
-            console.log(formData);
-
             const response = await axios({
                 method: 'post',
                 url: `${API_URL}/api/updateInfoUser`,
@@ -164,7 +162,7 @@ const UpdateUserInfoScreen = ({ navigation }) => {
             });
 
             if (response.status === 200) {
-                console.log(response.data.message);
+
                 setIsLoading(false);
                 await fetchUserInfo();
             } else {

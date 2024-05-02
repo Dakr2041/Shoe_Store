@@ -96,7 +96,7 @@ const ResetPasswordScreen = () => {
             setIsLoading(false);
             alert('New password must be at least 6 characters and include a number, lowercase letter, and uppercase letter.');
             return;
-          }
+        }
 
         if (!confirmPassword) {
             alert('Please confirm new password !!!');
@@ -121,7 +121,7 @@ const ResetPasswordScreen = () => {
             });
 
             const data = await response.json();
-            console.log(data);
+
             if (response.status === 200) {
                 setIsLoading(false);
 

@@ -107,15 +107,15 @@ const RegisterScreen = () => {
         body: JSON.stringify({ email, password, name }),
       });
       const data = await response.json();
-      console.log("msg: " , data);
+
 
       if (data.status === 200 || data.status === 201) {
         alert(data.message);
         setIsLoading(false);
         navigation.navigate('Login');
-        console.log(data);
+
       } else {
-        console.log(data.message);
+
         alert(data.message);
         setIsLoading(false);
       }
@@ -125,7 +125,7 @@ const RegisterScreen = () => {
   }
   const handleLoginPress = () => {
     navigation.navigate('Login');
-    console.log('Already have an account!!!');
+
   };
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);

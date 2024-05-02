@@ -66,12 +66,11 @@ const OrdersItem = ({ order, fetchOrders }) => {
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
-                { 
-                    text: "Yes", 
+                {
+                    text: "Yes",
                     onPress: async () => {
                         try {
-                            console.log(orderId);
-                            console.log(token);
+
                             const response = await fetch(`${API_URL}/order/configOrder/${orderId}`, {
                                 method: 'GET',
                                 headers: {
@@ -79,10 +78,10 @@ const OrdersItem = ({ order, fetchOrders }) => {
                                 },
                             });
                             const responseData = await response.json();
-                            console.log(responseData);
+
                             alert(responseData.message);
                             fetchProduct();
-    
+
                         } catch (error) {
                             console.error('Error confirming order:', error);
                             alert(responseData.message);
@@ -102,12 +101,11 @@ const OrdersItem = ({ order, fetchOrders }) => {
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
-                { 
-                    text: "Yes", 
+                {
+                    text: "Yes",
                     onPress: async () => {
                         try {
-                            console.log(orderId);
-                            console.log(token);
+
                             const response = await fetch(`${API_URL}/order/cancelOrder/${orderId}`, {
                                 method: 'GET',
                                 headers: {
@@ -115,15 +113,15 @@ const OrdersItem = ({ order, fetchOrders }) => {
                                 },
                             });
                             const responseData = await response.json();
-                            console.log(responseData);
+
                             if (responseData.status === 200) {
                                 navigation.navigate('Orders');
                                 alert(responseData.message);
-    
+
                             } else {
                                 alert(responseData.message);
                             }
-    
+
                         } catch (error) {
                             console.error('Error canceling order:', error);
                             alert(responseData.message);
@@ -175,7 +173,7 @@ const OrdersItem = ({ order, fetchOrders }) => {
                                 <Text style={{ fontSize: 12 }}>Price: {formatVND(item.data.price - item.data.priceSale)}</Text>
                                 <Text style={{ fontSize: 12 }}>X{item.quantity}</Text>
                             </View>
-                            <Text style={{ fontSize: 14, fontWeight: 'bold',alignSelf: 'flex-end'}}>Total: {formatVND(item.quantity * (item.data.price - item.data.priceSale))}</Text>
+                            <Text style={{ fontSize: 14, fontWeight: 'bold', alignSelf: 'flex-end' }}>Total: {formatVND(item.quantity * (item.data.price - item.data.priceSale))}</Text>
                         </View>
                     </View>
                 )}

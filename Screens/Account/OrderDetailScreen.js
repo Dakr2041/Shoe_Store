@@ -33,8 +33,8 @@ const OrderDetailScreen = ({ route, navigation }) => {
                     text: "Yes",
                     onPress: async () => {
                         try {
-                            console.log(orderId);
-                            console.log(token);
+
+
                             const response = await fetch(`${API_URL}/order/configOrder/${orderId}`, {
                                 method: 'GET',
                                 headers: {
@@ -42,7 +42,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
                                 },
                             });
                             const responseData = await response.json();
-                            console.log(responseData);
+
                             alert(responseData.message);
                             fetchProduct();
 
@@ -69,8 +69,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
                     text: "Yes",
                     onPress: async () => {
                         try {
-                            console.log(orderId);
-                            console.log(token);
+
                             const response = await fetch(`${API_URL}/order/cancelOrder/${orderId}`, {
                                 method: 'GET',
                                 headers: {
@@ -78,7 +77,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
                                 },
                             });
                             const responseData = await response.json();
-                            console.log(responseData);
+
                             if (responseData.status === 200) {
                                 navigation.navigate('Orders');
                                 alert(responseData.message);
@@ -156,7 +155,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
                     productsData.push({ data: productData.data, quantity: op.quantity });
                 }
                 setProducts(productsData);
-                console.log(productsData);
+
                 setLoading(false);
 
             } catch (error) {

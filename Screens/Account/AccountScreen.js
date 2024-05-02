@@ -38,7 +38,7 @@ const AccountScreen = () => {
           const response = await fetch(`${API_URL}/api/getInfoUser/${userId}`);
           if (response.ok) {
             const data = await response.json();
-            console.log(data);
+
             if (data.status === 400) {
               setShouldRedirectToSetup(true);
             } else if (data.status === 200) {
@@ -77,7 +77,7 @@ const AccountScreen = () => {
           onPress: async () => {
             await AsyncStorage.removeItem('@userEmail');
             await AsyncStorage.removeItem('@userPassword');
-            console.log('Logout!!!');
+
             const rootNavigator = navigationRef.current;
             rootNavigator.reset({
               index: 0,

@@ -4,18 +4,20 @@ import { API_URL } from '../Api';
 import { formatVND } from '../Functions/FormatVND';
 import { ActivityIndicator } from 'react-native-paper';
 import ProductItem from '../Product/ProductItem';
+import moment from 'moment';
+import 'moment/locale/vi';
 
 const CheckoutItem = ({ item }) => {
   const defaultImage = 'https://via.placeholder.com/250';
   const [product, setProduct] = useState(null);
-
+  const [productPrice, setProductPrice] = useState(0)
+  console.log("productPriceproductPriceproductPriceproductPriceproductPriceproductPrice", productPrice)
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await fetch(`${API_URL}/api/getProduct/${item.id}`);
         const productData = await response.json();
         setProduct(productData.data);
-        console.log(product);
       } catch (error) {
         console.error('Error fetching product:', error);
       }
@@ -23,6 +25,26 @@ const CheckoutItem = ({ item }) => {
 
     fetchProduct();
   }, [item]);
+
+  useEffect(() => {
+    const isSaleActive = () => {
+      if (product) {
+        const saleStartDate = moment(product.timeSaleStart);
+        const saleEndDate = moment(product.timeSaleEnd);
+        const today = moment();
+        return saleStartDate.isSameOrBefore(today) && saleEndDate.isSameOrAfter(today);
+      }
+    };
+
+    if (isSaleActive() && product) {
+      const newPrice = product.price - product.priceSale;
+      setProductPrice(newPrice);
+    } else if (product) {
+      setProductPrice(product.price);
+    }
+  }, [product]);
+
+  console.log("productPrice:", productPrice);
 
   const getImageSource = () => {
     if (product && product.imageProduct && product.imageProduct.length > 0) {
@@ -47,7 +69,7 @@ const CheckoutItem = ({ item }) => {
         <Text style={styles.cartTitle}>{product.name}</Text>
 
         <Text >Quantity: {item.quantity}</Text>
-        <Text >Total: {formatVND((product.price - product.priceSale) * item.quantity)}</Text>
+        <Text >Total: {formatVND(productPrice * item.quantity)}</Text>
       </View>
     </View>
   );

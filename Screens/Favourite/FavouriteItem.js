@@ -70,7 +70,7 @@ const FAItem = ({ favourite }) => {
         try {
             const storedToken = await AsyncStorage.getItem('authToken');
             if (!storedToken) {
-                console.log('No token available. User needs to log in.');
+
                 alert("Failed to add item to favorites");
                 return;
             }
@@ -87,7 +87,7 @@ const FAItem = ({ favourite }) => {
             }
 
             const data = await response.json();
-            console.log('Item added to favorites:', data);
+
 
             fetchFavouriteItems();
             // setIsFavourite(!isFavourite);
@@ -115,7 +115,7 @@ const FAItem = ({ favourite }) => {
         try {
             const storedToken = await AsyncStorage.getItem('authToken');
             if (!storedToken) {
-                console.log('No token available. User needs to log in.');
+
                 alert("Failed to add item to cart");
                 return;
             }
@@ -133,7 +133,7 @@ const FAItem = ({ favourite }) => {
             }
 
             const data = await response.json();
-            console.log('Item added to cart:', data);
+
             alert(data.message);
         } catch (error) {
             console.error('Error adding item to cart:', error);
@@ -164,8 +164,8 @@ const FAItem = ({ favourite }) => {
 
 const FAList = ({ favouriteData }) => {
     if (!favouriteData || !favouriteData.data) {
-        return <View style={{height:'100%'}}>
-            <ActivityIndicator size="large" style={{ alignContent:'center' }} />
+        return <View style={{ height: '100%' }}>
+            <ActivityIndicator size="large" style={{ alignContent: 'center' }} />
         </View>
     }
 

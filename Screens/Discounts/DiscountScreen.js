@@ -17,7 +17,7 @@ const DiscountScreen = () => {
             try {
                 const storedToken = await AsyncStorage.getItem('authToken');
                 setToken(storedToken ? String(storedToken) : null);
-                console.log(storedToken);
+
             } catch (error) {
                 console.error('Error fetching Token from storage:', error);
 
@@ -47,7 +47,7 @@ const DiscountScreen = () => {
             fetchOrders();
         }
     }, [token]);
-    console.log(orders);
+
 
     const handleGoBack = () => {
         navigation.goBack();

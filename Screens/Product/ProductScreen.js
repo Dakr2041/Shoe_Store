@@ -48,7 +48,7 @@ const ProductScreen = ({ navigation }) => {
           const response = await fetch(`${API_URL}/api/getInfoUser/${userId}`);
           if (response.ok) {
             const data = await response.json();
-            console.log(data);
+
             if (data.status === 400) {
               setShouldRedirectToSetup(true);
             } else if (data.status === 200) {
@@ -70,7 +70,7 @@ const ProductScreen = ({ navigation }) => {
 
 
   useEffect(() => {
-    console.log('shouldRedirectToSetup:', shouldRedirectToSetup);
+
     if (shouldRedirectToSetup) {
       navigation.navigate('Tabs', { screen: 'Account' }); // navigate to Account screen in Tabs
     }
@@ -105,7 +105,7 @@ const ProductScreen = ({ navigation }) => {
 
   const navigateToProductDetail = (product) => {
     navigation.navigate('ProductDetail', { product });
-    console.log(product);
+
   };
 
   const renderContent = () => {
