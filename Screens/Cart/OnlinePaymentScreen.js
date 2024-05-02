@@ -6,7 +6,7 @@ import { API_URL } from '../Api';
 
 const OnlinePaymentScreen = ({ route }) => {
     const { url } = route.params;
-    console.log("url: " + url);
+
     const navigation = useNavigation();
     const [lastUrl, setLastUrl] = useState('');
 
@@ -42,7 +42,7 @@ const OnlinePaymentScreen = ({ route }) => {
     const handlePaymentSuccess = async (url) => {
 
         const cleanedUrl = url.replace('http://localhost:3001/thanks', '');
-        console.log('Cleaned URL: ' + cleanedUrl);
+
         try {
             const response = await fetch(`${API_URL}/pay/configPayment/${cleanedUrl}`);
 
@@ -51,11 +51,11 @@ const OnlinePaymentScreen = ({ route }) => {
             }
 
             const data = await response.json();
-            console.log('Response from API:', data);
+
             if (data.status === 200) {
-                console.log('Payment success: ' + data);
+
             } else {
-                console.error('Payment failed: ' + data);
+
             }
         } catch (error) {
             console.error('Error sending last URL to API:', error);
@@ -72,11 +72,11 @@ const OnlinePaymentScreen = ({ route }) => {
             onNavigationStateChange={(navState) => {
                 setLastUrl(navState.url);
                 if (navState.url.includes("http://localhost:3001/thanks")) {
-                    console.log('Last URL before navigating back: ' + lastUrl);
+
                     navigation.navigate('OrderSuccess');
                     const responseCode = checkResponseCode(navState.url);
                     if (responseCode === '00') {
-                        console.log('Payment success');
+
                         handlePaymentSuccess(navState.url);
                         Alert.alert(
                             'Order Succesfully',

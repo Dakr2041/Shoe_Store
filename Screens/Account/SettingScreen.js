@@ -13,7 +13,7 @@ const SettingsScreen = () => {
 
   const handleNavigate = (screenName) => {
     navigation.navigate(screenName);
-    console.log(screenName);
+
   };
 
   return (

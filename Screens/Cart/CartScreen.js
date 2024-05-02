@@ -7,6 +7,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 import { formatVND } from '../Functions/FormatVND';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
+import moment from 'moment';
+import 'moment/locale/vi';
 
 const CartScreen = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -18,6 +20,7 @@ const CartScreen = () => {
   const [selectedItems, setSelectedItems] = useState([]);
 
   const isFocused = useIsFocused();
+  const today = moment();
 
   useEffect(() => {
     const fetchTOKEN = async () => {
@@ -33,7 +36,7 @@ const CartScreen = () => {
     };
 
     fetchTOKEN();
-    console.log("token:"+StoredToken);
+
   }, [isFocused]);
 
   const [userId, setUserId] = useState(null);
@@ -64,7 +67,7 @@ const CartScreen = () => {
           const response = await fetch(`${API_URL}/api/getInfoUser/${userId}`);
           if (response.ok) {
             const data = await response.json();
-            console.log(data);
+
             if (data.status === 400) {
               setShouldRedirectToSetup(true);
             } else if (data.status === 200) {
@@ -82,18 +85,18 @@ const CartScreen = () => {
     };
 
     fetchUserInfo();
-  }, [userId,isFocused]);
+  }, [userId, isFocused]);
 
 
   useEffect(() => {
     if (shouldRedirectToSetup) {
       navigation.navigate('Tabs', { screen: 'Account' }); // navigate to Account screen in Tabs
     }
-  }, [shouldRedirectToSetup,isFocused]);
+  }, [shouldRedirectToSetup, isFocused]);
 
   const fetchData = async () => {
     if (!StoredToken) {
-      console.log('Waiting for token...');
+
       return;
     }
 
@@ -110,9 +113,8 @@ const CartScreen = () => {
       }
 
       const data = await response.json();
+
       setItemsId(data.productId);
-      console.log(itemsId.disscount);
-      console.log("Cart done loading");
       setTotalPrice(0)
       setSelectedItems([]);
     } catch (error) {
@@ -130,13 +132,11 @@ const CartScreen = () => {
   const onRemoveItem = async (productId) => {
     try {
       if (!StoredToken) {
-        console.warn('No token available');
-
         return;
       }
 
       await removeItemFromAPI(productId, StoredToken);
-      console.log('Item deleted from cart');
+
     } catch (error) {
       console.error('Error deleting item:', error);
 
@@ -144,6 +144,7 @@ const CartScreen = () => {
   };
 
   const removeItemFromAPI = async (productId, token) => {
+
     try {
       const response = await fetch(`${API_URL}/cart/deleteItemCart/${productId}`, {
         method: 'DELETE',
@@ -151,6 +152,7 @@ const CartScreen = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+
 
       if (!response.ok) {
         throw new Error(`API error: ${response.statusText}`);
@@ -186,21 +188,24 @@ const CartScreen = () => {
     </View>
   );
 
+
+
   const handleItemChecked = (isChecked, itemPrice, quantity, item) => {
+
     if (typeof itemPrice !== 'number' || typeof quantity !== 'number') {
       console.error('Invalid input: Please provide a valid number.');
       return;
     }
-
     setTotalPrice(prevTotal => {
       let newTotal = 0;
       if (isChecked) {
-        newTotal = prevTotal + (itemPrice - item.priceSale) * quantity;
+        newTotal = prevTotal + itemPrice * quantity;
       } else {
         if (totalPrice > 0) {
-          newTotal = prevTotal - (itemPrice - item.priceSale) * quantity;
+          newTotal = prevTotal - itemPrice * quantity;
         }
       }
+
       setSelectedItems(prevItems => {
         if (isChecked) {
           return [...prevItems, { id: item.id, quantity }];
@@ -213,7 +218,7 @@ const CartScreen = () => {
   };
 
   const onQuantityChange = (oldQuantity, newQuantity, itemPrice, isChecked, item) => {
-    console.log("-------------------");
+
     if (isChecked) {
       setTotalPrice(prevTotal => {
         let quantityDifference = newQuantity - oldQuantity;
@@ -232,12 +237,13 @@ const CartScreen = () => {
     if (selectedItems.length === 0 || totalPrice === 0) {
       Alert.alert('No items selected', 'Please select at least one item before checking out.');
     } else {
-      console.log('Selected items:', selectedItems, 'Total price:', totalPrice);
+
       navigation.navigate('Checkout', { cartItems: selectedItems, totalPrice });
       setTotalPrice(0);
       setSelectedItems([]);
     }
   };
+
 
   return (
     <GestureHandlerRootView style={styles.container}>

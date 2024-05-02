@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../Api';
 import { formatVND } from '../Functions/FormatVND';
+import moment from 'moment';
+import 'moment/locale/vi';
 
 const iconFavourite = require('../Product/favourite_icon.png');
 
@@ -21,6 +23,9 @@ const ProductDetailScreen = ({ route }) => {
   const [comments, setComments] = useState([]);
 
   const [listTranslateY, setListTranslateY] = useState(new Animated.Value(0));
+
+
+  const today = moment();
 
 
   useEffect(() => {
@@ -60,7 +65,7 @@ const ProductDetailScreen = ({ route }) => {
       }
 
       const data = await response.json();
-      console.log('Comments fetched:', data);
+
       setComments(data.comment);
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -68,11 +73,15 @@ const ProductDetailScreen = ({ route }) => {
     }
   };
 
+  const isSaleActive = () => {
+    const saleStartDate = moment(product.timeSaleStart);
+    const saleEndDate = moment(product.timeSaleEnd);
+    const today = moment();
+    return saleStartDate.isSameOrBefore(today) && saleEndDate.isSameOrAfter(today);
+  };
   const sendComment = async () => {
     try {
-      console.log(product.id);
-      console.log(commentContent);
-      console.log(StoredToken);
+
       if (commentContent.trim() !== '') {
         const response = await fetch(`${API_URL}/api/comment`, {
           method: 'POST',
@@ -91,7 +100,7 @@ const ProductDetailScreen = ({ route }) => {
         }
 
         const data = await response.json();
-        console.log('Comment created:', data);
+
 
         alert('Comment sent successfully');
 
@@ -122,7 +131,7 @@ const ProductDetailScreen = ({ route }) => {
       }
 
       const data = await response.json();
-      console.log('Item added to cart:', data);
+
       alert(data.message);
     } catch (error) {
       console.error('Error adding item to cart:', error);
@@ -134,7 +143,7 @@ const ProductDetailScreen = ({ route }) => {
 
   const handleAddToCart = async () => {
     if (!StoredToken) {
-      console.log('No token available. User needs to log in.');
+
       alert("Failed to add item to cart");
       return;
     }
@@ -175,7 +184,7 @@ const ProductDetailScreen = ({ route }) => {
             </TouchableOpacity>
           </View>
           <Image source={{ uri: product.imageProduct }} style={styles.productImage} />
-          {product.priceSale > 0 && (
+          {product.priceSale > 0 && isSaleActive(
             <View style={styles.saleContainer}>
               <Text style={styles.priceSaleText}>-{product.priceSale}đ</Text>
             </View>
@@ -186,7 +195,7 @@ const ProductDetailScreen = ({ route }) => {
                 <View style={{ flexDirection: 'row', marginBottom: 9, justifyContent: 'space-between' }}>
                   <View>
                     <Text style={styles.productName}>{product.name}</Text>
-                    {product.priceSale > 0 ? (
+                    {product.priceSale > 0 && isSaleActive() ? (
                       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text style={{ textDecorationLine: 'line-through', color: 'grey' }}>
                           {formatVND(product.price)}

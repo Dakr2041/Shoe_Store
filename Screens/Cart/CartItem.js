@@ -4,13 +4,14 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { formatVND } from '../Functions/FormatVND';
 import QuantityPicker from '../Functions/QuantityPicker';
 import { Checkbox } from 'react-native-paper';
+import moment from 'moment';
+import 'moment/locale/vi';
 
 const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked, resetCheckboxes }) => {
   const defaultImage = 'https://via.placeholder.com/250';
   const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
-
     if (resetCheckboxes) {
       setIsChecked(false);
     }
@@ -24,23 +25,40 @@ const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked, resetCh
     }
   };
 
+  const today = moment();
   const [selectedQuantity, setSelectedQuantity] = useState(1);
-  const [itemPrice, setItemPrice] = useState(item.price - item.priceSale);
+  const [itemPrice, setItemPrice] = useState(item.price);
 
-  useEffect(() => {
-    onItemChecked(isChecked, item.price, selectedQuantity, item);
-  }, [isChecked]);
+
 
   const handleQuantityChange = (newQuantity) => {
-    const newPrice = (item.price - item.priceSale) * newQuantity;
-    setItemPrice(newPrice);
-    onQuantityChange(selectedQuantity, newQuantity, item.price, isChecked, item);
     setSelectedQuantity(newQuantity);
+    onQuantityChange(selectedQuantity, newQuantity, item.price, isChecked, item);
   };
 
   const handlePress = () => {
     setIsChecked(!isChecked);
   };
+
+  const isSaleActive = () => {
+    const saleStartDate = moment(item.timeSaleStart);
+    const saleEndDate = moment(item.timeSaleEnd);
+    const today = moment();
+    return saleStartDate.isSameOrBefore(today) && saleEndDate.isSameOrAfter(today);
+  };
+
+  useEffect(() => {
+    if (isSaleActive()) {
+      const newPrice = item.price - item.priceSale;
+      setItemPrice(newPrice);
+    } else {
+      setItemPrice(item.price);
+    }
+  }, [isSaleActive]);
+
+  useEffect(() => {
+    onItemChecked(isChecked, itemPrice, selectedQuantity, item);
+  }, [isChecked]);
 
   return (
     <View style={styles.cartItem}>

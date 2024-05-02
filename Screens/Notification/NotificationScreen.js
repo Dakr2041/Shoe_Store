@@ -7,25 +7,25 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import NotificationList from './NotificationItem';
 
 const NotificationScreen = () => {
-    const [notifications, setNotifications] = useState([]);
-    const navigation = useNavigation();
-    const [token, setToken] = useState('');
-    const isFocused = useIsFocused();
+  const [notifications, setNotifications] = useState([]);
+  const navigation = useNavigation();
+  const [token, setToken] = useState('');
+  const isFocused = useIsFocused();
 
-    useEffect(() => {
-        const fetchToken = async () => {
-            try {
-                const storedToken = await AsyncStorage.getItem('authToken');
-                setToken(storedToken ? storedToken : null);
-            } catch (error) {
-                console.error('Error fetching Token from storage:', error);
-            }
-        };
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem('authToken');
+        setToken(storedToken ? storedToken : null);
+      } catch (error) {
+        console.error('Error fetching Token from storage:', error);
+      }
+    };
 
-        fetchToken();
-    }, []);
+    fetchToken();
+  }, []);
 
-    const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -53,7 +53,7 @@ const NotificationScreen = () => {
           const response = await fetch(`${API_URL}/api/getInfoUser/${userId}`);
           if (response.ok) {
             const data = await response.json();
-            console.log(data);
+
             if (data.status === 400) {
               setShouldRedirectToSetup(true);
             } else if (data.status === 200) {
@@ -65,115 +65,115 @@ const NotificationScreen = () => {
         } catch (error) {
           console.error('Error fetching user info:', error);
         } finally {
-        //   setIsLoading(false);
+          //   setIsLoading(false);
         }
       }
     };
 
     fetchUserInfo();
-  }, [userId,isFocused]);
+  }, [userId, isFocused]);
 
 
   useEffect(() => {
-    console.log('shouldRedirectToSetup:', shouldRedirectToSetup);
+
 
     if (shouldRedirectToSetup) {
       navigation.navigate('Tabs', { screen: 'Account' }); // navigate to Account screen in Tabs
     }
-  }, [shouldRedirectToSetup,isFocused]);
+  }, [shouldRedirectToSetup, isFocused]);
 
 
 
-    const fetchNotifications = async () => {
-        if (!token) return;
-        try {
-            const response = await fetch(`${API_URL}/notification/getNotificationUser`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+  const fetchNotifications = async () => {
+    if (!token) return;
+    try {
+      const response = await fetch(`${API_URL}/notification/getNotificationUser`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-            if (response.ok) {
-                const data = await response.json();
-                setNotifications(data);
-            } else {
-                console.error('Error fetching notifications');
-            }
-        } catch (error) {
-            console.error('Error fetching notifications:', error);
-        }
-    };
+      if (response.ok) {
+        const data = await response.json();
+        setNotifications(data);
+      } else {
+        console.error('Error fetching notifications');
+      }
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  };
 
-    useEffect(() => {
-        fetchNotifications();
-    }, [token,isFocused]);
+  useEffect(() => {
+    fetchNotifications();
+  }, [token, isFocused]);
 
-    const onRemoveItem = async (notificationId) => {
-        try {
-            if (!token) {
-                console.warn('No token available. User needs to log in.');
-                return;
-            }
+  const onRemoveItem = async (notificationId) => {
+    try {
+      if (!token) {
+        console.warn('No token available. User needs to log in.');
+        return;
+      }
 
-            const response = await fetch(`${API_URL}/notification/deleteNotification/${notificationId}`, {
-                method: 'GET',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+      const response = await fetch(`${API_URL}/notification/deleteNotification/${notificationId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-            if (!response.ok) {
-                throw new Error(`Failed to delete notification: ${response.statusText}`);
-            }
-            console.log(notificationId);
-
-
-            fetchNotifications();
-        } catch (error) {
-            console.error('Error deleting notification:', error);
-        }
-    };
-
-    const handleDeleteConfirmation = (notificationId) => {
-        Alert.alert(
-            'Confirm Delete',
-            'Are you sure you want to delete this notification?',
-            [
-                { text: 'Cancel', onPress: () => console.log('Cancel deletion') },
-                { text: 'Delete', onPress: () => onRemoveItem(notificationId), style: 'destructive' },
-            ],
-            { cancelable: false }
-        );
-    };
+      if (!response.ok) {
+        throw new Error(`Failed to delete notification: ${response.statusText}`);
+      }
 
 
 
-    return (
-        <View style={styles.container}>
-            <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.header}>
-                <Text style={styles.headerText}>Notification</Text>
-            </LinearGradient>
-            <NotificationList NotificationData={notifications} onRemoveItem={handleDeleteConfirmation} fetchNotifications={fetchNotifications} />
-        </View>
+      fetchNotifications();
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+    }
+  };
+
+  const handleDeleteConfirmation = (notificationId) => {
+    Alert.alert(
+      'Confirm Delete',
+      'Are you sure you want to delete this notification?',
+      [
+        { text: 'Cancel', onPress: () => console.log('Cancel deletion') },
+        { text: 'Delete', onPress: () => onRemoveItem(notificationId), style: 'destructive' },
+      ],
+      { cancelable: false }
     );
+  };
+
+
+
+  return (
+    <View style={styles.container}>
+      <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.header}>
+        <Text style={styles.headerText}>Notification</Text>
+      </LinearGradient>
+      <NotificationList NotificationData={notifications} onRemoveItem={handleDeleteConfirmation} fetchNotifications={fetchNotifications} />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    header: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 30,
-    },
-    headerText: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        paddingTop: 25,
-        color: '#fff',
-    },
+  container: {
+    flex: 1,
+  },
+  header: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 30,
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    paddingTop: 25,
+    color: '#fff',
+  },
 });
 
 export default NotificationScreen;

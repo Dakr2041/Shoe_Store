@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const CheckoutScreen = ({ route }) => {
+
   const { cartItems, totalPrice } = route.params;
   const [paymentMethod, setPaymentMethod] = useState('COD');
   const [discount, setDiscount] = useState('');
@@ -30,10 +31,8 @@ const CheckoutScreen = ({ route }) => {
       // console.log(storedToken);
     } catch (error) {
       console.error('Error fetching Token from storage:', error);
-
     }
   };
-
   const fetchUserId = async () => {
     try {
       const storedUserId = await AsyncStorage.getItem('@userId');
@@ -69,17 +68,17 @@ const CheckoutScreen = ({ route }) => {
           }),
         });
         const data = await response.json();
-        console.log(data);
+
         if (data.status === 400) {
 
           alert(data.message);
-          console.log(data.data);
+
           setTotal(data.data);
           setDisplayPrice(formatVND(data.data));
         } else {
           // setAppliedDiscount(true);
           alert(data.message);
-          
+
 
         }
       } catch (error) {
@@ -95,30 +94,30 @@ const CheckoutScreen = ({ route }) => {
     setIsLoading(true);
     if (paymentMethod === 'COD') {
       if (cartItems !== null) {
-        console.log("items --", cartItems);
+
 
         let orderItems = cartItems.map(item => ({
           productId: item.id,
           quantity: item.quantity,
         }));
-        console.log("orderItems --", orderItems);
+
 
         order(orderItems);
 
-        console.log("Order pressed");
+
 
       }
     } else if (paymentMethod === 'Online Payment') {
       if (cartItems !== null) {
-        console.log("items --", cartItems);
+
 
         let orderItems = cartItems.map(item => ({
           productId: item.id,
           quantity: item.quantity,
         }));
-        console.log("orderItems online --", orderItems);
+
         onlineOrder(orderItems);
-        console.log("Order online pressed");
+
 
 
       }
@@ -142,7 +141,7 @@ const CheckoutScreen = ({ route }) => {
 
     if (data.status == 200) {
       setIsLoading(false);
-      console.log(data.data);
+
       navigation.navigate('OnlinePayment', { url: data.data });
 
     } else {
@@ -152,7 +151,7 @@ const CheckoutScreen = ({ route }) => {
     }
   }
 
-  const onlineOrder = async (orderItems) => {
+  const onlineOrder = async (orderItems) => { // thanh toan online
     const response = await fetch(`${API_URL}/pay/createOrderPayment`, {
       method: 'POST',
       headers: {
@@ -166,12 +165,12 @@ const CheckoutScreen = ({ route }) => {
       }),
     });
     const data = await response.json();
-    console.log(data);
+
     if (data.message == "Thành công") {
       setIsLoading(false);
       // alert(data.message);
 
-      console.log("id: ", data.data.id, " total: ", data.data.total);
+
       onlinePayment(data.data.total, data.data.id);
       await removeItemsFromCart(orderItems);
 
@@ -205,12 +204,15 @@ const CheckoutScreen = ({ route }) => {
   };
 
   const removeItemsFromCart = async (orderItems) => {
-    for (let item of orderItems) {
+    const promises = orderItems.map(async item => {
       await removeItemFromAPI(item.productId, StoredToken);
-    }
+    });
+
+    await Promise.all(promises);
   };
 
-  const order = async (orderItems) => {
+
+  const order = async (orderItems) => { // thanh toan offline
     const response = await fetch(`${API_URL}/order/createOrder`, {
       method: 'POST',
       headers: {
@@ -224,13 +226,13 @@ const CheckoutScreen = ({ route }) => {
       }),
     });
     const data = await response.json();
-    console.log(data);
+
     alert(data.message);
 
     if (data.message === "Thành công") {
       setIsLoading(false);
       navigation.navigate('OrderSuccess');
-      console.log(data);
+
       await removeItemsFromCart(orderItems);
 
     } else {

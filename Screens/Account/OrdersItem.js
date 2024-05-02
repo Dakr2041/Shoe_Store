@@ -70,8 +70,7 @@ const OrdersItem = ({ order, fetchOrders }) => {
                     text: "Yes",
                     onPress: async () => {
                         try {
-                            console.log(orderId);
-                            console.log(token);
+
                             const response = await fetch(`${API_URL}/order/configOrder/${orderId}`, {
                                 method: 'GET',
                                 headers: {
@@ -79,7 +78,7 @@ const OrdersItem = ({ order, fetchOrders }) => {
                                 },
                             });
                             const responseData = await response.json();
-                            console.log(responseData);
+
                             alert(responseData.message);
                             fetchProduct();
 
@@ -106,8 +105,7 @@ const OrdersItem = ({ order, fetchOrders }) => {
                     text: "Yes",
                     onPress: async () => {
                         try {
-                            console.log(orderId);
-                            console.log(token);
+
                             const response = await fetch(`${API_URL}/order/cancelOrder/${orderId}`, {
                                 method: 'GET',
                                 headers: {
@@ -115,11 +113,12 @@ const OrdersItem = ({ order, fetchOrders }) => {
                                 },
                             });
                             const responseData = await response.json();
-                            console.log(responseData);
+
                             if (responseData.status === 200) {
                                 navigation.navigate('Orders');
                                 alert(responseData.message);
                                 fetchOrders();
+
                             } else {
                                 alert(responseData.message);
                             }
