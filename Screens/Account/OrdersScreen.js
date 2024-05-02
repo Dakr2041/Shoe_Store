@@ -77,12 +77,18 @@ const OrdersScreen = () => {
 
     const sortedOrders = sortOrdersByStatus(orders);
 
-    const unConfirmOrders = sortedOrders['cancelOrder'] || sortedOrders['PaidCancelOrder'] || sortedOrders['PaymentAndCancel'] || sortedOrders['payment'] || [];
+    console.log(sortedOrders);
+    const unConfirmOrders = sortedOrders['cancelOrder','PaidCancelOrder','PaymentAndCancel','payment'] 
+    // || sortedOrders['PaidCancelOrder'] || sortedOrders['PaymentAndCancel'] || sortedOrders['payment'] 
+    || [];
 
 
-    const confirmOrders = sortedOrders['createOrder'] || sortedOrders['PaidCreateOrder'] || [];
+    const confirmOrders = sortedOrders['createOrder']  || [];
 
-    const deliveringOrders = sortedOrders['delivering'] || sortedOrders['paidDelivering'] || [];
+    const deliveringOrders = sortedOrders['delivering','paidDelivering','PaidCreateOrder'] 
+    // && sortedOrders['paidDelivering'] || sortedOrders['PaidCreateOrder'] 
+    || [];
+
     const successOrders = sortedOrders['configOrder'] || [];
 
     // console.log('-1-Unconfirm Orders:', unConfirmOrders);
@@ -92,6 +98,11 @@ const OrdersScreen = () => {
 
     const handleGoBack = () => {
         navigation.goBack();
+    };
+
+    const handleFetchOrdersAndRenderList = async (status) => {
+        await fetchOrders(); // Fetch orders before rendering the list
+        return <OrdersList ordersData={sortedOrders[status]} fetchOrders={fetchOrders} />;
     };
 
     return (
@@ -125,10 +136,8 @@ const OrdersScreen = () => {
                     </LinearGradient>
 
                     <Tab.Navigator tabBarOptions={{ scrollEnabled: true }}>
+                        
                         <Tab.Screen name="Unconfirm">
-                            {() => <OrdersList ordersData={unConfirmOrders} fetchOrders={fetchOrders} />}
-                        </Tab.Screen>
-                        <Tab.Screen name="Confirmed">
                             {() => <OrdersList ordersData={confirmOrders} fetchOrders={fetchOrders} />}
                         </Tab.Screen>
                         <Tab.Screen name="Delivering">
@@ -136,6 +145,9 @@ const OrdersScreen = () => {
                         </Tab.Screen>
                         <Tab.Screen name="Successed">
                             {() => <OrdersList ordersData={successOrders} fetchOrders={fetchOrders} />}
+                        </Tab.Screen>
+                        <Tab.Screen name="Canceled">
+                            {() => <OrdersList ordersData={unConfirmOrders} fetchOrders={fetchOrders} />}
                         </Tab.Screen>
                     </Tab.Navigator>
                 </>

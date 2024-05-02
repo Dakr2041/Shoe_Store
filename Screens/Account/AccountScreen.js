@@ -108,11 +108,9 @@ const AccountScreen = () => {
 
   const menuItems = [
     { title: 'Orders', onPress: handleOrdersPress, icon: require('../../assets/order_icon.png') },
-
     { title: 'Favorites', onPress: handleFavourite, icon: require('../Product/favourite_icon.png') },
-
-    { title: 'Support', onPress: handleSupport, icon: require('../../assets/support_icon.png') },
     { title: 'Setting', onPress: handleSettingsPress, icon: require('../../assets/setting_icon.png') },
+    { title: 'Support', onPress: handleSupport, icon: require('../../assets/support_icon.png') },
     { title: 'Logout', onPress: handleLogoutPress, icon: require('../../assets/logout_icon.png') }
   ];
 
@@ -254,17 +252,16 @@ const styles = StyleSheet.create({
   menuContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
     paddingTop: 20,
-    paddingHorizontal: 15,
-
+    paddingHorizontal: 20,
+    alignItems:'center'
   },
   menuItem: {
     width: 95,
     height: 100,
     alignItems: 'center',
     marginBottom: 10,
-    marginHorizontal: 11,
+    marginHorizontal: 14,
     borderRadius: 15,
     elevation: 5, // Add shadow for Android
     shadowColor: '#000', // Add shadow for iOS

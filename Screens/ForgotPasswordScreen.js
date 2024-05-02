@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, TextInput } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
+import { API_URL } from './Api';
 
 
 const ForgotPasswordScreen = ({ navigation }) => {
@@ -29,7 +30,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
         }
 
         try {
-            const response = await fetch('http://192.168.1.77:3001/api/forgotPassword', {
+            const response = await fetch(`${API_URL}/api/forgotPassword`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -103,7 +103,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
             case 'delivering':
                 return 'Delivering';
             case 'PaidCreateOrder':
-                return 'Confirmed, waiting for delivery';
+                return 'Delivering';
             case 'createOrder':
                 return 'Waiting for confirmation';
             case 'configOrder':
@@ -111,10 +111,9 @@ const OrderDetailScreen = ({ route, navigation }) => {
             case 'PaidCancelOrder':
                 return 'Online payment order has been canceled';
             case 'cancelOrder':
-                return 'Cancleoder';
-
+                return 'Order Canceled';
             case 'payment':
-                return 'The order has been created but not yet';
+                return 'Order Canceled';
             case 'PaymentAndCancel':
                 return 'Order was paid but canceled';
             default:

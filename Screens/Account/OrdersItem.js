@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, ActivityIndicator, TouchableOpacity, Alert, RefreshControl } from 'react-native';
 import { formatVND } from '../Functions/FormatVND';
 import { API_URL } from '../Api';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -117,6 +117,7 @@ const OrdersItem = ({ order, fetchOrders }) => {
                             if (responseData.status === 200) {
                                 navigation.navigate('Orders');
                                 alert(responseData.message);
+                                fetchOrders();
 
                             } else {
                                 alert(responseData.message);
@@ -226,11 +227,27 @@ const OrdersList = ({ ordersData, fetchOrders }) => {
         return dateB - dateA;
     });
 
+    const [refreshing, setRefreshing] = useState(false);
+
+    const handleRefresh = async () => {
+        setRefreshing(true); 
+
+        await fetchOrders(); 
+
+        setRefreshing(false); 
+    };
+
     return (
         <FlatList
             data={sortedOrders}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => <OrdersItem order={item} fetchOrders={fetchOrders} />}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={handleRefresh}
+                />
+            }
         />
     );
 };
