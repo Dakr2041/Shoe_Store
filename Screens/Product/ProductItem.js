@@ -80,7 +80,7 @@ const ProductItem = ({ product, onFavoriteChanged }) => {
     try {
       const storedToken = await AsyncStorage.getItem('authToken');
       if (!storedToken) {
-        console.log('No token available. User needs to log in.');
+
         return;
       }
       const response = await fetch(`${API_URL}/api/favorite/${product.id}`, {
@@ -96,7 +96,6 @@ const ProductItem = ({ product, onFavoriteChanged }) => {
       }
 
       const data = await response.json();
-      console.log('Item added to favorites:', data);
 
       setIsFavourite(!isFavourite);
 
@@ -119,7 +118,7 @@ const ProductItem = ({ product, onFavoriteChanged }) => {
     try {
       const storedToken = await AsyncStorage.getItem('authToken');
       if (!storedToken) {
-        console.log('No token available. User needs to log in.');
+
         alert("Failed to add item to cart");
         return;
       }
@@ -137,7 +136,7 @@ const ProductItem = ({ product, onFavoriteChanged }) => {
       }
 
       const data = await response.json();
-      console.log('Item added to cart:', data);
+
       alert(data.message);
     } catch (error) {
       console.error('Error adding item to cart:', error);

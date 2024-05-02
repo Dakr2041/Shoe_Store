@@ -44,7 +44,7 @@ const SetupUserInfoScreen = ({ navigation }) => {
             setImage(result.assets[0].uri);
             const fileType = getFileTypeFromUri(result.assets[0].uri)
             setImageType(fileType);
-            console.log("----------- image uri: " + image + " Type: " + imageType);
+
         }
     };
 
@@ -62,7 +62,7 @@ const SetupUserInfoScreen = ({ navigation }) => {
             try {
                 const storedToken = await AsyncStorage.getItem('authToken');
                 setToken(storedToken ? String(storedToken) : null);
-                console.log(storedToken);
+
             } catch (error) {
                 console.error('Error fetching Token from storage:', error);
 
@@ -76,7 +76,7 @@ const SetupUserInfoScreen = ({ navigation }) => {
         setShowDatePicker(false);
         setDateOfBirth(currentDate);
         setDisplayDate(currentDate ? currentDate.toISOString().slice(0, 10) : 'Select a date');
-        console.log(dateOfBirth);
+
     };
 
     const handleSave = async () => {
@@ -148,7 +148,7 @@ const SetupUserInfoScreen = ({ navigation }) => {
                 });
 
                 if (response.status === 200) {
-                    console.log(response.data.message);
+
                     // alert(response.data.message);
                     setIsLoading(false);
                     navigation.navigate('Home');
@@ -191,82 +191,82 @@ const SetupUserInfoScreen = ({ navigation }) => {
             </View>
 
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
-            
 
-            {/* Profile Picture */}
-            <View style={styles.imageContainer}>
-                {image ? (
-                    <TouchableOpacity onPress={pickImage}>
-                        <Image source={{ uri: image }} style={styles.profileImage} />
-                    </TouchableOpacity>
 
-                ) : (
-                    <TouchableOpacity onPress={pickImage} style={styles.imagePlaceholder}>
-                        <Text style={styles.imagePlaceholderText}>Choose Profile Picture</Text>
-                    </TouchableOpacity>
-                )}
-            </View>
+                {/* Profile Picture */}
+                <View style={styles.imageContainer}>
+                    {image ? (
+                        <TouchableOpacity onPress={pickImage}>
+                            <Image source={{ uri: image }} style={styles.profileImage} />
+                        </TouchableOpacity>
 
-            <TextInput
-                style={styles.textInput}
-                value={name}
-                placeholder='Name'
-                onChangeText={setName}
-            />
-            <TextInput
-                style={styles.textInput}
-                keyboardType="phone-pad"
-                value={phone}
-                onChangeText={setPhone}
-                placeholder='Phone Number'
+                    ) : (
+                        <TouchableOpacity onPress={pickImage} style={styles.imagePlaceholder}>
+                            <Text style={styles.imagePlaceholderText}>Choose Profile Picture</Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
 
-            />
-            <TextInput
-                style={styles.textInput}
-                value={address}
-                onChangeText={setAddress}
-                placeholder='Address'
-            />
-            <TextInput style={styles.textInput}
-                value={city}
-                onChangeText={setCity}
-                placeholder='City' />
-
-            <TouchableOpacity style={styles.dateInput}
-                onPress={() => setShowDatePicker(true)}
-            >
-                <Text style={styles.dateInputText}>
-                    {displayDate}
-                </Text>
-            </TouchableOpacity>
-            {showDatePicker && (
-                <DateTimePicker
-                    testID="dateTimePicker"
-                    value={dateOfBirth}
-                    mode="date"
-                    is24Hour={true}
-                    display="default"
-                    onChange={onChangeDate}
+                <TextInput
+                    style={styles.textInput}
+                    value={name}
+                    placeholder='Name'
+                    onChangeText={setName}
                 />
-            )}
+                <TextInput
+                    style={styles.textInput}
+                    keyboardType="phone-pad"
+                    value={phone}
+                    onChangeText={setPhone}
+                    placeholder='Phone Number'
 
-            <Picker
-                selectedValue={gender}
-                style={styles.picker}
-                onValueChange={setGender}>
-                <Picker.Item label="Select Gender" value="" />
-                <Picker.Item label="Male" value="male" />
-                <Picker.Item label="Female" value="female" />
-            </Picker>
+                />
+                <TextInput
+                    style={styles.textInput}
+                    value={address}
+                    onChangeText={setAddress}
+                    placeholder='Address'
+                />
+                <TextInput style={styles.textInput}
+                    value={city}
+                    onChangeText={setCity}
+                    placeholder='City' />
 
-            <TouchableOpacity onPress={handleSave} style={styles.buttonBG} >
-                <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.saveButton} >
-                    <Text style={styles.saveButtonText}>Save Updates</Text>
-                </LinearGradient>
-            </TouchableOpacity>
-        </ScrollView>
+                <TouchableOpacity style={styles.dateInput}
+                    onPress={() => setShowDatePicker(true)}
+                >
+                    <Text style={styles.dateInputText}>
+                        {displayDate}
+                    </Text>
+                </TouchableOpacity>
+                {showDatePicker && (
+                    <DateTimePicker
+                        testID="dateTimePicker"
+                        value={dateOfBirth}
+                        mode="date"
+                        is24Hour={true}
+                        display="default"
+                        onChange={onChangeDate}
+                    />
+                )}
+
+                <Picker
+                    selectedValue={gender}
+                    style={styles.picker}
+                    onValueChange={setGender}>
+                    <Picker.Item label="Select Gender" value="" />
+                    <Picker.Item label="Male" value="male" />
+                    <Picker.Item label="Female" value="female" />
+                </Picker>
+
+                <TouchableOpacity onPress={handleSave} style={styles.buttonBG} >
+                    <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.saveButton} >
+                        <Text style={styles.saveButtonText}>Save Updates</Text>
+                    </LinearGradient>
+                </TouchableOpacity>
+            </ScrollView>
         </View>
-        
+
     );
 };
 

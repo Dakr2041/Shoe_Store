@@ -45,7 +45,7 @@ const NOItem = ({ notification, onPress, onRemoveItem, showDot, fetchNotificatio
             if (!response.ok) {
                 throw new Error('Failed to mark notification as read');
             }
-            console.log(response.status);
+
 
             setIsRead(true);
             fetchNotifications();

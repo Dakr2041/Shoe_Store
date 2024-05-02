@@ -19,7 +19,7 @@ const FavouriteScreen = () => {
             try {
                 const storedToken = await AsyncStorage.getItem('authToken');
                 setToken(storedToken ? String(storedToken) : null);
-                console.log(storedToken);
+
             } catch (error) {
                 console.error('Error fetching Token from storage:', error);
 
@@ -52,7 +52,7 @@ const FavouriteScreen = () => {
         }
     }, [token]);
 
-    console.log(favourites);
+
 
     const handleRefresh = async () => {
         setIsLoading(true);
@@ -79,25 +79,25 @@ const FavouriteScreen = () => {
                 <View></View>
             </View>
 
-            <Swipeable onSwipeableOpenStartDrag={handleRefresh} style={{height: '100%'}}>
+            <Swipeable onSwipeableOpenStartDrag={handleRefresh} style={{ height: '100%' }}>
                 {isLoading ? (
-                    <ActivityIndicator size="large" style={{ alignContent:'center' }} />
-                )  : favourites.length === 0 ?  (
+                    <ActivityIndicator size="large" style={{ alignContent: 'center' }} />
+                ) : favourites.length === 0 ? (
                     <Text style={{
-                        textAlign: 'center', 
-                        padding: 50, 
-                        fontSize:20,
-                        opacity:0.25,
-                        fontWeight:'bold'
+                        textAlign: 'center',
+                        padding: 50,
+                        fontSize: 20,
+                        opacity: 0.25,
+                        fontWeight: 'bold'
                     }}>You have no favourites product</Text>
                 ) : (
-                    <FavoritesList 
-                    style={{height: '88%'}}
-                    favouriteData={favourites} 
+                    <FavoritesList
+                        style={{ height: '88%' }}
+                        favouriteData={favourites}
                     />
-                
+
                 )}
-                
+
             </Swipeable>
 
         </GestureHandlerRootView>

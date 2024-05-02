@@ -65,7 +65,7 @@ const ProductDetailScreen = ({ route }) => {
       }
 
       const data = await response.json();
-      console.log('Comments fetched:', data);
+
       setComments(data.comment);
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -81,9 +81,7 @@ const ProductDetailScreen = ({ route }) => {
   };
   const sendComment = async () => {
     try {
-      console.log(product.id);
-      console.log(commentContent);
-      console.log(StoredToken);
+
       if (commentContent.trim() !== '') {
         const response = await fetch(`${API_URL}/api/comment`, {
           method: 'POST',
@@ -102,7 +100,7 @@ const ProductDetailScreen = ({ route }) => {
         }
 
         const data = await response.json();
-        console.log('Comment created:', data);
+
 
         alert('Comment sent successfully');
 
@@ -133,7 +131,7 @@ const ProductDetailScreen = ({ route }) => {
       }
 
       const data = await response.json();
-      console.log('Item added to cart:', data);
+
       alert(data.message);
     } catch (error) {
       console.error('Error adding item to cart:', error);
@@ -145,7 +143,7 @@ const ProductDetailScreen = ({ route }) => {
 
   const handleAddToCart = async () => {
     if (!StoredToken) {
-      console.log('No token available. User needs to log in.');
+
       alert("Failed to add item to cart");
       return;
     }

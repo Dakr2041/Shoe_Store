@@ -81,7 +81,7 @@ const LoginScreen = () => {
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
 
 
-    console.log("validating");
+
     if (email.length <= 0) {
       setIsLoading(false);
       return alert('Type in email.');
@@ -106,13 +106,13 @@ const LoginScreen = () => {
         body: JSON.stringify({ email, password, fcmToken }),
       });
       const data = await response.json();
-      console.log(data.message);
+
       if (data.status === 200) {
         const authToken = data.data.token;
         const userID = data.data.id;
 
-        console.log(userID);
-        console.log(authToken);
+
+
 
         await AsyncStorage.setItem('authToken', authToken);
         await AsyncStorage.setItem('@userId', userID.toString());
@@ -140,12 +140,12 @@ const LoginScreen = () => {
 
   const handleRegisterPress = () => {
     navigation.navigate('Register');
-    console.log('Create new account!!!');
+
   };
 
   const handleForgotPasswordPress = () => {
     navigation.navigate('ForgotPassword');
-    console.log('Reset Password!!!');
+
   };
 
   const handlePressRemmember = () => {
@@ -186,7 +186,7 @@ const LoginScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
             {/* <Checkbox value={isRememberMe} onValueChange={(newValue) => setIsRememberMe(newValue)} /> */}
             <MaterialCommunityIcons
@@ -195,7 +195,7 @@ const LoginScreen = () => {
               color={isRememberMe ? '#f5ca0c' : '#ccc'}
               onPress={handlePressRemmember}
             />
-            <Text style={{fontSize: 14}}>Remember me</Text>
+            <Text style={{ fontSize: 14 }}>Remember me</Text>
           </View>
 
           <TouchableOpacity onPress={handleForgotPasswordPress}>

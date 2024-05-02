@@ -76,7 +76,7 @@ const OrdersScreen = () => {
     };
 
     const sortedOrders = sortOrdersByStatus(orders);
-    console.log(sortedOrders);
+
     const unConfirmOrders = sortedOrders['cancelOrder'] || sortedOrders['PaidCancelOrder'] || sortedOrders['PaymentAndCancel'] || sortedOrders['payment'] || [];
 
 
