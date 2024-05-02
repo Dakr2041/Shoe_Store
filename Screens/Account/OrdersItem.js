@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, ActivityIndicator, TouchableOpacity, Alert, RefreshControl } from 'react-native';
 import { formatVND } from '../Functions/FormatVND';
 import { API_URL } from '../Api';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -66,8 +66,8 @@ const OrdersItem = ({ order, fetchOrders }) => {
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
-                { 
-                    text: "Yes", 
+                {
+                    text: "Yes",
                     onPress: async () => {
                         try {
                             console.log(orderId);
@@ -82,7 +82,7 @@ const OrdersItem = ({ order, fetchOrders }) => {
                             console.log(responseData);
                             alert(responseData.message);
                             fetchProduct();
-    
+
                         } catch (error) {
                             console.error('Error confirming order:', error);
                             alert(responseData.message);
@@ -102,8 +102,8 @@ const OrdersItem = ({ order, fetchOrders }) => {
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
-                { 
-                    text: "Yes", 
+                {
+                    text: "Yes",
                     onPress: async () => {
                         try {
                             console.log(orderId);
@@ -119,11 +119,11 @@ const OrdersItem = ({ order, fetchOrders }) => {
                             if (responseData.status === 200) {
                                 navigation.navigate('Orders');
                                 alert(responseData.message);
-    
+                                fetchOrders();
                             } else {
                                 alert(responseData.message);
                             }
-    
+
                         } catch (error) {
                             console.error('Error canceling order:', error);
                             alert(responseData.message);
@@ -175,7 +175,7 @@ const OrdersItem = ({ order, fetchOrders }) => {
                                 <Text style={{ fontSize: 12 }}>Price: {formatVND(item.data.price - item.data.priceSale)}</Text>
                                 <Text style={{ fontSize: 12 }}>X{item.quantity}</Text>
                             </View>
-                            <Text style={{ fontSize: 14, fontWeight: 'bold',alignSelf: 'flex-end'}}>Total: {formatVND(item.quantity * (item.data.price - item.data.priceSale))}</Text>
+                            <Text style={{ fontSize: 14, fontWeight: 'bold', alignSelf: 'flex-end' }}>Total: {formatVND(item.quantity * (item.data.price - item.data.priceSale))}</Text>
                         </View>
                     </View>
                 )}
@@ -228,11 +228,27 @@ const OrdersList = ({ ordersData, fetchOrders }) => {
         return dateB - dateA;
     });
 
+    const [refreshing, setRefreshing] = useState(false);
+
+    const handleRefresh = async () => {
+        setRefreshing(true); 
+
+        await fetchOrders(); 
+
+        setRefreshing(false); 
+    };
+
     return (
         <FlatList
             data={sortedOrders}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => <OrdersItem order={item} fetchOrders={fetchOrders} />}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={handleRefresh}
+                />
+            }
         />
     );
 };
