@@ -4,7 +4,6 @@ import { View, Text, TouchableOpacity, StyleSheet,Image ,TextInput} from 'react-
 import { ScrollView } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 
-
 const ForgotPasswordScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const emailInputRef = useRef(null);
@@ -72,7 +71,6 @@ const ForgotPasswordScreen = ({ navigation }) => {
             <Text style={styles.buttonText}>Send Email</Text>
             </LinearGradient>  
             </TouchableOpacity>
-
 
             <TouchableOpacity onPress={handleLoginPress}>
                 <Text style={styles.higlightText}>Go back to Login</Text>
