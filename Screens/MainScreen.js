@@ -6,7 +6,6 @@ import { View, Text, StyleSheet } from 'react-native';
 import ProductScreen from './Product/ProductScreen';
 import AccountScreen from './Account/AccountScreen';
 
-
 function CartScreen() {
   return (
     <View style={styles.container}>
