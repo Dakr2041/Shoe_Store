@@ -6,7 +6,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import IconPassWord from 'react-native-vector-icons/FontAwesome5';
 import { ScrollView } from 'react-native-gesture-handler';
 
-
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -114,7 +113,6 @@ const LoginScreen = () => {
     console.log('Reset Password!!!');
   };
 
-
   return (
     <View style={styles.container} >
       
@@ -155,13 +153,11 @@ const LoginScreen = () => {
         <Text style={styles.higlightText}>Forgot Password?</Text>
       </TouchableOpacity>
 
-      
       <TouchableOpacity  onPress={handleLogin} style={styles.buttonGR}>
           <LinearGradient colors={['#f7c458', '#fea239']} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.button}>
             <Text style={styles.buttonText}>Login</Text>
           </LinearGradient>  
       </TouchableOpacity>
-
 
       <TouchableOpacity onPress={handleRegisterPress} style={{ flexDirection: 'row',alignSelf :'center' , marginTop : 100}}>
         <Text >Don't have an account? </Text>
