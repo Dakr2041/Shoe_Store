@@ -50,7 +50,6 @@ const RegisterScreen = () => {
     const emailRegex = /^\w+@[a-zA-Z_\.]+\.[a-zA-Z]{2,}$/; // Email format
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/; // Password complexity
 
-
     // Clear any previous error messages
     emailInputRef.current.setNativeProps({ borderColor: '#ccc' });
     nameInputRef.current.setNativeProps({ borderColor: '#ccc' });
@@ -81,6 +80,7 @@ const RegisterScreen = () => {
       passwordInputRef.current.setNativeProps({ borderColor: 'red' });
       return alert('Type in password.');
     }
+
     if (!password || !passwordRegex.test(password)) {
       setIsLoading(false);
       passwordInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
@@ -134,6 +134,7 @@ const RegisterScreen = () => {
       // Handle the error
     }
   }
+
   const handleLoginPress = () => {
     navigation.navigate('Login');
     console.log('Already have an account!!!');
@@ -142,7 +143,6 @@ const RegisterScreen = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
-
   const togglePasswordVisibility = (type) => {
     if (type === 'password') {
       setIsPasswordVisible(!isPasswordVisible);
@@ -150,7 +150,6 @@ const RegisterScreen = () => {
       setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
     }
   };
-
 
   return (
     <View style={styles.container}>
@@ -276,7 +275,6 @@ const styles = StyleSheet.create({
     position: 'absolute', // Make it absolute within the input
     right: 15, // Adjust right padding and position as needed
     top : 30
-  
   },
   eyeIcon: {
     width: 25,
