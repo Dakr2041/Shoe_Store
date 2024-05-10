@@ -46,6 +46,7 @@ const AccountScreen = () => {
     };
 
     fetchUserInfo();
+
   }, [userId]);
 
   const renderContent = () => {
