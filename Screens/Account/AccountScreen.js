@@ -56,11 +56,13 @@ const AccountScreen = () => {
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       );
+      
     // } else if (userInfo === null) {
     //   <View>
     //     <Text style={styles.title}>Account Details</Text>
 
     //   </View>
+    
     } else { 
       return (
         <View>
