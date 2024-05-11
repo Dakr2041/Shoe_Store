@@ -152,7 +152,7 @@ const ResetPasswordScreen = () => {
                     <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
                 </TouchableOpacity>
                 <View></View>
-                <Text style={styles.headerText}>Reset Password</Text>
+                <Text style={styles.headerText}>Đặt lại mật khẩu</Text>
                 <View></View>
                 <View></View>
             </View>
@@ -160,7 +160,7 @@ const ResetPasswordScreen = () => {
             <View style={styles.passwordInputContainer}>
                 <TextInput
                     style={styles.textInput}
-                    placeholder="Current Password"
+                    placeholder="Mật khẩu hiện tại"
                     onChangeText={setOldPassword}
                     value={oldPassword}
                     secureTextEntry={!isOldPasswordVisible}
@@ -174,7 +174,7 @@ const ResetPasswordScreen = () => {
             <View style={styles.passwordInputContainer}>
                 <TextInput
                     style={styles.textInput}
-                    placeholder="New Password"
+                    placeholder="Mật khẩu mới"
                     onChangeText={setNewPassword}
                     value={newPassword}
                     secureTextEntry={!isNewPasswordVisible}
@@ -188,7 +188,7 @@ const ResetPasswordScreen = () => {
             <View style={styles.passwordInputContainer}>
                 <TextInput
                     style={styles.textInput}
-                    placeholder="Confirm Password"
+                    placeholder="Xác nhận lại mật khẩu mới"
                     onChangeText={setConfirmPassword}
                     value={confirmPassword}
                     secureTextEntry={!isConfirmPasswordVisible}
@@ -204,7 +204,7 @@ const ResetPasswordScreen = () => {
             ) : (
                 <TouchableOpacity onPress={handleSubmit} >
                     <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.button}>
-                        <Text style={styles.buttonText}>Reset Password</Text>
+                        <Text style={styles.buttonText}>Đặt lại mật khẩu</Text>
                     </LinearGradient>
                 </TouchableOpacity>
             )}

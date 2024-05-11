@@ -126,7 +126,7 @@ const OrdersScreen = () => {
                             </TouchableOpacity>
                             <View></View>
                             <View></View>
-                            <Text style={styles.headerText}>Orders</Text>
+                            <Text style={styles.headerText}>Danh sách đơn hàng</Text>
                             <View></View>
                             <View></View>
                             <View></View>
@@ -137,16 +137,16 @@ const OrdersScreen = () => {
 
                     <Tab.Navigator tabBarOptions={{ scrollEnabled: true }}>
                         
-                        <Tab.Screen name="Unconfirm">
+                        <Tab.Screen name="Chưa xác nhận">
                             {() => <OrdersList ordersData={confirmOrders} fetchOrders={fetchOrders} />}
                         </Tab.Screen>
-                        <Tab.Screen name="Delivering">
+                        <Tab.Screen name="Đang giao hàng">
                             {() => <OrdersList ordersData={deliveringOrders} fetchOrders={fetchOrders} />}
                         </Tab.Screen>
-                        <Tab.Screen name="Successed">
+                        <Tab.Screen name="Đã hoàn thành">
                             {() => <OrdersList ordersData={successOrders} fetchOrders={fetchOrders} />}
                         </Tab.Screen>
-                        <Tab.Screen name="Canceled">
+                        <Tab.Screen name="Đã hủy">
                             {() => <OrdersList ordersData={unConfirmOrders} fetchOrders={fetchOrders} />}
                         </Tab.Screen>
                     </Tab.Navigator>

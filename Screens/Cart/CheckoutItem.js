@@ -68,8 +68,8 @@ const CheckoutItem = ({ item }) => {
       <View style={styles.cartDetails}>
         <Text style={styles.cartTitle}>{product.name}</Text>
 
-        <Text >Quantity: {item.quantity}</Text>
-        <Text >Total: {formatVND(productPrice * item.quantity)}</Text>
+        <Text >Số lượng: {item.quantity}</Text>
+        <Text >Giá: {formatVND(productPrice * item.quantity)}</Text>
       </View>
     </View>
   );

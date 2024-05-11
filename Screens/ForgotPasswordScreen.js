@@ -48,7 +48,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
             }
         } catch (error) {
             console.error('Error sending email:', error);
-            alert('An error occurred. Please try again later.');
+            alert('Đã xảy ra lỗi xin hãy thử lại.');
         }
     };
 
@@ -56,8 +56,8 @@ const ForgotPasswordScreen = ({ navigation }) => {
         <View style={styles.container}>
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
                 <Image source={logo} style={{ width: 200, height: 200, alignSelf: 'center' }}></Image>
-                <Text style={styles.title}>Forgot Password</Text>
-                <Text style={styles.messenger}>Enter your registered email address:</Text>
+                <Text style={styles.title}>Đặt lại mật khẩu</Text>
+                <Text style={styles.messenger}>Hãy nhập địa chỉ Email tài khoản của bạn:</Text>
                 <TextInput
                     style={styles.textInput}
                     placeholder="Email"
@@ -70,13 +70,13 @@ const ForgotPasswordScreen = ({ navigation }) => {
 
                 <TouchableOpacity onPress={handleSendEmail} style={styles.buttonGR}>
                     <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.button}>
-                        <Text style={styles.buttonText}>Send Email</Text>
+                        <Text style={styles.buttonText}>Gửi Email xác nhận</Text>
                     </LinearGradient>
                 </TouchableOpacity>
 
 
                 <TouchableOpacity onPress={handleLoginPress}>
-                    <Text style={styles.higlightText}>Go back to Login</Text>
+                    <Text style={styles.higlightText}>Quay lại đăng nhập</Text>
                 </TouchableOpacity>
 
             </ScrollView>

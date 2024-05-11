@@ -72,7 +72,7 @@ const FavouriteScreen = () => {
                 </TouchableOpacity>
                 <View></View>
                 <View></View>
-                <Text style={styles.headerText}>Favorites</Text>
+                <Text style={styles.headerText}>Yêu thích</Text>
                 <View></View>
                 <View></View>
                 <View></View>

@@ -21,7 +21,7 @@ const SetupUserInfoScreen = ({ navigation }) => {
     const [gender, setGender] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [token, setToken] = useState('');
-    const [displayDate, setDisplayDate] = useState('Select date of birth');
+    const [displayDate, setDisplayDate] = useState('Hãy chọn ngày sinh');
     const [imageType, setImageType] = useState(null)
 
 
@@ -29,7 +29,7 @@ const SetupUserInfoScreen = ({ navigation }) => {
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
-            alert('Sorry, we need camera roll permissions to pick an image.');
+            alert('Ứng dụng cần quyền truy cập vào tệp hình ảnh của thiết bị.');
             return;
         }
 
@@ -82,41 +82,41 @@ const SetupUserInfoScreen = ({ navigation }) => {
     const handleSave = async () => {
         setIsLoading(true);
         if (!image) {
-            alert('Please choose a profile picture.');
+            alert('Hãy chọn ảnh đại diện');
             setIsLoading(false);
             return;
         }
         if (!name.trim()) {
-            alert('Please enter your name.');
+            alert('Hãy nhập họ và tên');
             setIsLoading(false);
             return;
         }
 
         if (!phone.trim()) {
-            alert('Please enter your phone number.');
+            alert('Hãy nhập số điện thoại');
             setIsLoading(false);
             return;
         }
 
         if (!address.trim()) {
-            alert('Please enter your address.');
+            alert('Hãy nhập địa chỉ');
             setIsLoading(false);
             return;
         }
 
         if (!city.trim()) {
-            alert('Please enter your city.');
+            alert('Hãy nhập tên thành phố');
             setIsLoading(false);
             return;
         }
-        if (displayDate === 'Select date of birth') {
-            alert('Please select your date of birth.');
+        if (displayDate === 'Hãy chọn ngày sinh') {
+            alert('Hãy nhập ngày sinh của bạn');
             setIsLoading(false);
             return;
         }
 
         if (!gender) {
-            alert('Please select your gender.');
+            alert('Hãy chọn giới tính');
             setIsLoading(false);
             return;
         }
@@ -210,7 +210,7 @@ const SetupUserInfoScreen = ({ navigation }) => {
                 <TextInput
                     style={styles.textInput}
                     value={name}
-                    placeholder='Name'
+                    placeholder='Họ và tên'
                     onChangeText={setName}
                 />
                 <TextInput
@@ -218,19 +218,19 @@ const SetupUserInfoScreen = ({ navigation }) => {
                     keyboardType="phone-pad"
                     value={phone}
                     onChangeText={setPhone}
-                    placeholder='Phone Number'
+                    placeholder='Số điện thoại'
 
                 />
                 <TextInput
                     style={styles.textInput}
                     value={address}
                     onChangeText={setAddress}
-                    placeholder='Address'
+                    placeholder='Địa chỉ'
                 />
                 <TextInput style={styles.textInput}
                     value={city}
                     onChangeText={setCity}
-                    placeholder='City' />
+                    placeholder='Thành phố' />
 
                 <TouchableOpacity style={styles.dateInput}
                     onPress={() => setShowDatePicker(true)}
@@ -254,14 +254,14 @@ const SetupUserInfoScreen = ({ navigation }) => {
                     selectedValue={gender}
                     style={styles.picker}
                     onValueChange={setGender}>
-                    <Picker.Item label="Select Gender" value="" />
-                    <Picker.Item label="Male" value="male" />
-                    <Picker.Item label="Female" value="female" />
+                    <Picker.Item label="Hãy chọn giới tính" value="" />
+                    <Picker.Item label="Nam" value="male" />
+                    <Picker.Item label="Nữ" value="female" />
                 </Picker>
 
                 <TouchableOpacity onPress={handleSave} style={styles.buttonBG} >
                     <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.saveButton} >
-                        <Text style={styles.saveButtonText}>Save Updates</Text>
+                        <Text style={styles.saveButtonText}>Thiết lập thông tin</Text>
                     </LinearGradient>
                 </TouchableOpacity>
             </ScrollView>

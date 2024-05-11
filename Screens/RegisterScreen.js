@@ -57,44 +57,44 @@ const RegisterScreen = () => {
 
     if (email.length <= 0) {
       setIsLoading(false);
-      return alert('Type in email.');
+      return alert('Bạn hãy nhập Email.');
     }
 
     if (!emailRegex.test(email)) {
       setIsLoading(false);
-      alert('Invalid email format.');
+      alert('Sai định dạng Email.');
       return;
     }
 
     if (name.length <= 0) {
       setIsLoading(false);
-      return alert('Type in name.');
+      return alert('Bạn hãy nhập họ và tên.');
     }
 
     if (password.length <= 0) {
       setIsLoading(false);
-      return alert('Type in password.');
+      return alert('Bạn hãy nhập mật khẩu.');
     }
     if (!password || !passwordRegex.test(password)) {
       setIsLoading(false);
-      alert('Password must be at least 6 characters and include a number, lowercase letter, and uppercase letter.');
+      alert('Mật khẩu cần phải có 6 ký tự, bao gồm số, chữ viết hoa và chữ viết thường.');
       return;
     }
 
     if (!passwordRegex.test(password)) {
       setIsLoading(false);
-      alert('Password must be at least 6 characters and include a number, lowercase letter, and uppercase letter.');
+      alert('Mật khẩu cần phải có 6 ký tự, bao gồm số, chữ viết hoa và chữ viết thường.');
       return;
     }
 
     if (confirmPassword.length <= 0) {
       setIsLoading(false);
-      return alert('Type in confirm password.');
+      return alert('Bạn hãy nhập mật khẩu xác nhận');
     }
 
     if (password !== confirmPassword) {
       setIsLoading(false);
-      alert('Passwords do not match.');
+      alert('2 mật khẩu đang không khớp với nhau.');
       return;
     }
 
@@ -145,8 +145,8 @@ const RegisterScreen = () => {
     <View style={styles.container}>
       <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
         <Image source={logo} style={{ width: 200, height: 200, alignSelf: 'center' }}></Image>
-        <Text style={styles.title}>Register</Text>
-        <Text style={styles.messenger}>Please enter complete information</Text>
+        <Text style={styles.title}>Đăng ký</Text>
+        <Text style={styles.messenger}>Hãy nhập đầy đủ thông tin</Text>
         <TextInput
           style={styles.textInput}
           placeholder="Email"
@@ -158,7 +158,7 @@ const RegisterScreen = () => {
         />
         <TextInput
           style={styles.textInput}
-          placeholder="Name"
+          placeholder="Họ và tên"
           value={name}
           onChangeText={handleNameChange}
           autoCapitalize="words"
@@ -168,7 +168,7 @@ const RegisterScreen = () => {
         <View style={styles.passwordInputContainer}>
           <TextInput
             style={styles.textInput}
-            placeholder="Password"
+            placeholder="Mật khẩu"
             onChangeText={handlePasswordChange}
             value={password}
             secureTextEntry={!isPasswordVisible}
@@ -182,7 +182,7 @@ const RegisterScreen = () => {
         <View>
           <TextInput
             style={styles.textInput}
-            placeholder="Confirm Password"
+            placeholder="Mật khẩu xác nhận"
             onChangeText={handleConfirmPasswordChange}
             value={confirmPassword}
             secureTextEntry={!isConfirmPasswordVisible}
@@ -195,14 +195,14 @@ const RegisterScreen = () => {
 
         <TouchableOpacity onPress={handleRegister} style={styles.buttonGR}>
           <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.button}>
-            <Text style={styles.buttonText}>Register</Text>
+            <Text style={styles.buttonText}>Đăng ký</Text>
           </LinearGradient>
         </TouchableOpacity>
 
 
 
         <TouchableOpacity onPress={handleLoginPress}>
-          <Text style={styles.higlightText}>Already have an account</Text>
+          <Text style={styles.higlightText}>Quay lại đăng nhập</Text>
         </TouchableOpacity>
         {isLoading && (
           <View style={styles.loadingContainer}>

@@ -5,10 +5,10 @@ import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 const OrderFailScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>You have cancel order !!!</Text>
+      <Text style={styles.text}>Bạn đã hủy đơn hàng !!!</Text>
       <TouchableOpacity onPress={() => navigation.navigate('Tabs')} >
         <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.button}>
-          <Text style={styles.buttonText}> Continue shopping</Text>
+          <Text style={styles.buttonText}> Tiếp tục mua sắm</Text>
         </LinearGradient>
       </TouchableOpacity>
     </View>
