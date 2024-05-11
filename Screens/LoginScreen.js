@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ActivityIndicator, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ActivityIndicator, TextInput, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -84,17 +84,17 @@ const LoginScreen = () => {
 
     if (email.length <= 0) {
       setIsLoading(false);
-      return alert('Type in email.');
+      return alert('Bạn hãy nhập địa chỉ email.');
     }
 
     if (password.length <= 0) {
       setIsLoading(false);
-      return alert('Type in password.');
+      return alert('Bạn hãy nhập mật khẩu.');
     }
 
     if (!emailRegex.test(email)) {
       setIsLoading(false);
-      return alert('Invalid email format.');
+      return alert('Định dạng email không chính xác, xin hãy nhập lại.');
     }
 
     try {
@@ -106,6 +106,7 @@ const LoginScreen = () => {
         body: JSON.stringify({ email, password, fcmToken }),
       });
       const data = await response.json();
+      console.log(data);
 
       if (data.status === 200) {
         const authToken = data.data.token;
@@ -125,7 +126,21 @@ const LoginScreen = () => {
         setIsLoading(false);
 
         return { success: true };
-      } else {
+      } else if (data.status === 401) {
+        Alert.alert(
+          "Thông báo",
+          "Sai thông tin đăng nhập, hãy kiểm tra lại.",
+          [
+            {
+              text: "Ok",
+              onPress: () => setIsLoading(false),
+              style: "cancel"
+            }
+          ]
+
+        )
+      }
+      else {
         const errorData = await response.json();
         return { success: false, error: errorData.message };
       }
@@ -158,9 +173,9 @@ const LoginScreen = () => {
 
         <Image source={logo} style={{ width: 200, height: 200, alignSelf: 'center' }}></Image>
 
-        <Text style={styles.title}>Login</Text>
+        <Text style={styles.title}>Đăng nhập</Text>
 
-        <Text style={styles.messenger}>Please sign in to continue</Text>
+        <Text style={styles.messenger}>Hãy đăng nhập để tiếp tục</Text>
 
         <TextInput
           style={styles.textInput}
@@ -175,7 +190,7 @@ const LoginScreen = () => {
         <View style={styles.passwordInputContainer}>
           <TextInput
             style={styles.textInput}
-            placeholder="Password"
+            placeholder="Mật khẩu"
             onChangeText={handlePasswordChange}
             value={password}
             secureTextEntry={!isPasswordVisible}
@@ -195,25 +210,25 @@ const LoginScreen = () => {
               color={isRememberMe ? '#f5ca0c' : '#ccc'}
               onPress={handlePressRemmember}
             />
-            <Text style={{ fontSize: 14 }}>Remember me</Text>
+            <Text style={{ fontSize: 14 }}>Ghi nhớ tài khoản</Text>
           </View>
 
           <TouchableOpacity onPress={handleForgotPasswordPress}>
-            <Text style={styles.higlightText}>Forgot Password?</Text>
+            <Text style={styles.higlightText}>Quên mật khẩu?</Text>
           </TouchableOpacity>
 
         </View>
 
         <TouchableOpacity onPress={handleLogin} style={styles.buttonGR}>
           <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.button}>
-            <Text style={styles.buttonText}>Login</Text>
+            <Text style={styles.buttonText}>Đăng nhập</Text>
           </LinearGradient>
         </TouchableOpacity>
 
 
         <TouchableOpacity onPress={handleRegisterPress} style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 100 }}>
-          <Text >Don't have an account? </Text>
-          <Text style={{ fontWeight: 'bold', color: '#fea239' }}>Sign up</Text>
+          <Text >Chưa có tài khoản ? hãy bấm vào </Text>
+          <Text style={{ fontWeight: 'bold', color: '#fea239' }}>Đăng ký</Text>
         </TouchableOpacity>
 
         {isLoading && (

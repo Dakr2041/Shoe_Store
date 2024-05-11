@@ -25,7 +25,7 @@ const SettingsScreen = () => {
         </TouchableOpacity>
         <View></View>
         <View></View>
-        <Text style={styles.headerText}>Settings</Text>
+        <Text style={styles.headerText}>Cài đặt</Text>
         <View></View>
         <View></View>
         <View></View>
@@ -33,7 +33,7 @@ const SettingsScreen = () => {
       </View>
       {/* Settings list */}
       <TouchableOpacity style={styles.settingItem} onPress={() => handleNavigate('UpdateUserInfo')}>
-        <Text style={styles.settingText}>Update User Info</Text>
+        <Text style={styles.settingText}>Cập nhật thông tin người dùng</Text>
         <Feather name="chevron-right" size={24} color="#ccc" style={styles.icon} />
       </TouchableOpacity>
       {/* <TouchableOpacity style={styles.settingItem} onPress={() => handleNavigate('SetupUserInfo')}>
@@ -41,7 +41,7 @@ const SettingsScreen = () => {
         <Feather name="chevron-right" size={24} color="#ccc" style={styles.icon} />
       </TouchableOpacity> */}
       <TouchableOpacity style={styles.settingItem} onPress={() => handleNavigate('ResetPassword')}>
-        <Text style={styles.settingText}>Reset Password</Text>
+        <Text style={styles.settingText}>Đặt lại mật khẩu</Text>
         <Feather name="chevron-right" size={24} color="#ccc" style={styles.icon} />
       </TouchableOpacity>
     </View>

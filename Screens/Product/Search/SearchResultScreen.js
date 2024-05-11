@@ -16,8 +16,8 @@ const SearchResultScreen = ({ navigation, route }) => {
     const [sortOrder, setSortOrder] = useState('lowToHigh');
     const [priceRange, setPriceRange] = useState({ min: '', max: '' });
     const [items, setItems] = useState([
-        { label: 'Low to High', value: 'lowToHigh', icon: () => <Icon name="arrow-up" size={18} color="#f7c458" /> },
-        { label: 'High to Low', value: 'highToLow', icon: () => <Icon name="arrow-down" size={18} color="#f7c458" /> },
+        { label: 'Từ thấp đến cao', value: 'lowToHigh', icon: () => <Icon name="arrow-up" size={18} color="#f7c458" /> },
+        { label: 'Từ cao đến thấp', value: 'highToLow', icon: () => <Icon name="arrow-down" size={18} color="#f7c458" /> },
 
     ]);
     const [open, setOpen] = useState(false);

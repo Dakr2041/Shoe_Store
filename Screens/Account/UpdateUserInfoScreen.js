@@ -193,7 +193,7 @@ const UpdateUserInfoScreen = ({ navigation }) => {
                         <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
                     </TouchableOpacity>
                     <View></View>
-                    <Text style={styles.screenNameText}>Update User Info</Text>
+                    <Text style={styles.screenNameText}>Cập nhật thông tin người dùng</Text>
                     <View></View>
                     <View></View>
                 </View>
@@ -253,15 +253,15 @@ const UpdateUserInfoScreen = ({ navigation }) => {
                         selectedValue={gender}
                         style={styles.picker}
                         onValueChange={setGender}>
-                        <Picker.Item label="Select Gender" value="" />
-                        <Picker.Item label="Male" value="male" />
-                        <Picker.Item label="Female" value="female" />
+                        <Picker.Item label="Hãy chọn giới tính" value="" />
+                        <Picker.Item label="Nam" value="male" />
+                        <Picker.Item label="Nữ" value="female" />
                     </Picker>
 
                     {/* Save Button */}
                     <TouchableOpacity onPress={handleSave} style={styles.buttonBG} >
                         <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.saveButton} >
-                            <Text style={styles.saveButtonText}>Save Updates</Text>
+                            <Text style={styles.saveButtonText}>Lưu thông tin</Text>
                         </LinearGradient>
                     </TouchableOpacity>
                 </ScrollView>
