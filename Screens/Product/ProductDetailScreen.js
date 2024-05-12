@@ -21,16 +21,19 @@ const ProductDetailScreen = ({ route }) => {
 
   const [commentContent, setCommentContent] = useState('');
   const [comments, setComments] = useState([]);
+  const [sizeQuantities, setSizeQuantities] = useState({});
+  const [selectedSizeQuantity, setSelectedSizeQuantity] = useState(0);
+
+
+
 
   const [listTranslateY, setListTranslateY] = useState(new Animated.Value(0));
 
-
   const today = moment();
-
-
   useEffect(() => {
     const { product } = route.params;
     setProduct(product);
+    fetchProduct(product.id);
     setIsLoading(false);
   }, [route.params]);
 
@@ -49,14 +52,47 @@ const ProductDetailScreen = ({ route }) => {
 
     fetchTOKEN();
   }, []);
+  const [sizes, setSizes] = useState([]);
+
+  const fetchProduct = async (id) => {
+    try {
+      const response = await fetch(`${API_URL}/api/getProduct/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.status === 200) {
+        const data = await response.json();
+        const sizesWithQuantities = {};
+        data.size.forEach((size) => {
+          sizesWithQuantities[size.size] = size.quantity;
+        });
+        setSizeQuantities(sizesWithQuantities);
+        setSizes(data.size);
+      }
+    } catch (error) {
+      console.error(error);
+      alert('False');
+    }
+  };
+
+
+  useEffect(() => {
+
+  }, []);
+
+  console.log(product.id)
+  console.log(sizes);
 
   const fetchComments = async (productId) => {
+    console.log(productId);
     try {
       const response = await fetch(`${API_URL}/api/getProduct/${productId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${StoredToken}`,
+
         },
       });
 
@@ -66,12 +102,16 @@ const ProductDetailScreen = ({ route }) => {
 
       const data = await response.json();
 
+
+
+
       setComments(data.comment);
     } catch (error) {
       console.error('Error fetching comments:', error);
       alert('Failed to fetch comments');
     }
   };
+
 
   const isSaleActive = () => {
     const saleStartDate = moment(product.timeSaleStart);
@@ -219,10 +259,45 @@ const ProductDetailScreen = ({ route }) => {
                   }}>
                     <MaterialCommunityIcons name="chat-outline" size={40} color="#333" />
                   </TouchableOpacity>
+                </View>
+
+                <View>
+                  {selectedSizeQuantity > 0 ? (
+                    <Text>Quantity: {selectedSizeQuantity}</Text>
+                  ) : (
+                    <Text>Please select a size</Text>
+                  )}
+                </View>
+
+
+
+
+
+                <Text >Description: {product.description}</Text>
+
+                <View style={styles.sizeContainer}>
+                  <FlatList
+                    horizontal
+                    data={sizes}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        style={styles.sizeBox}
+                        onPress={() => {
+                          // Cập nhật số lượng sản phẩm được chọn
+                          setSelectedSizeQuantity(sizeQuantities[item.size]);
+                        }}
+                      >
+                        <Text style={styles.sizeText}>{item.size}</Text>
+                      </TouchableOpacity>
+                    )}
+                  />
+
 
                 </View>
-                <Text style={{ fontStyle: 'italic', fontSize: 15, marginBottom: 12 }}>Quantity: {product.quantity} </Text>
-                <Text >Chi tiết sản phẩm: {product.description}</Text>
+
+
+
               </View>
             </View>
           </ScrollView>
@@ -454,6 +529,28 @@ const styles = StyleSheet.create({
     zIndex: 2,
     borderRadius: 16,
   },
+  sizeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    alignSelf: 'flex-start',
+  },
+  sizeBox: {
+    width: 60,
+    backgroundColor: '#f7c458',
+    borderColor: '#f7c458',
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 8,
+    marginRight: 10,
+  },
+  sizeText: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+
 });
 
 export default ProductDetailScreen;
