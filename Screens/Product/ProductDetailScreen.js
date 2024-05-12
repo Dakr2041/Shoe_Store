@@ -209,7 +209,7 @@ const ProductDetailScreen = ({ route }) => {
 
   const renderContent = () => {
     if (!product.id) {
-      return <Text>Product details not found.</Text>;
+      return <Text>Không tìm thấy thông tin sản phẩm.</Text>;
     } else {
       return (
         <View style={styles.container}>
@@ -260,6 +260,7 @@ const ProductDetailScreen = ({ route }) => {
                     <MaterialCommunityIcons name="chat-outline" size={40} color="#333" />
                   </TouchableOpacity>
                 </View>
+
                 <View>
                   {selectedSizeQuantity > 0 ? (
                     <Text>Quantity: {selectedSizeQuantity}</Text>
@@ -295,6 +296,8 @@ const ProductDetailScreen = ({ route }) => {
 
                 </View>
 
+
+
               </View>
             </View>
           </ScrollView>
@@ -308,13 +311,13 @@ const ProductDetailScreen = ({ route }) => {
                 editable={!showCommentList}
               />
               <TouchableOpacity style={styles.sendButton} onPress={sendComment} disabled={showCommentList}>
-                <Text style={styles.sendButtonText}>Send</Text>
+                <Text style={styles.sendButtonText}>Gửi</Text>
               </TouchableOpacity>
             </View>
             {!showCommentList && (
               <TouchableOpacity onPress={handleAddToCart} style={styles.buttonGR}>
                 <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.addButton}>
-                  <Text style={styles.addButtonText}>Add to cart</Text>
+                  <Text style={styles.addButtonText}>Thêm vào giỏ hàng</Text>
                 </LinearGradient>
               </TouchableOpacity>
             )}

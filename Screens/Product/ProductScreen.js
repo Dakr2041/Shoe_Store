@@ -112,7 +112,7 @@ const ProductScreen = ({ navigation }) => {
     if (isLoading) {
       return <ActivityIndicator size="large" color="#0000ff" />;
     } else if (!products.length) {
-      return <Text>No products found.</Text>;
+      return <Text>Không tìm thấy sản phẩm nào!!!.</Text>;
     } else {
       const rows = [];
       for (let i = 0; i < products.length; i += 2) {
@@ -131,7 +131,9 @@ const ProductScreen = ({ navigation }) => {
         );
       }
       return <View>
-        <Text style={{ marginHorizontal: 9, marginTop: 20, fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Some outstanding products</Text>
+        <Text style={{ marginHorizontal: 9, marginTop: 20, fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>
+          Một số các sản phẩm xuất sắc
+          </Text>
 
 
         <View style={styles.slider}>
@@ -181,7 +183,7 @@ const ProductScreen = ({ navigation }) => {
           <TouchableOpacity onPress={handleSearchPress}>
             <View style={styles.searchView}>
               <Icon name='search' size={20} ></Icon>
-              <Text style={{ opacity: 0.5, marginStart: 15 }}>Search</Text>
+              <Text style={{ opacity: 0.5, marginStart: 15 }}>Tìm kiếm</Text>
             </View>
           </TouchableOpacity>
 

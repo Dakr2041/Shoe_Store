@@ -67,13 +67,13 @@ const TabsScreen = () => {
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
-          if (route.name === 'Home') {
+          if (route.name === 'Trang chủ') {
             iconName = 'home-outline';
-          } else if (route.name === 'Account') {
+          } else if (route.name === 'Người dùng') {
             iconName = 'person-outline';
-          } else if (route.name === 'Cart') {
+          } else if (route.name === 'Giỏ hàng') {
             iconName = 'cart-outline';
-          } else if (route.name === 'Notifications') {
+          } else if (route.name === 'Thông báo') {
             iconName = 'notifications-outline';
           }
 
@@ -94,10 +94,10 @@ const TabsScreen = () => {
         },
       }}
     >
-      <Tab.Screen name="Home" component={ProductScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Cart" component={CartScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Notifications" component={Notification} options={{ headerShown: false }} />
-      <Tab.Screen name="Account" component={AccountScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Trang chủ" component={ProductScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Giỏ hàng" component={CartScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Thông báo" component={Notification} options={{ headerShown: false }} />
+      <Tab.Screen name="Người dùng" component={AccountScreen} options={{ headerShown: false }} />
 
     </Tab.Navigator>
   );

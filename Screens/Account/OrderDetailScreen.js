@@ -21,16 +21,16 @@ const OrderDetailScreen = ({ route, navigation }) => {
 
     const handleConfirmOrder = async (orderId) => {
         Alert.alert(
-            "Confirm Order",
-            "Are you sure you want to confirm this order?",
+            "Xác nhận đơn hàng",
+            "Bạn chắc chắn đã nhận được hàng?",
             [
                 {
-                    text: "Cancel",
+                    text: "Hủy",
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
                 {
-                    text: "Yes",
+                    text: "Đã nhận được hàng",
                     onPress: async () => {
                         try {
 
@@ -57,16 +57,16 @@ const OrderDetailScreen = ({ route, navigation }) => {
     };
     const handleCancelOrder = async (orderId) => {
         Alert.alert(
-            "Cancel Order",
-            "Are you sure you want to cancel this order?",
+            "Xác nhận hủy đơn hàng",
+            "Bạn có chắc chắn muốn hủy đơn hàng?",
             [
                 {
-                    text: "Cancel",
+                    text: "Hủy",
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
                 {
-                    text: "Yes",
+                    text: "Có",
                     onPress: async () => {
                         try {
 

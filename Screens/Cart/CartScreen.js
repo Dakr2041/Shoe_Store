@@ -172,11 +172,11 @@ const CartScreen = () => {
 
   const handleDeleteConfirmation = (itemId) => {
     Alert.alert(
-      'Confirm Delete',
-      `Are you sure you want to delete item from your cart?`,
+      'Xác nhận xóa',
+      `Bán có chắc chắn muốn xóa sản phẩm khỏi giỏ hàng?`,
       [
-        { text: 'Cancel', onPress: () => console.log('Cancel deletion') },
-        { text: 'Delete', onPress: () => onRemoveItem(itemId), style: 'destructive' },
+        { text: 'Hủy', onPress: () => console.log('Cancel deletion') },
+        { text: 'Xác nhận xóa', onPress: () => onRemoveItem(itemId), style: 'destructive' },
       ],
       { cancelable: false },
     );
@@ -184,7 +184,7 @@ const CartScreen = () => {
 
   const renderEmptyView = () => (
     <View style={styles.emptyCart}>
-      <Text style={{ fontSize: 20, textAlign: 'center', }} >Your cart is empty !!!</Text>
+      <Text style={{ fontSize: 20, textAlign: 'center', }} >Giỏ hàng của bạn đang trống !!!</Text>
     </View>
   );
 
@@ -235,7 +235,7 @@ const CartScreen = () => {
   const navigation = useNavigation();
   const navigateToCheckout = () => {
     if (selectedItems.length === 0 || totalPrice === 0) {
-      Alert.alert('No items selected', 'Please select at least one item before checking out.');
+      Alert.alert('Không có sản phẩm nào đang được chọn', 'Hãy chọn ít nhất 1 sản phẩm để tiếp tục mua hàng!.');
     } else {
 
       navigation.navigate('Checkout', { cartItems: selectedItems, totalPrice });
@@ -248,7 +248,7 @@ const CartScreen = () => {
   return (
     <GestureHandlerRootView style={styles.container}>
       <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.header}>
-        <Text style={styles.headerText}>Cart</Text>
+        <Text style={styles.headerText}>Giỏ hàng</Text>
       </LinearGradient>
 
       <Swipeable onSwipeableOpenStartDrag={handleRefresh} >
@@ -275,11 +275,11 @@ const CartScreen = () => {
       </Swipeable>
 
       <View style={styles.checkoutContainer}>
-        <Text style={styles.cartTotal}>Total: {formatVND(totalPrice)}</Text>
+        <Text style={styles.cartTotal}>Tổng tiền: {formatVND(totalPrice)}</Text>
         <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
           <Text style={styles.buttonText}
             onPress={navigateToCheckout}
-          > Check out</Text>
+          > Đặt hàng</Text>
         </LinearGradient>
       </View>
     </GestureHandlerRootView>

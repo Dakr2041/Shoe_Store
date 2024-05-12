@@ -252,7 +252,7 @@ const CheckoutScreen = ({ route }) => {
             <MaterialCommunityIcons name="arrow-left" size={40} color="#333" />
           </TouchableOpacity>
           <View></View>
-          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Checkout</Text>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Đặt hàng</Text>
           <View></View>
           <View></View>
           <View></View>
@@ -274,7 +274,7 @@ const CheckoutScreen = ({ route }) => {
           <TextInput
             value={discount}
             onChangeText={setDiscount}
-            placeholder="Enter discount code"
+            placeholder="Nhập mã giảm giá (nếu có)"
             style={styles.discountInput}
           />
           <TouchableOpacity
@@ -288,26 +288,26 @@ const CheckoutScreen = ({ route }) => {
                 alignSelf: 'center',
                 padding: 5
               }}
-              >Apply Now</Text>
+              >Sử dụng</Text>
 
             </LinearGradient>
           </TouchableOpacity>
 
 
           <View style={styles.PickerMethod}>
-            <Text>Select a payment method:</Text>
+            <Text>Hãy lựa chọn phương thức thanh toán:</Text>
             <Picker
               selectedValue={paymentMethod}
               onValueChange={(itemValue) => setPaymentMethod(itemValue)}
             >
-              <Picker.Item label="COD" value="COD" />
-              <Picker.Item label="Online Payment" value="Online Payment" />
+              <Picker.Item label="Thanh toán khi nhận hàng (COD)" value="COD" />
+              <Picker.Item label="Thanh toán qua VNPay" value="Online Payment" />
             </Picker>
           </View>
           <View style={styles.checkoutContainer}>
             <Text style={styles.cartTotal}>Total: {displayPrice}</Text>
             <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-              <Text style={styles.buttonText} onPress={handleOrder}> Order</Text>
+              <Text style={styles.buttonText} onPress={handleOrder}>Đặt hàng</Text>
             </LinearGradient>
           </View>
         </View>

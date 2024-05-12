@@ -146,8 +146,8 @@ const FAItem = ({ favourite }) => {
             {favourite.imageProduct && <Image source={{ uri: favourite.imageProduct }} style={{ width: 100, height: 100 }} />}
 
             <View style={styles.textContainer}>
-                <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Name: {favourite.name}</Text>
-                <Text style={{ fontSize: 12 }}>Price: {formatVND(favourite.price - favourite.priceSale)}</Text>
+                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{favourite.name}</Text>
+                <Text style={{ fontSize: 14 }}>Giá: {formatVND(favourite.price - favourite.priceSale)}</Text>
             </View>
 
             <View style={styles.iconContainer}>

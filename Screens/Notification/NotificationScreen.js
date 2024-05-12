@@ -151,7 +151,7 @@ const NotificationScreen = () => {
   return (
     <View style={styles.container}>
       <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.header}>
-        <Text style={styles.headerText}>Notification</Text>
+        <Text style={styles.headerText}>Thông báo</Text>
       </LinearGradient>
       <NotificationList NotificationData={notifications} onRemoveItem={handleDeleteConfirmation} fetchNotifications={fetchNotifications} />
     </View>
