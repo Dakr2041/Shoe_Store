@@ -162,15 +162,28 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     modal: {
-        flex: 1,
+        position: 'absolute',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#fff',
+        width: 300,
+        height: 400,
+        left: '50%',
+        top: '50%',
+        marginLeft: -150,  
+        marginTop: -200,   
+        backgroundColor:'#fff',
+        borderWidth:3,
+        borderColor:'#f7c458',
+        borderRadius:10,
+        
     },
+    
     modalText: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
         color: 'black',
+        padding:20,
+        
     },
     closeButton: {
         position: 'absolute',
