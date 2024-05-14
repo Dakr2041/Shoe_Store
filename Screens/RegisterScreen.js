@@ -1,10 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ToastAndroid, Image, ActivityIndicator,TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ToastAndroid, Image, ActivityIndicator, TextInput } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import IconPassWord from 'react-native-vector-icons/FontAwesome5';
+import { API_URL } from './Api';
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState('');
@@ -21,6 +21,8 @@ const RegisterScreen = () => {
 
   const handleEmailChange = (text) => {
     setEmail(text);
+    // setName("abc");
+
   }
   const handleNameChange = (text) => {
     setName(text);
@@ -36,80 +38,68 @@ const RegisterScreen = () => {
 
   const EyeIcon = ({ visible }) => {
     return visible ? (
-      <IconPassWord name='eye' color={'black'} size={15}></IconPassWord>
+      <IconPassWord name='eye' color={'black'} size={20}></IconPassWord>
     ) : (
-      <IconPassWord name='eye-slash' color={'black'} size={15}></IconPassWord>
+      <IconPassWord name='eye-slash' color={'black'} size={20}></IconPassWord>
     );
   };
 
-  const logo = require('../assets/logo.png');
+  // const logo = require('../assets/logo.png');
+  const logo = require('../assets/logo_shoe_store.png');
+
 
   const handleRegister = async () => {
+
     setIsLoading(true);
 
-    const emailRegex = /^\w+@[a-zA-Z_\.]+\.[a-zA-Z]{2,}$/; // Email format
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/; // Password complexity
-
-    // Clear any previous error messages
-    emailInputRef.current.setNativeProps({ borderColor: '#ccc' });
-    nameInputRef.current.setNativeProps({ borderColor: '#ccc' });
-    passwordInputRef.current.setNativeProps({ borderColor: '#ccc' });
-    confirmPasswordInputRef.current.setNativeProps({ borderColor: '#ccc' });
+    const emailRegex = /^\w+@[a-zA-Z_\.]+\.[a-zA-Z]{2,}$/;
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
 
     if (email.length <= 0) {
       setIsLoading(false);
-      emailInputRef.current.setNativeProps({ borderColor: 'red' });
-      return alert('Type in email.');
+      return alert('Bạn hãy nhập Email.');
     }
 
     if (!emailRegex.test(email)) {
       setIsLoading(false);
-      emailInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
-      alert('Invalid email format.');
+      alert('Sai định dạng Email.');
       return;
     }
 
     if (name.length <= 0) {
       setIsLoading(false);
-      nameInputRef.current.setNativeProps({ borderColor: 'red' });
-      return alert('Type in name.');
+      return alert('Bạn hãy nhập họ và tên.');
     }
 
     if (password.length <= 0) {
       setIsLoading(false);
-      passwordInputRef.current.setNativeProps({ borderColor: 'red' });
-      return alert('Type in password.');
+      return alert('Bạn hãy nhập mật khẩu.');
     }
-
     if (!password || !passwordRegex.test(password)) {
       setIsLoading(false);
-      passwordInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
-      alert('Password must be at least 6 characters and include a number, lowercase letter, and uppercase letter.');
+      alert('Mật khẩu cần phải có 6 ký tự, bao gồm số, chữ viết hoa và chữ viết thường.');
       return;
     }
 
     if (!passwordRegex.test(password)) {
       setIsLoading(false);
-      passwordInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
-      alert('Password must be at least 6 characters and include a number, lowercase letter, and uppercase letter.');
+      alert('Mật khẩu cần phải có 6 ký tự, bao gồm số, chữ viết hoa và chữ viết thường.');
       return;
     }
 
     if (confirmPassword.length <= 0) {
       setIsLoading(false);
-      confirmPasswordInputRef.current.setNativeProps({ borderColor: 'red' });
-      return alert('Type in confirm password.');
+      return alert('Bạn hãy nhập mật khẩu xác nhận');
     }
 
     if (password !== confirmPassword) {
       setIsLoading(false);
-      confirmPasswordInputRef.current.setNativeProps({ borderColor: 'red' }); // Highlight error
-      alert('Passwords do not match.');
+      alert('2 mật khẩu đang không khớp với nhau.');
       return;
     }
 
     try {
-      const response = await fetch('http://192.168.1.30:3001/api/register', {
+      const response = await fetch(`${API_URL}/api/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,31 +107,30 @@ const RegisterScreen = () => {
         body: JSON.stringify({ email, password, name }),
       });
       const data = await response.json();
-      console.log(data.message);
-      alert(data.message);
-      setIsLoading(false);
-      if (data.status === 200) {
-        // Registration successful, handle the response accordingly
+
+
+      if (data.status === 200 || data.status === 201) {
+        alert(data.message);
+        setIsLoading(false);
         navigation.navigate('Login');
-        ToastAndroid.BOTTOM.show('Confirm in Email');
-        console.log(data);
+
       } else {
-        // Registration failed, handle the error
-        console.log(data.error);
+
+        alert(data.message);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error('Error during registration:', error);
-      // Handle the error
     }
   }
-
   const handleLoginPress = () => {
     navigation.navigate('Login');
-    console.log('Already have an account!!!');
+
   };
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+
 
   const togglePasswordVisibility = (type) => {
     if (type === 'password') {
@@ -151,74 +140,75 @@ const RegisterScreen = () => {
     }
   };
 
+
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' , padding : 20 }}>
-      <Image source={logo} style={{width:200,height:200,alignSelf :'center'}}></Image>
-      <Text style={styles.title}>Register</Text>
-      <Text style={styles.messenger}>Please enter complete information</Text>
-      <TextInput
-        style={styles.textInput}
-        placeholder="Email"
-        value={email}
-        onChangeText={handleEmailChange}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        ref={emailInputRef}
-      />
-      <TextInput
-        style={styles.textInput}
-        placeholder="Name"
-        value={name}
-        onChangeText={handleNameChange}
-        autoCapitalize="words"
-        ref={nameInputRef}
-      />
-
-      <View style={styles.passwordInputContainer}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
+        <Image source={logo} style={{ width: 200, height: 200, alignSelf: 'center' }}></Image>
+        <Text style={styles.title}>Đăng ký</Text>
+        <Text style={styles.messenger}>Hãy nhập đầy đủ thông tin</Text>
         <TextInput
           style={styles.textInput}
-          placeholder="Password"
-          onChangeText={handlePasswordChange}
-          value={password}
-          secureTextEntry={!isPasswordVisible}
-          ref={passwordInputRef}
+          placeholder="Email"
+          value={email}
+          onChangeText={handleEmailChange}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          ref={emailInputRef}
         />
-        <TouchableOpacity style={styles.showPasswordButton} onPress={() => togglePasswordVisibility('password')}>
-          <EyeIcon visible={isPasswordVisible} />
-        </TouchableOpacity>
-      </View>
-
-      <View>
         <TextInput
           style={styles.textInput}
-          placeholder="Confirm Password"
-          onChangeText={handleConfirmPasswordChange}
-          value={confirmPassword}
-          secureTextEntry={!isConfirmPasswordVisible}
-          ref={confirmPasswordInputRef}
+          placeholder="Họ và tên"
+          value={name}
+          onChangeText={handleNameChange}
+          autoCapitalize="words"
+          ref={nameInputRef}
         />
-        <TouchableOpacity style={styles.showPasswordButton} onPress={() => togglePasswordVisibility('confirmPassword')}>
-          <EyeIcon visible={isConfirmPasswordVisible} />
-        </TouchableOpacity>
-      </View>
 
-      <TouchableOpacity  onPress={handleRegister} style={styles.buttonGR}>
-          <LinearGradient colors={['#f7c458', '#fea239']} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.button}>
-            <Text style={styles.buttonText}>Register</Text>
-          </LinearGradient>  
-      </TouchableOpacity>
-
-
-
-      <TouchableOpacity onPress={handleLoginPress}>
-        <Text style={styles.higlightText}>Already have an account</Text>
-      </TouchableOpacity>
-      {isLoading && (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#0000ff" />
+        <View style={styles.passwordInputContainer}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Mật khẩu"
+            onChangeText={handlePasswordChange}
+            value={password}
+            secureTextEntry={!isPasswordVisible}
+            ref={passwordInputRef}
+          />
+          <TouchableOpacity style={styles.showPasswordButton} onPress={() => togglePasswordVisibility('password')}>
+            <EyeIcon visible={isPasswordVisible} />
+          </TouchableOpacity>
         </View>
-      )}
+
+        <View>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Mật khẩu xác nhận"
+            onChangeText={handleConfirmPasswordChange}
+            value={confirmPassword}
+            secureTextEntry={!isConfirmPasswordVisible}
+            ref={confirmPasswordInputRef}
+          />
+          <TouchableOpacity style={styles.showPasswordButton} onPress={() => togglePasswordVisibility('confirmPassword')}>
+            <EyeIcon visible={isConfirmPasswordVisible} />
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity onPress={handleRegister} style={styles.buttonGR}>
+          <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.button}>
+            <Text style={styles.buttonText}>Đăng ký</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+
+
+
+        <TouchableOpacity onPress={handleLoginPress}>
+          <Text style={styles.higlightText}>Quay lại đăng nhập</Text>
+        </TouchableOpacity>
+        {isLoading && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        )}
       </ScrollView>
 
     </View>
@@ -232,24 +222,23 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
-    fontWeight : "bold",
+    fontWeight: "bold",
     marginBottom: 10
   },
   messenger: {
     fontSize: 15,
     marginBottom: 20,
-    color : "#4f4f4d"
+    color: "#4f4f4d"
   },
   higlightText: {
-    color: '#007bff',
+    color: '#fea239',
     margin: 9,
-    textAlign : 'center',
-    marginTop : 100
+    textAlign: 'center',
+    marginTop: 100
   },
   button: {
     padding: 15,
-    borderRadius: 22,
-    alignItems :'center'
+    borderRadius: 22
   },
   buttonGR: {
     shadowColor: 'rgba(0,0,0, .4)', // IOS
@@ -257,14 +246,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 1, // IOS
     shadowRadius: 1, //IOS
     elevation: 2, // Android
-    height: 50,
     width: '100%',
-    shadowColor :'red',
-    marginTop : 20,
-},
+    shadowColor: 'red',
+    marginTop: 20,
+  },
   buttonText: {
     color: '#fff',
     fontSize: 18,
+    fontWeight: "bold",
+    alignSelf: 'center'
   },
   passwordInputContainer: {
     flexDirection: 'row',
@@ -272,31 +262,28 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   showPasswordButton: {
-    position: 'absolute', // Make it absolute within the input
-    right: 15, // Adjust right padding and position as needed
-    top : 30
-  },
-  eyeIcon: {
-    width: 25,
-    height: 25,
+    position: 'absolute',
+    right: 15,
+    top: 30
+
   },
   loadingContainer: {
-    position: 'absolute', // Ensure animation sits on top of other elements
+    position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.2)', // Semi-transparent background
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
   textInput: {
-    width : "100%",
-    height : 60,
-    borderRadius : 9,
-    padding : 9,
-    marginTop : 9,
-    backgroundColor : '#ebecf0'
+    width: "100%",
+    height: 60,
+    borderRadius: 9,
+    padding: 9,
+    marginTop: 9,
+    backgroundColor: '#ebecf0'
   }
 });
 
