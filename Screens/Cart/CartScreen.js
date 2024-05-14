@@ -206,7 +206,7 @@ const CartScreen = () => {
           newTotal = prevTotal - itemPrice * quantity;
         }
       }
-
+      //test
       setSelectedItems(prevItems => {
         if (isChecked) {
           return [...prevItems, { id: item.id, quantity ,size}];//thêm size ở đây
