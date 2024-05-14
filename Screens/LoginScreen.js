@@ -56,7 +56,6 @@ const LoginScreen = () => {
   }, []);
 
 
-
   // const getTokenA = async () => {
   //   console.log("Vào getToken")
   //   try {
@@ -79,8 +78,6 @@ const LoginScreen = () => {
     setIsLoading(true);
     const emailRegex = /^\w+@[a-zA-Z_\.]+\.[a-zA-Z]{2,}$/;
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
-
-
 
     if (email.length <= 0) {
       setIsLoading(false);
@@ -111,9 +108,6 @@ const LoginScreen = () => {
       if (data.status === 200) {
         const authToken = data.data.token;
         const userID = data.data.id;
-
-
-
 
         await AsyncStorage.setItem('authToken', authToken);
         await AsyncStorage.setItem('@userId', userID.toString());
@@ -224,7 +218,6 @@ const LoginScreen = () => {
             <Text style={styles.buttonText}>Đăng nhập</Text>
           </LinearGradient>
         </TouchableOpacity>
-
 
         <TouchableOpacity onPress={handleRegisterPress} style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 100 }}>
           <Text >Chưa có tài khoản ? hãy bấm vào </Text>
