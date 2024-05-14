@@ -5,7 +5,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 import { API_URL } from './Api';
 
-
 const ForgotPasswordScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const emailInputRef = useRef(null);
@@ -21,12 +20,12 @@ const ForgotPasswordScreen = ({ navigation }) => {
         emailInputRef.current.setNativeProps({ borderColor: '#ccc' });
 
         if (email.length <= 0) {
-            return alert('Type in email.');
+            return alert('Bạn hãy nhập địa chỉ email.');
         }
 
         if (!emailRegex.test(email)) {
             emailInputRef.current.setNativeProps({ borderColor: 'red' });
-            return alert('Invalid email format.');
+            return alert('Định dạng email không chính xác, xin hãy nhập lại.');
         }
 
         try {
@@ -57,7 +56,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
                 <Image source={logo} style={{ width: 200, height: 200, alignSelf: 'center' }}></Image>
                 <Text style={styles.title}>Đặt lại mật khẩu</Text>
-                <Text style={styles.messenger}>Hãy nhập địa chỉ Email tài khoản của bạn:</Text>
+                <Text style={styles.messenger}>Hãy nhập địa chỉ Email tài khoản của bạn</Text>
                 <TextInput
                     style={styles.textInput}
                     placeholder="Email"
