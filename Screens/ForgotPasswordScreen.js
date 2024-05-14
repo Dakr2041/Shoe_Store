@@ -21,12 +21,12 @@ const ForgotPasswordScreen = ({ navigation }) => {
         emailInputRef.current.setNativeProps({ borderColor: '#ccc' });
 
         if (email.length <= 0) {
-            return alert('Type in email.');
+            return alert('Hãy nhập Email.');
         }
 
         if (!emailRegex.test(email)) {
             emailInputRef.current.setNativeProps({ borderColor: 'red' });
-            return alert('Invalid email format.');
+            return alert('Sai định dạng Email.');
         }
 
         try {
