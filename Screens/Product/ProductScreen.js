@@ -132,7 +132,7 @@ const ProductScreen = ({ navigation }) => {
       }
       return <View>
         <Text style={{ marginHorizontal: 9, marginTop: 20, fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>
-          Một số các sản phẩm xuất sắc
+          Một số các sản phẩm chất lượng
           </Text>
 
 

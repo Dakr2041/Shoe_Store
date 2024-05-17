@@ -8,7 +8,7 @@ import moment from 'moment';
 import 'moment/locale/vi';
 import { Picker } from '@react-native-picker/picker';
 
-const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked, resetCheckboxes }) => {
+const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked, resetCheckboxes, onSizeChange }) => {
   const defaultImage = 'https://via.placeholder.com/250';
   const [isChecked, setIsChecked] = useState(false);
   const [selectedSize, setSelectedSize] = useState(item.sizes[0]);
@@ -35,7 +35,12 @@ const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked, resetCh
 
   const handleQuantityChange = (newQuantity) => {
     setSelectedQuantity(newQuantity);
-    onQuantityChange(selectedQuantity, newQuantity, item.productPrice, isChecked, item);
+    onQuantityChange(selectedQuantity, newQuantity, item.productPrice, isChecked, item,selectedSize);
+  };
+
+  const handleSizeChange = (newSize) => {
+    setSelectedSize(newSize);
+    onSizeChange(isChecked, item,newSize);
   };
 
   const handlePress = () => {
@@ -59,7 +64,7 @@ const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked, resetCh
   }, [isSaleActive]);
 
   useEffect(() => {
-    onItemChecked(isChecked, itemPrice, selectedQuantity, item);
+    onItemChecked(isChecked, itemPrice, selectedQuantity, item,selectedSize);
   }, [isChecked]);
 
   return (
@@ -95,7 +100,10 @@ const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked, resetCh
             <Text style={styles.pickerLabel}>Kích cỡ:</Text>
             <Picker
               selectedValue={selectedSize}
-              onValueChange={(newSize) => setSelectedSize(newSize)}
+              onValueChange={
+                (newSize) => handleSizeChange(newSize)
+                // (newSize) => setSelectedSize(newSize)
+              }
               style={styles.picker}
             >
               {item.sizes.map((size) => (

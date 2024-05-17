@@ -94,6 +94,7 @@ const NOList = ({ NotificationData, onRemoveItem, fetchNotifications, token }) =
         </View>
     }
 
+
     const sortedNotifications = NotificationData.data.sort((a, b) => {
         return new Date(b.createdAt) - new Date(a.createdAt);
     });
@@ -113,6 +114,11 @@ const NOList = ({ NotificationData, onRemoveItem, fetchNotifications, token }) =
                         token={token}
                     />
                 )}
+                ListEmptyComponent={
+                    <View style={{flex:1, alignItems: 'center', paddingTop:40}}>
+                        <Text style={{fontSize:20,opacity:.35}}>Chưa có thông báo</Text>
+                    </View>
+                }
             />
             <Modal
                 visible={selectedNotification !== null}
@@ -169,21 +175,21 @@ const styles = StyleSheet.create({
         height: 400,
         left: '50%',
         top: '50%',
-        marginLeft: -150,  
-        marginTop: -200,   
-        backgroundColor:'#fff',
-        borderWidth:3,
-        borderColor:'#f7c458',
-        borderRadius:10,
-        
+        marginLeft: -150,
+        marginTop: -200,
+        backgroundColor: '#fff',
+        borderWidth: 3,
+        borderColor: '#f7c458',
+        borderRadius: 10,
+
     },
-    
+
     modalText: {
         fontSize: 18,
         fontWeight: 'bold',
         color: 'black',
-        padding:20,
-        
+        padding: 20,
+
     },
     closeButton: {
         position: 'absolute',

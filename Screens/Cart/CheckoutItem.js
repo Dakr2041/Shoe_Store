@@ -11,13 +11,17 @@ const CheckoutItem = ({ item }) => {
   const defaultImage = 'https://via.placeholder.com/250';
   const [product, setProduct] = useState(null);
   const [productPrice, setProductPrice] = useState(0)
-  console.log("productPriceproductPriceproductPriceproductPriceproductPriceproductPrice", productPrice)
   useEffect(() => {
     const fetchProduct = async () => {
+      console.log('sp----------0-',item);
       try {
         const response = await fetch(`${API_URL}/api/getProduct/${item.id}`);
         const productData = await response.json();
-        setProduct(productData.data);
+
+        console.log('sp----------1-', productData.data);
+        if (productData.status === 200) {
+          setProduct(productData.data);
+        }
       } catch (error) {
         console.error('Error fetching product:', error);
       }
@@ -44,8 +48,6 @@ const CheckoutItem = ({ item }) => {
     }
   }, [product]);
 
-  console.log("productPrice:", productPrice);
-
   const getImageSource = () => {
     if (product && product.imageProduct && product.imageProduct.length > 0) {
       return { uri: product.imageProduct };
@@ -67,9 +69,10 @@ const CheckoutItem = ({ item }) => {
       />
       <View style={styles.cartDetails}>
         <Text style={styles.cartTitle}>{product.name}</Text>
-
+        <Text>Kích cỡ: {item.size}</Text>
         <Text >Số lượng: {item.quantity}</Text>
         <Text >Giá: {formatVND(productPrice * item.quantity)}</Text>
+
       </View>
     </View>
   );
@@ -93,7 +96,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cartTitle: {
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight:'bold'
   },
   cartPrice: {
     fontSize: 14,

@@ -41,6 +41,7 @@ const OrdersScreen = () => {
         if (response.ok) {
             const data = await response.json();
             setOrders(data.data);
+            console.log("--------------------\ncác đơn hàng",data.data);
         } else {
             console.error('Error fetching orders');
         }
@@ -77,7 +78,7 @@ const OrdersScreen = () => {
 
     const sortedOrders = sortOrdersByStatus(orders);
 
-    console.log(sortedOrders);
+    // console.log(sortedOrders);
     const unConfirmOrders = sortedOrders['cancelOrder','PaidCancelOrder','PaymentAndCancel','payment'] 
     // || sortedOrders['PaidCancelOrder'] || sortedOrders['PaymentAndCancel'] || sortedOrders['payment'] 
     || [];
