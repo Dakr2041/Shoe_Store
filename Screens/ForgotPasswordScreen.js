@@ -74,7 +74,6 @@ const ForgotPasswordScreen = ({ navigation }) => {
                     </LinearGradient>
                 </TouchableOpacity>
 
-
                 <TouchableOpacity onPress={handleLoginPress}>
                     <Text style={styles.higlightText}>Quay lại đăng nhập</Text>
                 </TouchableOpacity>

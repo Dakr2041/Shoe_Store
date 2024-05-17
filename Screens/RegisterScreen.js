@@ -22,7 +22,6 @@ const RegisterScreen = () => {
   const handleEmailChange = (text) => {
     setEmail(text);
     // setName("abc");
-
   }
   const handleNameChange = (text) => {
     setName(text);
@@ -46,7 +45,6 @@ const RegisterScreen = () => {
 
   // const logo = require('../assets/logo.png');
   const logo = require('../assets/logo_shoe_store.png');
-
 
   const handleRegister = async () => {
 
@@ -106,8 +104,8 @@ const RegisterScreen = () => {
         },
         body: JSON.stringify({ email, password, name }),
       });
-      const data = await response.json();
 
+      const data = await response.json();
 
       if (data.status === 200 || data.status === 201) {
         alert(data.message);
@@ -125,12 +123,10 @@ const RegisterScreen = () => {
   }
   const handleLoginPress = () => {
     navigation.navigate('Login');
-
   };
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
-
 
   const togglePasswordVisibility = (type) => {
     if (type === 'password') {
@@ -199,8 +195,6 @@ const RegisterScreen = () => {
           </LinearGradient>
         </TouchableOpacity>
 
-
-
         <TouchableOpacity onPress={handleLoginPress}>
           <Text style={styles.higlightText}>Quay lại đăng nhập</Text>
         </TouchableOpacity>
@@ -210,7 +204,6 @@ const RegisterScreen = () => {
           </View>
         )}
       </ScrollView>
-
     </View>
   );
 };

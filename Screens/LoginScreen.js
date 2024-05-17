@@ -55,7 +55,6 @@ const LoginScreen = () => {
     fetchLoginInfo();
   }, []);
 
-
   // const getTokenA = async () => {
   //   console.log("Vào getToken")
   //   try {
@@ -149,17 +148,16 @@ const LoginScreen = () => {
 
   const handleRegisterPress = () => {
     navigation.navigate('Register');
-
   };
 
   const handleForgotPasswordPress = () => {
     navigation.navigate('ForgotPassword');
-
   };
 
   const handlePressRemmember = () => {
     setIsRememberMe(!isRememberMe);
   };
+  
   return (
     <View style={styles.container} >
 
