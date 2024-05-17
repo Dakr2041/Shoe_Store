@@ -248,7 +248,7 @@ const ProductDetailScreen = ({ route }) => {
                       <Text style={styles.productPrice}>{formatVND(product.price)}</Text>
                     )}
                   </View>
-                  <TouchableOpacity style={{ alignSelf: 'center' }} onPress={() => {
+                  {/* <TouchableOpacity style={{ alignSelf: 'center' }} onPress={() => {
                     setShowCommentList(!showCommentList);
                     if (!showCommentList) {
                       slideUp();
@@ -258,43 +258,16 @@ const ProductDetailScreen = ({ route }) => {
                     }
                   }}>
                     <MaterialCommunityIcons name="chat-outline" size={40} color="#333" />
-                  </TouchableOpacity>
-                </View>
-
-                <View>
-                  {selectedSizeQuantity > 0 ? (
-                    <Text>Quantity: {selectedSizeQuantity}</Text>
-                  ) : (
-                    <Text>Please select a size</Text>
-                  )}
+                  </TouchableOpacity> */}
                 </View>
 
 
 
 
 
-                <Text >Description: {product.description}</Text>
-
-                <View style={styles.sizeContainer}>
-                  <FlatList
-                    horizontal
-                    data={sizes}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item }) => (
-                      <TouchableOpacity
-                        style={styles.sizeBox}
-                        onPress={() => {
-                          // Cập nhật số lượng sản phẩm được chọn
-                          setSelectedSizeQuantity(sizeQuantities[item.size]);
-                        }}
-                      >
-                        <Text style={styles.sizeText}>{item.size}</Text>
-                      </TouchableOpacity>
-                    )}
-                  />
 
 
-                </View>
+                <Text >Chi tiết sản phẩm: {product.description}</Text>
 
 
 
@@ -302,7 +275,7 @@ const ProductDetailScreen = ({ route }) => {
             </View>
           </ScrollView>
           <View style={styles.buttonWrapper}>
-            <View style={[styles.commentContainer, showCommentList && { height: '60%' }]}>
+            {/* <View style={[styles.commentContainer, showCommentList && { height: '60%' }]}>
               <TextInput
                 placeholder="Enter your comment"
                 style={styles.commentInput}
@@ -313,16 +286,50 @@ const ProductDetailScreen = ({ route }) => {
               <TouchableOpacity style={styles.sendButton} onPress={sendComment} disabled={showCommentList}>
                 <Text style={styles.sendButtonText}>Gửi</Text>
               </TouchableOpacity>
-            </View>
-            {!showCommentList && (
-              <TouchableOpacity onPress={handleAddToCart} style={styles.buttonGR}>
-                <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.addButton}>
-                  <Text style={styles.addButtonText}>Thêm vào giỏ hàng</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            )}
+            </View> */}
+
+            {/* <View>
+              <Text>Kích cỡ sản phẩm:</Text> */}
+              {/* <View style={styles.sizeContainer}>
+                <FlatList
+                  horizontal
+                  data={sizes}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={styles.sizeBox}
+                      onPress={() => {
+                        // Cập nhật số lượng sản phẩm được chọn
+                        setSelectedSizeQuantity(sizeQuantities[item.size]);
+                      }}
+                    >
+                      <Text style={styles.sizeText}>{item.size}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+
+
+              </View>
+              <View style={{ marginBottom: 10 }}>
+                {selectedSizeQuantity > 0 ? (
+                  <Text>Số lượng có sẵn: {selectedSizeQuantity}</Text>
+                ) : (
+                  <Text>Hãy chọn kích cỡ</Text>
+                )}
+              </View>
+            </View> */}
+
+
+            <TouchableOpacity onPress={handleAddToCart} style={styles.buttonGR}>
+              <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.addButton}>
+                <Text style={styles.addButtonText}>Thêm vào giỏ hàng</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            {/* {!showCommentList && (
+              
+            )} */}
           </View>
-          {showCommentList && (
+          {/* {showCommentList && (
             <Animated.View style={[styles.commentListContainer, { transform: [{ translateY: listTranslateY }] }]}>
               <TouchableOpacity style={styles.closeButton} onPress={() => {
                 slideDown();
@@ -343,7 +350,7 @@ const ProductDetailScreen = ({ route }) => {
                 keyExtractor={(item, index) => index.toString()}
               />
             </Animated.View>
-          )}
+          )} */}
         </View>
       );
     }
@@ -429,8 +436,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: '#fff',
     bottom: 0,
-    left: 0,
-    right: 0,
+    width:'100%',
+    padding:20,
+    
   },
   buttonGR: {
     shadowColor: 'rgba(0,0,0, .4)',
@@ -438,9 +446,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 1,
     elevation: 2,
-    width: '90%',
+    width: '100%',
     shadowColor: 'red',
-    marginBottom: 22,
     alignSelf: 'center',
   },
   button: {
@@ -531,8 +538,8 @@ const styles = StyleSheet.create({
   },
   sizeContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
     marginTop: 10,
+    marginBottom: 10,
     alignSelf: 'flex-start',
   },
   sizeBox: {

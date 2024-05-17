@@ -114,7 +114,8 @@ const CartScreen = () => {
 
       const data = await response.json();
 
-      setItemsId(data.productId);
+      setItemsId(data.data);
+      console.log(data.data);
       setTotalPrice(0)
       setSelectedItems([]);
     } catch (error) {
@@ -190,7 +191,7 @@ const CartScreen = () => {
 
 
 
-  const handleItemChecked = (isChecked, itemPrice, quantity, item) => {
+  const handleItemChecked = (isChecked, itemPrice, quantity, item,       size) => {
 
     if (typeof itemPrice !== 'number' || typeof quantity !== 'number') {
       console.error('Invalid input: Please provide a valid number.');
@@ -208,7 +209,7 @@ const CartScreen = () => {
 
       setSelectedItems(prevItems => {
         if (isChecked) {
-          return [...prevItems, { id: item.id, quantity }];
+          return [...prevItems, { id: item.id, quantity ,size}];//thêm size ở đây
         } else {
           return prevItems.filter(i => i.id !== item.id);
         }
@@ -217,7 +218,7 @@ const CartScreen = () => {
     });
   };
 
-  const onQuantityChange = (oldQuantity, newQuantity, itemPrice, isChecked, item) => {
+  const onQuantityChange = (oldQuantity, newQuantity, itemPrice, isChecked, item,       size) => {
 
     if (isChecked) {
       setTotalPrice(prevTotal => {
@@ -226,7 +227,7 @@ const CartScreen = () => {
         return newTotal < 0 ? 0 : newTotal;
       });
       setSelectedItems(prevItems =>
-        prevItems.map(i => (i.id === item.id ? { ...i, quantity: newQuantity } : i))
+        prevItems.map(i => (i.id === item.id ? { ...i, quantity: newQuantity , size} : i))//thêm size ở đây
       );
     }
     return;

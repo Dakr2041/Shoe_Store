@@ -6,10 +6,12 @@ import QuantityPicker from '../Functions/QuantityPicker';
 import { Checkbox } from 'react-native-paper';
 import moment from 'moment';
 import 'moment/locale/vi';
+import { Picker } from '@react-native-picker/picker';
 
 const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked, resetCheckboxes }) => {
   const defaultImage = 'https://via.placeholder.com/250';
   const [isChecked, setIsChecked] = useState(false);
+  const [selectedSize, setSelectedSize] = useState(item.sizes[0]);
 
   useEffect(() => {
     if (resetCheckboxes) {
@@ -18,8 +20,8 @@ const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked, resetCh
   }, [resetCheckboxes]);
 
   const getImageSource = () => {
-    if (item.imageProduct && item.imageProduct.length > 0) {
-      return { uri: item.imageProduct };
+    if (item.productImage && item.productImage.length > 0) {
+      return { uri: item.productImage };
     } else {
       return { uri: defaultImage };
     }
@@ -27,13 +29,13 @@ const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked, resetCh
 
   const today = moment();
   const [selectedQuantity, setSelectedQuantity] = useState(1);
-  const [itemPrice, setItemPrice] = useState(item.price);
+  const [itemPrice, setItemPrice] = useState(item.productPrice);
 
 
 
   const handleQuantityChange = (newQuantity) => {
     setSelectedQuantity(newQuantity);
-    onQuantityChange(selectedQuantity, newQuantity, item.price, isChecked, item);
+    onQuantityChange(selectedQuantity, newQuantity, item.productPrice, isChecked, item);
   };
 
   const handlePress = () => {
@@ -49,10 +51,10 @@ const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked, resetCh
 
   useEffect(() => {
     if (isSaleActive()) {
-      const newPrice = item.price - item.priceSale;
+      const newPrice = item.productPrice - item.priceSale;
       setItemPrice(newPrice);
     } else {
-      setItemPrice(item.price);
+      setItemPrice(item.productPrice);
     }
   }, [isSaleActive]);
 
@@ -78,14 +80,31 @@ const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked, resetCh
         onError={(error) => console.warn('Error loading image:', error)}
       />
       <View style={styles.cartDetails}>
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.cartTitle}>{item.name}</Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.cartTitle}>{item.productName}</Text>
+
         <QuantityPicker
           initialQuantity={selectedQuantity}
           onQuantityChange={handleQuantityChange}
           minValue={1}
           maxValue={item.quantity}
         />
-        <Text>Price: {formatVND(itemPrice)}</Text>
+        <Text style={{fontSize:14}}>Giá: {formatVND(itemPrice)}</Text>
+
+        <View>
+          <View style={styles.pickerContainer}>
+            <Text style={styles.pickerLabel}>Kích cỡ:</Text>
+            <Picker
+              selectedValue={selectedSize}
+              onValueChange={(newSize) => setSelectedSize(newSize)}
+              style={styles.picker}
+            >
+              {item.sizes.map((size) => (
+                <Picker.Item label={size.toString()} value={size} key={size} />
+              ))}
+            </Picker>
+          </View>
+        </View>
+        
       </View>
       <TouchableOpacity style={styles.removeButton} onPress={() => onRemoveItem(item.id)}>
         <MaterialCommunityIcons name="delete" size={24} color="#f00" />
@@ -103,8 +122,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
   },
   cartImage: {
-    width: 100,
-    height: 100,
+    width: 120,
+    height: 120,
     marginRight: 10,
     marginLeft: 10,
   },
@@ -127,6 +146,20 @@ const styles = StyleSheet.create({
   },
   removeButton: {
     padding: 5,
+  },
+  pickerContainer: {
+    flexDirection:"row",
+    marginBottom: 10,
+    alignItems:'center'
+  },
+  pickerLabel: {
+    fontSize: 14,
+    marginBottom: 5,
+  },
+  picker: {
+    width: 100,
+    fontSize:16,
+    borderWidth:1
   },
 });
 
