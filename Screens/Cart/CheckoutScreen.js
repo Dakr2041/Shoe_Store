@@ -83,6 +83,8 @@ const CheckoutScreen = ({ route }) => {
         }
       } catch (error) {
         console.error('Error applying discount:', error);
+      } finally{
+        setDiscount("")
       }
     } else {
       alert('Please enter a discount code');
@@ -95,31 +97,28 @@ const CheckoutScreen = ({ route }) => {
     if (paymentMethod === 'COD') {
       if (cartItems !== null) {
 
-
         let orderItems = cartItems.map(item => ({
           productId: item.id,
+          size:item.size,
           quantity: item.quantity,
+          // price:2020000    ////////////////////////////////can them giá của từng sản phẩm 
         }));
 
 
-        order(orderItems);
-
-
+        // order(orderItems);
 
       }
     } else if (paymentMethod === 'Online Payment') {
       if (cartItems !== null) {
-
-
         let orderItems = cartItems.map(item => ({
           productId: item.id,
+          size:item.size,
           quantity: item.quantity,
+          // price:2020000    ////////////////////////////////can them giá của từng sản phẩm 
+
         }));
 
-        onlineOrder(orderItems);
-
-
-
+        // onlineOrder(orderItems);
       }
     }
   }
@@ -233,7 +232,7 @@ const CheckoutScreen = ({ route }) => {
       setIsLoading(false);
       navigation.navigate('OrderSuccess');
 
-      await removeItemsFromCart(orderItems);
+      // await removeItemsFromCart(orderItems);//////////////////////////////////////////////////////
 
     } else {
       console.error(data.message);
@@ -305,7 +304,7 @@ const CheckoutScreen = ({ route }) => {
             </Picker>
           </View>
           <View style={styles.checkoutContainer}>
-            <Text style={styles.cartTotal}>Total: {displayPrice}</Text>
+            <Text style={styles.cartTotal}>Tổng tiền: {displayPrice}</Text>
             <LinearGradient colors={['#f7c458', '#fea239']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
               <Text style={styles.buttonText} onPress={handleOrder}>Đặt hàng</Text>
             </LinearGradient>

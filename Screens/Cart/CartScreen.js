@@ -191,7 +191,7 @@ const CartScreen = () => {
 
 
 
-  const handleItemChecked = (isChecked, itemPrice, quantity, item,       size) => {
+  const handleItemChecked = (isChecked, itemPrice, quantity, item, size) => {
 
     if (typeof itemPrice !== 'number' || typeof quantity !== 'number') {
       console.error('Invalid input: Please provide a valid number.');
@@ -206,19 +206,18 @@ const CartScreen = () => {
           newTotal = prevTotal - itemPrice * quantity;
         }
       }
-      //test
       setSelectedItems(prevItems => {
         if (isChecked) {
-          return [...prevItems, { id: item.id, quantity ,size}];//thêm size ở đây
+          return [...prevItems, { id: item.productId, quantity, size }];//thêm size ở đây
         } else {
-          return prevItems.filter(i => i.id !== item.id);
+          return prevItems.filter(i => i.id !== item.productId);
         }
       });
       return newTotal < 0 ? 0 : newTotal;
     });
   };
 
-  const onQuantityChange = (oldQuantity, newQuantity, itemPrice, isChecked, item,       size) => {
+  const onQuantityChange = (oldQuantity, newQuantity, itemPrice, isChecked, item, size) => {
 
     if (isChecked) {
       setTotalPrice(prevTotal => {
@@ -227,7 +226,16 @@ const CartScreen = () => {
         return newTotal < 0 ? 0 : newTotal;
       });
       setSelectedItems(prevItems =>
-        prevItems.map(i => (i.id === item.id ? { ...i, quantity: newQuantity , size} : i))//thêm size ở đây
+        prevItems.map(i => (i.id === item.productId ? { ...i, quantity: newQuantity } : i))
+      );
+    }
+    return;
+  };
+
+  const onSizeChange = (isChecked, item, size) => {
+    if (isChecked) {
+      setSelectedItems(prevItems =>
+        prevItems.map(i => (i.id === item.productId ? { ...i, size:size } : i))
       );
     }
     return;
@@ -239,9 +247,11 @@ const CartScreen = () => {
       Alert.alert('Không có sản phẩm nào đang được chọn', 'Hãy chọn ít nhất 1 sản phẩm để tiếp tục mua hàng!.');
     } else {
 
+      console.log("cart",selectedItems);
+
       navigation.navigate('Checkout', { cartItems: selectedItems, totalPrice });
-      setTotalPrice(0);
-      setSelectedItems([]);
+      // setTotalPrice(0);
+      // setSelectedItems([]);
     }
   };
 
@@ -264,6 +274,7 @@ const CartScreen = () => {
                 onRemoveItem={handleDeleteConfirmation}
                 onQuantityChange={onQuantityChange}
                 onItemChecked={handleItemChecked}
+                onSizeChange={onSizeChange}
               />
             )}
             keyExtractor={item => item.id}

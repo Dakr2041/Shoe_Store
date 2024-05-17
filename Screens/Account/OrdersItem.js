@@ -34,13 +34,15 @@ const OrdersItem = ({ order, fetchOrders }) => {
         const fetchProduct = async () => {
             try {
                 setLoading(true);
-                const productsData = [];
-                for (let op of order.OrdersProducts) {
-                    const response = await fetch(`${API_URL}/api/getProduct/${op.productId}`);
-                    const productData = await response.json();
-                    productsData.push({ data: productData.data, quantity: op.quantity });
-                }
-                setProducts(productsData);
+                // const productsData = [];
+                // for (let op of order.OrdersProducts) {
+                //     const response = await fetch(`${API_URL}/api/getProduct/${op.productId}`);
+                //     const productData = await response.json();
+                //     productsData.push({ data: productData.data, quantity: op.quantity });
+                // }
+                console.log("Chi tiêt đơn hàng: ",order);
+                setProducts(order.OrdersProducts);
+
                 setLoading(false);
 
             } catch (error) {
@@ -164,40 +166,41 @@ const OrdersItem = ({ order, fetchOrders }) => {
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
                     <View style={styles.productItem}>
-                        {item.data.imageProduct && <Image source={{ uri: item.data.imageProduct }} style={{ width: 100, height: 100 }} />}
+                        {item.image && <Image source={{ uri: item.image }} style={{ width: 100, height: 100 }} />}
                         <View style={styles.infoContainer}>
-                            <Text style={{ fontSize: 14, fontWeight: 'bold' }}>{item.data.name}</Text>
+                            <Text style={{ fontSize: 14, fontWeight: 'bold' }}>{item.nameProduct}</Text>
+                            <Text style={{ fontSize: 12}}>Kích cỡ: {item.size}</Text>
                             <View style={{
                                 flexDirection: 'row',
                                 justifyContent: "space-between",
                             }}>
-                                <Text style={{ fontSize: 12 }}>Price: {formatVND(item.data.price - item.data.priceSale)}</Text>
-                                <Text style={{ fontSize: 12 }}>X{item.quantity}</Text>
+                                <Text style={{ fontSize: 12 }}>Giá: {formatVND(item.price)}</Text>
+                                <Text style={{ fontSize: 12 }}>x {item.quantity}</Text>
                             </View>
-                            <Text style={{ fontSize: 14, fontWeight: 'bold', alignSelf: 'flex-end' }}>Total: {formatVND(item.quantity * (item.data.price - item.data.priceSale))}</Text>
+                            <Text style={{ fontSize: 14, fontWeight: 'bold', alignSelf: 'flex-end' }}>Thành tiền: {formatVND(item.quantity * item.price )}</Text>
                         </View>
                     </View>
                 )}
             />
             <View style={styles.bottomContainer}>
-                <Text style={{ fontSize: 14, fontWeight: 'bold', alignSelf: 'flex-end', marginTop: 10 }}>Sub total: {formatVND(order.total)}</Text>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', alignSelf: 'flex-end', marginTop: 10 }}>Tổng tiền: {formatVND(order.total)}</Text>
                 {/* <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Status: {order.status}</Text> */}
 
             </View>
             <TouchableOpacity onPress={() => goToOrderDetail(order)} style={[styles.button, { backgroundColor: 'white' }]}>
-                <Text style={[styles.buttonText, { color: 'black' }]}>Detail</Text>
+                <Text style={[styles.buttonText, { color: 'black' }]}>Chi tiết đơn hàng</Text>
             </TouchableOpacity>
             <View style={styles.buttoncancleoder}>
                 {showCancelButton && (
                     <TouchableOpacity onPress={() => handleCancelOrder(order.id)} style={[styles.button, { backgroundColor: 'white' }]}>
-                        <Text style={[styles.buttonText, { color: 'red' }]}>Cancel Order</Text>
+                        <Text style={[styles.buttonText, { color: 'red' }]}>Hủy đơn hàng</Text>
                     </TouchableOpacity>
                 )}
             </View>
             <View style={styles.buttonConfigoder}>
                 {showConfirmButton && (
                     <TouchableOpacity onPress={() => handleConfirmOrder(order.id)} style={styles.button}>
-                        <Text style={styles.buttonText}>Confirm Order</Text>
+                        <Text style={styles.buttonText}>Xác nhận đơn hàng</Text>
                     </TouchableOpacity>
                 )}
             </View>
@@ -216,7 +219,7 @@ const OrdersList = ({ ordersData, fetchOrders }) => {
 
     if (ordersData.length === 0) {
         return <View style={styles.emptyList}>
-            <Text>Empty List</Text>
+            <Text>Chưa có đơn hàng</Text>
         </View>
     }
 

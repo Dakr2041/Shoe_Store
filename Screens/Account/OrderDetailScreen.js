@@ -99,25 +99,25 @@ const OrderDetailScreen = ({ route, navigation }) => {
     const formatStatus = (status) => {
         switch (status) {
             case 'paidDelivering':
-                return 'Delivering';
+                return 'Đang giao hàng';
             case 'delivering':
-                return 'Delivering';
+                return 'Đang giao hàng';
             case 'PaidCreateOrder':
-                return 'Delivering';
+                return 'Đang giao hàng';
             case 'createOrder':
-                return 'Waiting for confirmation';
+                return 'Đợi xác nhận';
             case 'configOrder':
-                return 'Completed';
+                return 'Hoàn thành';
             case 'PaidCancelOrder':
-                return 'Online payment order has been canceled';
+                return 'Đơn hàng đã được hủy';
             case 'cancelOrder':
-                return 'Order Canceled';
+                return 'Đơn hàng đã được hủy';
             case 'payment':
-                return 'Order Canceled';
+                return 'Đơn hàng đã được hủy';
             case 'PaymentAndCancel':
-                return 'Order was paid but canceled';
+                return 'Đơn hàng đã được hủy';
             default:
-                return 'Unknown status';
+                return 'Lỗi';
         }
     };
 
@@ -147,13 +147,14 @@ const OrderDetailScreen = ({ route, navigation }) => {
         const fetchProduct = async () => {
             try {
                 setLoading(true);
-                const productsData = [];
-                for (let op of order.OrdersProducts) {
-                    const response = await fetch(`${API_URL}/api/getProduct/${op.productId}`);
-                    const productData = await response.json();
-                    productsData.push({ data: productData.data, quantity: op.quantity });
-                }
-                setProducts(productsData);
+                // const productsData = [];
+                // for (let op of order.OrdersProducts) {
+                //     const response = await fetch(`${API_URL}/api/getProduct/${op.productId}`);
+                //     const productData = await response.json();
+                //     productsData.push({ data: productData.data, quantity: op.quantity });
+                // }
+                // console.log(123123123,order.OrdersProducts);
+                setProducts(order.OrdersProducts);
 
                 setLoading(false);
 
@@ -193,7 +194,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
                     </TouchableOpacity>
                     <View></View>
                     <View></View>
-                    <Text style={styles.headerText}>Order Detail</Text>
+                    <Text style={styles.headerText}>Chi tiết đơn hàng</Text>
                     <View></View>
                     <View></View>
                     <View></View>
@@ -206,7 +207,7 @@ const OrderDetailScreen = ({ route, navigation }) => {
 
                 <ScrollView>
                     <View style={styles.orderDetails}>
-                        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Delivery Infomations</Text>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Thông tin giao hàng</Text>
                         <View style={{ paddingStart: 20 }}>
                             <Text>- {order.phone}</Text>
 
@@ -223,26 +224,28 @@ const OrderDetailScreen = ({ route, navigation }) => {
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) => (
                                 <View style={styles.productItem}>
-                                    {item.data.imageProduct && <Image source={{ uri: item.data.imageProduct }} style={{ width: 100, height: 100 }} />}
+                                    {item.image && <Image source={{ uri: item.image }} style={{ width: 100, height: 100 }} />}
                                     <View style={styles.infoContainer}>
-                                        <Text style={{ fontSize: 14, fontWeight: 'bold' }}>{item.data.name}</Text>
+                                        <Text style={{ fontSize: 14, fontWeight: 'bold' }}>{item.nameProduct}</Text>
+                                        <Text style={{ fontSize: 12 }}>Kích cỡ: {item.size}</Text>
                                         <View style={{
                                             flexDirection: 'row',
                                             justifyContent: "space-between",
                                         }}>
-                                            <Text style={{ fontSize: 12 }}>Price: {formatVND(item.data.price - item.data.priceSale)}</Text>
-                                            <Text style={{ fontSize: 12 }}>X{item.quantity}</Text>
+                                            <Text style={{ fontSize: 12 }}>Giá: {formatVND(item.price)}</Text>
+                                            <Text style={{ fontSize: 12 }}>x {item.quantity}</Text>
                                         </View>
+
                                         <Text style={{
                                             fontSize: 14,
                                             fontWeight: 'bold',
                                             alignSelf: 'flex-end'
-                                        }}>Total: {formatVND(item.quantity * (item.data.price - item.data.priceSale))}</Text>
+                                        }}>Thành tiền: {formatVND(item.quantity * item.price )}</Text>
                                     </View>
                                 </View>
                             )}
                         />
-                        <Text style={{ fontSize: 16, fontWeight: 'bold', alignSelf: 'flex-end' }}>Sub total: {formatVND(order.total)}</Text>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', alignSelf: 'flex-end' }}>Tổng tiền: {formatVND(order.total)}</Text>
                     </View>
 
                     <View style={{
@@ -253,15 +256,11 @@ const OrderDetailScreen = ({ route, navigation }) => {
                         borderRadius: 5,
                     }}>
                         <View style={styles.textRow}>
-                            <Text>Order ID: </Text>
-                            <Text>{order.id}</Text>
+                            <Text >Thời gian đặt hàng: </Text>
+                            <Text >{formattedIfdate} - {formattedDate}</Text>
                         </View>
                         <View style={styles.textRow}>
-                            <Text >Order created date: </Text>
-                            <Text >{formattedDate} - {formattedIfdate}</Text>
-                        </View>
-                        <View style={styles.textRow}>
-                            <Text>Order Status:</Text>
+                            <Text>Trạng thái đơn hàng:</Text>
                             <Text>{formatStatus(order.status)}</Text>
                         </View>
                     </View>
@@ -270,14 +269,14 @@ const OrderDetailScreen = ({ route, navigation }) => {
                 {showCancelButton && (
                     <View style={styles.buttonConfigoder}>
                         <TouchableOpacity onPress={() => handleCancelOrder(order.id)} style={[styles.button, { backgroundColor: 'white' }]}>
-                            <Text style={[styles.buttonText, { color: 'red' }]}>Cancel Order</Text>
+                            <Text style={[styles.buttonText, { color: 'red' }]}>Hủy đơn hàng</Text>
                         </TouchableOpacity>
                     </View>
                 )}
                 {showConfirmButton && (
                     <View style={styles.buttonConfigoder}>
                         <TouchableOpacity onPress={() => handleConfirmOrder(order.id)} style={[styles.button, { backgroundColor: 'white' }]}>
-                            <Text style={styles.buttonText}>Confirm Order</Text>
+                            <Text style={styles.buttonText}>Xác nhận đơn hàng</Text>
                         </TouchableOpacity>
                     </View>
                 )}
