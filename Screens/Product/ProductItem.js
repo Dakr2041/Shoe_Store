@@ -75,7 +75,6 @@ const ProductItem = ({ product, onFavoriteChanged }) => {
     return saleStartDate.isSameOrBefore(today) && saleEndDate.isSameOrAfter(today);
   };
 
-
   const handleFavouritePress = async () => {
     try {
       const storedToken = await AsyncStorage.getItem('authToken');
@@ -271,5 +270,4 @@ const styles = StyleSheet.create({
     right: 10,
   },
 });
-
 export default ProductItem;

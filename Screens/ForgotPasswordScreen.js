@@ -5,17 +5,16 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 import { API_URL } from './Api';
 
-
 const ForgotPasswordScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const emailInputRef = useRef(null);
     const logo = require('../assets/logo_shoe_store.png');
     const handleLoginPress = () => {
         navigation.navigate('Login');
-
     };
 
     const handleSendEmail = async () => {
+
         const emailRegex = /^\w+@[a-zA-Z_\.]+\.[a-zA-Z]{2,}$/; // Email format
 
         emailInputRef.current.setNativeProps({ borderColor: '#ccc' });
@@ -137,5 +136,4 @@ const styles = StyleSheet.create({
         backgroundColor: '#ebecf0'
     }
 });
-
 export default ForgotPasswordScreen;

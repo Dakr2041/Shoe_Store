@@ -19,7 +19,6 @@ const ProductScreen = ({ navigation }) => {
   const isFocused = useIsFocused();
   const [sliderProducts, setSliderProducts] = useState([]);
 
-
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
@@ -68,7 +67,6 @@ const ProductScreen = ({ navigation }) => {
     fetchUserInfo();
   }, [userId, isFocused]);
 
-
   useEffect(() => {
 
     if (shouldRedirectToSetup) {
@@ -105,7 +103,6 @@ const ProductScreen = ({ navigation }) => {
 
   const navigateToProductDetail = (product) => {
     navigation.navigate('ProductDetail', { product });
-
   };
 
   const renderContent = () => {
@@ -131,10 +128,10 @@ const ProductScreen = ({ navigation }) => {
         );
       }
       return <View>
+
         <Text style={{ marginHorizontal: 9, marginTop: 20, fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>
           Một số các sản phẩm xuất sắc
           </Text>
-
 
         <View style={styles.slider}>
           <SliderBox
@@ -147,7 +144,6 @@ const ProductScreen = ({ navigation }) => {
             parentWidth={350}
           />
         </View>
-
 
         {rows}
 
@@ -234,7 +230,6 @@ const styles = StyleSheet.create({
   },
 
   searchView: {
-
     height: 50,
     width: 235,
     borderRadius: 22,
@@ -253,6 +248,4 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
 });
-
 export default ProductScreen;
-
