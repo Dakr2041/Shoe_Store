@@ -115,7 +115,7 @@ const CartScreen = () => {
       const data = await response.json();
 
       setItemsId(data.data);
-      console.log(data.data);
+      console.log('All cart items ---',data.data);
       setTotalPrice(0)
       setSelectedItems([]);
     } catch (error) {
@@ -208,7 +208,7 @@ const CartScreen = () => {
       }
       setSelectedItems(prevItems => {
         if (isChecked) {
-          return [...prevItems, { id: item.productId, quantity, size }];//thêm size ở đây
+          return [...prevItems, { id: item.productId, quantity, size, itemPrice}];//thêm size ở đây
         } else {
           return prevItems.filter(i => i.id !== item.productId);
         }
@@ -217,12 +217,18 @@ const CartScreen = () => {
     });
   };
 
-  const onQuantityChange = (oldQuantity, newQuantity, itemPrice, isChecked, item, size) => {
+  const onQuantityChange = (oldQuantity, newQuantity, itemPrice, isChecked, item, sale) => {
 
     if (isChecked) {
       setTotalPrice(prevTotal => {
         let quantityDifference = newQuantity - oldQuantity;
-        let newTotal = prevTotal + itemPrice * quantityDifference;
+        let newTotal = 0
+        if(sale!== null){
+          newTotal = prevTotal + (itemPrice - sale) * quantityDifference;
+        } else {
+          newTotal = prevTotal + itemPrice  * quantityDifference;
+        }
+        
         return newTotal < 0 ? 0 : newTotal;
       });
       setSelectedItems(prevItems =>
@@ -241,6 +247,16 @@ const CartScreen = () => {
     return;
   };
 
+  const removeItemsFromCart = async (orderItems) => {
+    const promises = orderItems.map(async item => {
+      await removeItemFromAPI(item.productId, StoredToken);
+    });
+
+    await Promise.all(promises);
+    setSelectedItems([]);
+
+  };
+
   const navigation = useNavigation();
   const navigateToCheckout = () => {
     if (selectedItems.length === 0 || totalPrice === 0) {
@@ -250,8 +266,8 @@ const CartScreen = () => {
       console.log("cart",selectedItems);
 
       navigation.navigate('Checkout', { cartItems: selectedItems, totalPrice });
-      // setTotalPrice(0);
-      // setSelectedItems([]);
+      setTotalPrice(0);
+      removeItemFromAPI(selectedItems,StoredToken)
     }
   };
 

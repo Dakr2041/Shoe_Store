@@ -56,6 +56,7 @@ const CheckoutScreen = ({ route }) => {
 
   const applyDiscount = async () => {
     if (discount !== '') {
+      setIsLoading(true)
       try {
         const response = await fetch(`${API_URL}/discount/useDiscount/${userId}`, {
           method: 'POST',
@@ -83,8 +84,10 @@ const CheckoutScreen = ({ route }) => {
         }
       } catch (error) {
         console.error('Error applying discount:', error);
-      } finally{
+      } finally {
         setDiscount("")
+        setIsLoading(false)
+
       }
     } else {
       alert('Please enter a discount code');
@@ -99,26 +102,28 @@ const CheckoutScreen = ({ route }) => {
 
         let orderItems = cartItems.map(item => ({
           productId: item.id,
-          size:item.size,
+          size: item.size,
           quantity: item.quantity,
-          // price:2020000    ////////////////////////////////can them giá của từng sản phẩm 
+          price: item.itemPrice
         }));
 
+        console.log("order items", orderItems);
 
-        // order(orderItems);
-
+        order(orderItems);
       }
     } else if (paymentMethod === 'Online Payment') {
       if (cartItems !== null) {
         let orderItems = cartItems.map(item => ({
           productId: item.id,
-          size:item.size,
+          size: item.size,
           quantity: item.quantity,
-          // price:2020000    ////////////////////////////////can them giá của từng sản phẩm 
+          price: item.itemPrice
 
         }));
 
-        // onlineOrder(orderItems);
+        console.log("order items", orderItems);
+
+        onlineOrder(orderItems); 
       }
     }
   }
@@ -171,7 +176,7 @@ const CheckoutScreen = ({ route }) => {
 
 
       onlinePayment(data.data.total, data.data.id);
-      await removeItemsFromCart(orderItems);
+      // await removeItemsFromCart(orderItems);
 
     } else {
       // Handle error
@@ -194,7 +199,7 @@ const CheckoutScreen = ({ route }) => {
       if (!response.ok) {
         throw new Error(`API error: ${response.statusText}`);
       }
-      fetchData();
+      // fetchData();
       return response.json();
 
     } catch (error) {
@@ -230,9 +235,9 @@ const CheckoutScreen = ({ route }) => {
 
     if (data.message === "Thành công") {
       setIsLoading(false);
-      navigation.navigate('OrderSuccess');
 
       // await removeItemsFromCart(orderItems);//////////////////////////////////////////////////////
+      navigation.navigate('OrderSuccess');
 
     } else {
       console.error(data.message);

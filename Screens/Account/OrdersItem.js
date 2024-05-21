@@ -60,16 +60,16 @@ const OrdersItem = ({ order, fetchOrders }) => {
 
     const handleConfirmOrder = async (orderId) => {
         Alert.alert(
-            "Confirm Order",
-            "Are you sure you want to confirm this order?",
+            "Xác nhận đơn hàng",
+            "Bạn muốn xác nhận đơn hàng?",
             [
                 {
-                    text: "Cancel",
+                    text: "Hủy",
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
                 {
-                    text: "Yes",
+                    text: "Xác nhận",
                     onPress: async () => {
                         try {
 
@@ -95,16 +95,16 @@ const OrdersItem = ({ order, fetchOrders }) => {
     };
     const handleCancelOrder = async (orderId) => {
         Alert.alert(
-            "Cancel Order",
-            "Are you sure you want to cancel this order?",
+            "Hủy đơn hàng",
+            "Bạn chắc chắn muốn hủy đơn hàng?",
             [
                 {
-                    text: "Cancel",
+                    text: "Hủy",
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
                 {
-                    text: "Yes",
+                    text: "Chắc chắn",
                     onPress: async () => {
                         try {
 

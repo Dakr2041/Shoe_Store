@@ -35,7 +35,7 @@ const CartItem = ({ item, onRemoveItem, onQuantityChange, onItemChecked, resetCh
 
   const handleQuantityChange = (newQuantity) => {
     setSelectedQuantity(newQuantity);
-    onQuantityChange(selectedQuantity, newQuantity, item.productPrice, isChecked, item,selectedSize);
+    onQuantityChange(selectedQuantity, newQuantity, item.productPrice, isChecked,item,item.priceSale);
   };
 
   const handleSizeChange = (newSize) => {
