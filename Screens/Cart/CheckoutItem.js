@@ -71,7 +71,7 @@ const CheckoutItem = ({ item }) => {
         <Text style={styles.cartTitle}>{product.name}</Text>
         <Text>Kích cỡ: {item.size}</Text>
         <Text >Số lượng: {item.quantity}</Text>
-        <Text >Giá: {formatVND(productPrice * item.quantity)}</Text>
+        <Text >Giá: {formatVND(item.itemPrice * item.quantity)}</Text>
 
       </View>
     </View>
