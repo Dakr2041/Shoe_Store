@@ -176,7 +176,7 @@ const CheckoutScreen = ({ route }) => {
 
 
       onlinePayment(data.data.total, data.data.id);
-      // await removeItemsFromCart(orderItems);
+      await removeItemsFromCart(orderItems);
 
     } else {
       // Handle error
@@ -236,7 +236,7 @@ const CheckoutScreen = ({ route }) => {
     if (data.message === "Thành công") {
       setIsLoading(false);
 
-      // await removeItemsFromCart(orderItems);//////////////////////////////////////////////////////
+      await removeItemsFromCart(orderItems);//////////////////////////////////////////////////////
       navigation.navigate('OrderSuccess');
 
     } else {
