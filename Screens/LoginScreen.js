@@ -112,9 +112,6 @@ const LoginScreen = () => {
         const authToken = data.data.token;
         const userID = data.data.id;
 
-
-
-
         await AsyncStorage.setItem('authToken', authToken);
         await AsyncStorage.setItem('@userId', userID.toString());
         if (isRememberMe) {
@@ -139,8 +136,7 @@ const LoginScreen = () => {
           ]
 
         )
-      }
-      else {
+      } else {
         const errorData = await response.json();
         return { success: false, error: errorData.message };
       }

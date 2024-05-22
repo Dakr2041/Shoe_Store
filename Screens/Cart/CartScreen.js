@@ -115,7 +115,7 @@ const CartScreen = () => {
       const data = await response.json();
 
       setItemsId(data.data);
-      console.log('All cart items ---', data.data);
+      // console.log('All cart items ---', data.data);
       setTotalPrice(0)
       setSelectedItems([]);
     } catch (error) {
@@ -248,12 +248,23 @@ const CartScreen = () => {
   };
 
   const removeItemsFromCart = async (orderItems) => {
-    const promises = orderItems.map(async item => {
+    // const promises = orderItems.map(async item => {
       
-      await onRemoveItem(item.itemId)
-    });
+    //   await onRemoveItem(item.itemId)
+    // });
 
-    await Promise.all(promises);
+    // await Promise.all(promises);
+
+    const removalPromises = orderItems.map(async (item) => {
+      try {
+        await onRemoveItem(item.itemId); // Call onRemoveItem for each item
+      } catch (error) {
+        console.error('Error removing item:', error);
+        // Handle any potential errors during individual deletions (optional)
+      }
+    });
+  
+    await Promise.allSettled(removalPromises);
 
   };
 
@@ -265,11 +276,12 @@ const CartScreen = () => {
       setIsLoading(true)
       // console.log("cart", selectedItems);
 
-      setTotalPrice(0);
-      setSelectedItems([]);
+      
 
       await removeItemsFromCart(selectedItems);
       navigation.navigate('Checkout', { cartItems: selectedItems, totalPrice });
+      setTotalPrice(0);
+      setSelectedItems([]);
       setIsLoading(false)
 
     }
