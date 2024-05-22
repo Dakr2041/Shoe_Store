@@ -115,7 +115,7 @@ const CartScreen = () => {
       const data = await response.json();
 
       setItemsId(data.data);
-      console.log('All cart items ---',data.data);
+      console.log('All cart items ---', data.data);
       setTotalPrice(0)
       setSelectedItems([]);
     } catch (error) {
@@ -208,7 +208,7 @@ const CartScreen = () => {
       }
       setSelectedItems(prevItems => {
         if (isChecked) {
-          return [...prevItems, { id: item.productId, quantity, size, itemPrice}];//thêm size ở đây
+          return [...prevItems, { id: item.productId, quantity, size, itemPrice }];//thêm size ở đây
         } else {
           return prevItems.filter(i => i.id !== item.productId);
         }
@@ -223,12 +223,12 @@ const CartScreen = () => {
       setTotalPrice(prevTotal => {
         let quantityDifference = newQuantity - oldQuantity;
         let newTotal = 0
-        if(sale!== null){
+        if (sale !== null) {
           newTotal = prevTotal + (itemPrice - sale) * quantityDifference;
         } else {
-          newTotal = prevTotal + itemPrice  * quantityDifference;
+          newTotal = prevTotal + itemPrice * quantityDifference;
         }
-        
+
         return newTotal < 0 ? 0 : newTotal;
       });
       setSelectedItems(prevItems =>
@@ -241,7 +241,7 @@ const CartScreen = () => {
   const onSizeChange = (isChecked, item, size) => {
     if (isChecked) {
       setSelectedItems(prevItems =>
-        prevItems.map(i => (i.id === item.productId ? { ...i, size:size } : i))
+        prevItems.map(i => (i.id === item.productId ? { ...i, size: size } : i))
       );
     }
     return;
@@ -253,7 +253,6 @@ const CartScreen = () => {
     });
 
     await Promise.all(promises);
-    setSelectedItems([]);
 
   };
 
@@ -263,11 +262,15 @@ const CartScreen = () => {
       Alert.alert('Không có sản phẩm nào đang được chọn', 'Hãy chọn ít nhất 1 sản phẩm để tiếp tục mua hàng!.');
     } else {
 
-      console.log("cart",selectedItems);
+      // console.log("cart", selectedItems);
 
       navigation.navigate('Checkout', { cartItems: selectedItems, totalPrice });
       setTotalPrice(0);
-      removeItemFromAPI(selectedItems,StoredToken)
+      setSelectedItems([]);
+
+      
+
+      // removeItemsFromCart(selectedItems)
     }
   };
 

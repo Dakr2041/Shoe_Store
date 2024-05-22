@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { formatVND } from '../Functions/FormatVND';
 import { API_URL } from '../Api';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -71,7 +71,7 @@ const FAItem = ({ favourite }) => {
             const storedToken = await AsyncStorage.getItem('authToken');
             if (!storedToken) {
 
-                alert("Failed to add item to favorites");
+                alert("Có lỗi đã xảy ra");
                 return;
             }
             const response = await fetch(`${API_URL}/api/favorite/${favourite.id}`, {
@@ -90,24 +90,23 @@ const FAItem = ({ favourite }) => {
 
 
             fetchFavouriteItems();
-            // setIsFavourite(!isFavourite);
-            // let favorites = favouriteItems ? JSON.parse(favouriteItems) : [];
-            // if (!isFavourite) {
+            setIsFavourite(!isFavourite);
+            let favorites = favouriteItems ? JSON.parse(favouriteItems) : [];
+            if (!isFavourite) {
 
-            //     favorites.push(product.id);
-            // } else {
+                favorites.push(product.id);
+            } else {
 
-            //     favorites = favorites.filter(id => id !== product.id);
-            // }
+                favorites = favorites.filter(id => id !== product.id);
+            }
 
-            // if (onFavoriteChanged) {
-            //     onFavoriteChanged(product.id, !isFavourite);
-            // }
+            if (onFavoriteChanged) {
+                onFavoriteChanged(product.id, !isFavourite);
+            }
 
             alert(data.message);
         } catch (error) {
             console.error('Error adding item to favorites:', error);
-            alert(error);
         }
     };
 

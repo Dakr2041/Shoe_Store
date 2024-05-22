@@ -40,6 +40,7 @@ const FavouriteScreen = () => {
             const data = await response.json();
 
             setFavourites(data);
+            console.log("fav:",data);
             setIsLoading(false);
         } else {
             console.error('Error fetching orders');
@@ -82,14 +83,14 @@ const FavouriteScreen = () => {
             <Swipeable onSwipeableOpenStartDrag={handleRefresh} style={{ height: '100%' }}>
                 {isLoading ? (
                     <ActivityIndicator size="large" style={{ alignContent: 'center' }} />
-                ) : favourites.length === 0 ? (
+                ) : favourites.status === 400 ? (
                     <Text style={{
                         textAlign: 'center',
                         padding: 50,
-                        fontSize: 20,
+                        fontSize: 18,
                         opacity: 0.25,
                         fontWeight: 'bold'
-                    }}>You have no favourites product</Text>
+                    }}>Bạn chưa có sản phẩm yêu thích !!!</Text>
                 ) : (
                     <FavoritesList
                         style={{ height: '88%' }}

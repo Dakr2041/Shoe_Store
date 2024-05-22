@@ -112,8 +112,7 @@ const SearchResultScreen = ({ navigation, route }) => {
 
 
             <View style={styles.filterContainer}>
-
-                <Text style={{ fontSize: 16, fontWeight: 'bold', alignItems: 'flex-end' }}>Sort by price:</Text>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', alignItems: 'flex-end' }}>Sắp xếp theo giá:</Text>
                 <DropDownPicker
                     items={items}
                     setItems={setItems}
