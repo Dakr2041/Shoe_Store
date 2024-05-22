@@ -176,7 +176,7 @@ const CheckoutScreen = ({ route }) => {
 
 
       onlinePayment(data.data.total, data.data.id);
-      await removeItemsFromCart(orderItems);
+      // await removeItemsFromCart(orderItems);
 
     } else {
       // Handle error
@@ -209,7 +209,7 @@ const CheckoutScreen = ({ route }) => {
 
   const removeItemsFromCart = async (orderItems) => {
     const promises = orderItems.map(async item => {
-      await removeItemFromAPI(item.productId, StoredToken);
+      await removeItemFromAPI(item.itemId, StoredToken);
     });
 
     await Promise.all(promises);
@@ -235,9 +235,9 @@ const CheckoutScreen = ({ route }) => {
 
     if (data.message === "Thành công") {
       setIsLoading(false);
-
-      await removeItemsFromCart(orderItems);//////////////////////////////////////////////////////
       navigation.navigate('OrderSuccess');
+
+      // await removeItemsFromCart(orderItems);//////////////////////////////////////////////////////
 
     } else {
       console.error(data.message);

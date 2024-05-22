@@ -208,7 +208,7 @@ const CartScreen = () => {
       }
       setSelectedItems(prevItems => {
         if (isChecked) {
-          return [...prevItems, { id: item.productId, quantity, size, itemPrice }];//thêm size ở đây
+          return [...prevItems, { id: item.productId, quantity, size, itemPrice, itemId:item.id }];//thêm size ở đây
         } else {
           return prevItems.filter(i => i.id !== item.productId);
         }
@@ -249,7 +249,8 @@ const CartScreen = () => {
 
   const removeItemsFromCart = async (orderItems) => {
     const promises = orderItems.map(async item => {
-      await removeItemFromAPI(item.productId, StoredToken);
+      
+      await onRemoveItem(item.itemId)
     });
 
     await Promise.all(promises);
@@ -257,20 +258,20 @@ const CartScreen = () => {
   };
 
   const navigation = useNavigation();
-  const navigateToCheckout = () => {
+  const navigateToCheckout = async () => {
     if (selectedItems.length === 0 || totalPrice === 0) {
       Alert.alert('Không có sản phẩm nào đang được chọn', 'Hãy chọn ít nhất 1 sản phẩm để tiếp tục mua hàng!.');
     } else {
-
+      setIsLoading(true)
       // console.log("cart", selectedItems);
 
-      navigation.navigate('Checkout', { cartItems: selectedItems, totalPrice });
       setTotalPrice(0);
       setSelectedItems([]);
 
-      
+      await removeItemsFromCart(selectedItems);
+      navigation.navigate('Checkout', { cartItems: selectedItems, totalPrice });
+      setIsLoading(false)
 
-      // removeItemsFromCart(selectedItems)
     }
   };
 
