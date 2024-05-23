@@ -41,7 +41,7 @@ const OrdersScreen = () => {
         if (response.ok) {
             const data = await response.json();
             setOrders(data.data);
-            console.log("--------------------\ncác đơn hàng",data.data);
+            console.log("--------------------\ncác đơn hàng", data.data);
         } else {
             console.error('Error fetching orders');
         }
@@ -79,22 +79,20 @@ const OrdersScreen = () => {
     const sortedOrders = sortOrdersByStatus(orders);
 
     // console.log(sortedOrders);
-    const unConfirmOrders = sortedOrders['cancelOrder','PaidCancelOrder','PaymentAndCancel','payment'] 
-    // || sortedOrders['PaidCancelOrder'] || sortedOrders['PaymentAndCancel'] || sortedOrders['payment'] 
-    || [];
+    const unConfirmOrders = sortedOrders['cancelOrder'] || sortedOrders['PaidCancelOrder'] || sortedOrders['PaymentAndCancel'] || sortedOrders['payment'] || [];
 
 
-    const confirmOrders = sortedOrders['createOrder']  || [];
+    const confirmOrders = sortedOrders['createOrder'] || [];
 
-    const deliveringOrders = sortedOrders['delivering','paidDelivering','PaidCreateOrder'] 
-    // && sortedOrders['paidDelivering'] || sortedOrders['PaidCreateOrder'] 
-    || [];
+    const deliveringOrders = sortedOrders['delivering'] || sortedOrders['paidDelivering'] || sortedOrders['PaidCreateOrder'] || [];
 
     const successOrders = sortedOrders['configOrder'] || [];
+    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
 
-    // console.log('-1-Unconfirm Orders:', unConfirmOrders);
+
+    console.log('-1-Unconfirm Orders:', unConfirmOrders);
     // console.log('--2-Confirm Orders:', confirmOrders);
-    // console.log('---3-Delivering Orders:', deliveringOrders);
+    console.log('---3-Delivering Orders:', deliveringOrders);
     // console.log('----4-Success Orders:', successOrders);
 
     const handleGoBack = () => {
@@ -137,7 +135,7 @@ const OrdersScreen = () => {
                     </LinearGradient>
 
                     <Tab.Navigator tabBarOptions={{ scrollEnabled: true }}>
-                        
+
                         <Tab.Screen name="Chưa xác nhận">
                             {() => <OrdersList ordersData={confirmOrders} fetchOrders={fetchOrders} />}
                         </Tab.Screen>
